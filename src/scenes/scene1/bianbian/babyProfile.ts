@@ -1,28 +1,35 @@
 import { AnalysisForm } from './analysis';
-
-export type BabyProfile = Pick<AnalysisForm, 'birthDate' | 'feeding' | 'complementary' | 'formula'> & { nickname: string };
-export const profileKey = 'meiyou.bianbian.confirmed-profile.v2';
-export const feedingOptions = [['pure_breast', '纯母乳'], ['pure_formula', '配方奶'], ['mixed', '混合喂养'], ['family_food', '普通饮食']];
-export const complementaryOptions = [['none', '未添加'], ['just_started', '刚开始添加'], ['established', '已规律添加']];
-
-// Mock user-profile adapter. Replace this source with the authenticated profile API when available.
-export const mockBabyProfile: BabyProfile = { nickname: '小柚子', birthDate: '2026-01-17', feeding: 'mixed', complementary: 'established', formula: '' };
-export function loadBabyProfile(): { profile: BabyProfile; confirmed: boolean } {
-  try {
-    const p = JSON.parse(sessionStorage.getItem(profileKey) || 'null');
-    if (p?.version === 2 && typeof p.nickname === 'string' && p.nickname.trim() && /^\d{4}-\d{2}-\d{2}$/.test(p.birthDate) && feedingOptions.some(([v]) => v === p.feeding) && complementaryOptions.some(([v]) => v === p.complementary)) {
-      return { profile: { nickname: p.nickname, birthDate: p.birthDate, feeding: p.feeding, complementary: p.complementary, formula: typeof p.formula === 'string' ? p.formula : '' }, confirmed: true };
-    }
-  } catch { /* Storage can be disabled; confirmation still works in this visit. */ }
-  return { profile: { ...mockBabyProfile }, confirmed: false };
+export type BabyProfile = Pick<AnalysisForm, 'birthDate' | 'feeding' | 'complementary' | 'formula'> & { nickname: string; allergies: string[] };
+export const profileKey = 'meiyou.bianbian.confirmed-profile.v3';
+export const feedingOptions = [['pure_breast', '纯母乳喂养'], ['pure_formula', '纯配方奶喂养'], ['mixed', '混合喂养']];
+export const complementaryOptions = [['none', '未添加辅食'], ['just_started', '刚开始添加辅食'], ['established', '已添加辅食']];
+export const allergyOptions = [['none','无已知过敏'],['milk','牛奶及乳制品'],['nuts','花生及坚果'],['gluten','麸质'],['unsure','不确定']];
+export const mockBabyProfile: BabyProfile = { nickname:'小柚子', birthDate:'2026-06-27', feeding:'mixed', complementary:'none', formula:'', allergies:['none'] };
+export function validBirthDate(value: unknown) {
+ if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+ const date = new Date(`${value}T00:00:00`);
+ return Number.isFinite(date.getTime()) && date.getFullYear() === Number(value.slice(0,4)) && date.getMonth()+1 === Number(value.slice(5,7)) && date.getDate() === Number(value.slice(8)) && value >= '2008-01-01' && date <= new Date();
 }
-export function saveBabyProfile(profile: BabyProfile) {
-  try { sessionStorage.setItem(profileKey, JSON.stringify({ ...profile, version: 2, source: 'mock' })); } catch { /* Keep the confirmed state in memory. */ }
+export function toggleAllergy(current: string[], value: string) {
+ if (value === 'none' || value === 'unsure') return [value];
+ const list = current.filter(x => x !== 'none' && x !== 'unsure');
+ return list.includes(value) ? list.filter(x => x !== value) : [...list, value];
 }
-export function babyAge(birthDate: string, now = new Date()) {
-  const birth = new Date(`${birthDate}T00:00:00`);
-  const months = (now.getFullYear() - birth.getFullYear()) * 12 + now.getMonth() - birth.getMonth() - (now.getDate() < birth.getDate() ? 1 : 0);
-  if (months < 1) return `${Math.max(0, Math.floor((now.getTime() - birth.getTime()) / 86400000))}天`;
-  return `${months}个月`;
+export function loadBabyProfile(): {profile: BabyProfile; confirmed: boolean} {
+ try {
+  const p = JSON.parse(sessionStorage.getItem(profileKey) || 'null');
+  if(p?.version===3 && typeof p.nickname==='string' && p.nickname.trim() && p.nickname.length<=12 && validBirthDate(p.birthDate) && feedingOptions.some(([v])=>v===p.feeding) && complementaryOptions.some(([v])=>v===p.complementary) && Array.isArray(p.allergies) && p.allergies.length>0 && p.allergies.every((v: unknown)=>allergyOptions.some(([a])=>v===a)) && !(p.allergies.length>1 && p.allergies.some((v:string)=>v==='none'||v==='unsure'))) {
+   return {profile:{nickname:p.nickname,birthDate:p.birthDate,feeding:p.feeding,complementary:p.complementary,formula:typeof p.formula==='string'?p.formula:'',allergies:p.allergies},confirmed:true};
+  }
+ } catch { /* A disabled or corrupt session never bypasses confirmation. */ }
+ return {profile:{...mockBabyProfile,allergies:[...mockBabyProfile.allergies]},confirmed:false};
 }
-export const profileSummary = (p: BabyProfile) => [feedingOptions.find(([v]) => v === p.feeding)?.[1], complementaryOptions.find(([v]) => v === p.complementary)?.[1]].join(' · ');
+export function saveBabyProfile(profile:BabyProfile) { try {sessionStorage.setItem(profileKey,JSON.stringify({...profile,version:3,source:'mock'}));}catch{/* Current page keeps the confirmed profile in memory. */} }
+export function babyAge(birthDate:string,now=new Date()) {
+ const birth=new Date(`${birthDate}T00:00:00`);
+ const months=(now.getFullYear()-birth.getFullYear())*12+now.getMonth()-birth.getMonth()-(now.getDate()<birth.getDate()?1:0);
+ if(months<1) return `${Math.max(0,Math.floor((now.getTime()-birth.getTime())/86400000))}天`;
+ return `${months}个月`;
+}
+export const profileSummary=(p:BabyProfile)=>[feedingOptions.find(([v])=>v===p.feeding)?.[1],complementaryOptions.find(([v])=>v===p.complementary)?.[1]].join(' · ');
+export const allergySummary=(p:BabyProfile)=>p.allergies.map(v=>allergyOptions.find(([key])=>key===v)?.[1]).filter(Boolean).join('、');

@@ -1,5 +1,7 @@
 export type AnalysisForm = {
   profileSource?: string;
+  allergies?: string[];
+  bowelPattern?: string;
   birthDate: string; feeding: string; complementary: string; frequency: string;
   baseline: string; symptoms: string[]; notes: string; formula: string; consent: boolean;
 };
@@ -43,8 +45,10 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
   return {
     source: 'meiyou_parenting_single_page', profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
     age_days: Math.round((today.getTime() - birthday.getTime()) / 86400000),
-    feeding_method: form.feeding, complementary_food: form.complementary,
-    daily_frequency: Number(form.frequency),
+    feeding_method: form.feeding, feedingType: form.feeding, complementary_food: form.complementary,
+    ...(form.frequency.trim() ? { daily_frequency: Number(form.frequency) } : {}),
+    ...(form.bowelPattern ? { bowel_pattern: form.bowelPattern, frequencyStatus: ({diarrhea:'increased',constipation:'decreased',usual:'normal'} as Record<string,string>)[form.bowelPattern] || form.bowelPattern } : {}),
+    ...(form.allergies ? { allergies: form.allergies } : {}),
     ...(form.baseline ? { baseline_frequency: Number(form.baseline) } : {}),
     ...(form.formula && ['pure_formula', 'mixed'].includes(form.feeding) ? { formula_brand: form.formula } : {}),
     symptoms: form.symptoms, additional_notes: form.notes,
