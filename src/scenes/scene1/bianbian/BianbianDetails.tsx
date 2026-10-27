@@ -13,5 +13,5 @@ export function BianbianDetails({image,form,onChange,onSubmit,onPhoto,error,ques
   </section>
   <div className="br-feedback" aria-live="polite">{error&&<p className="br-error" role="alert">{error}</p>}{question&&<section className="br-followup"><strong>还需要补充一点信息</strong><p>{question}</p><p>请在补充说明中填写后重新提交。</p></section>}</div>
   <label className="br-consent"><input type="checkbox" checked={form.consent} onChange={e=>set('consent',e.target.checked)}/><span>同意将照片和填写资料提交分析。照片与报告会保存在服务器，分析仅供参考，不用于诊断。</span></label>
- </form><footer className="br-action-footer"><button form="br-analysis" type={membershipSeen?'submit':'button'} onClick={membershipSeen?undefined:onMember} className="br-primary" disabled={busy}>{busy?'正在读取照片…':membershipSeen?'开始分析':'立即开通会员'}</button></footer></>;
+ </form><footer className="br-action-footer"><div className="bv-member-button"><span className="bv-discount">限时 4.1 折 · 体验展示</span><button type="button" onClick={onMember} className="br-primary" disabled={busy}>{busy?'正在读取照片…':'开通会员'}</button></div></footer></>;
 }

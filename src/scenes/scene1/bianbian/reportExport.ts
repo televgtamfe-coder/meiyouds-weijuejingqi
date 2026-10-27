@@ -1,3 +1,4 @@
+import {importantActions} from './importantActions';
 import {dayRisk,dayShort,stoolColors,trendRisks} from './trendData';
 import {drawComparison} from './drawComparison';
 import { SavedReport,riskLabels,recordTimestamp } from './records';
@@ -12,9 +13,9 @@ export function reportSections(record:SavedReport) {
  {title:'01 颜色观察',body:factText(color)},
  {title:'02 性状细节',body:factText(texture)},
  {title:'03 参考解读',body:[r.cause,...r.evidence,...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
- {title:'04 照护建议',body:r.actions.length?r.actions.map(a=>`${a.title}\n${a.items.map((x,i)=>`${i+1}. ${x}`).join('\n')}`).join('\n\n'):'本次未返回可用建议。如宝宝不适，请咨询医生。'},
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
- ...(record.jointAnalysis?[{title:'成长联合分析 · 模拟记录',body:record.jointAnalysis.summary+'\n仅用于演示，不代表真实宝宝健康情况。'},{title:'四类变化之间的联系',body:record.jointAnalysis.relationships.join('\n\n')},{title:'记录与照护建议',body:record.jointAnalysis.plan.map(p=>p.title+'\n'+p.action).join('\n\n')},{title:'联合分析的边界',body:record.jointAnalysis.limitations.join('\n')+'\n'+record.jointAnalysis.alert}]:record.trendSnapshot?[{title:'成长联合分析',body:'本次保存时尚未生成联合分析结果；上方趋势图为独立模拟记录，不代表本次照片观察。'}]:[]),
+ ...(record.jointAnalysis?[{title:'成长联合分析 · 模拟记录',body:'同日变化提醒：便便、奶量与睡眠。仅用于模拟演示。'},{title:'这些变化可能有关联',body:record.jointAnalysis.relationships.join('\n\n')},{title:'联合分析的边界',body:record.jointAnalysis.limitations.join('\n')+'\n'+record.jointAnalysis.alert}]:record.trendSnapshot?[{title:'成长联合分析',body:'本次保存时尚未生成联合分析结果；上方趋势图为独立模拟记录，不代表本次照片观察。'}]:[]),
+ {title:'04 重要行动点',body:importantActions(record).map((a,i)=>`${i+1}. ${a.title}\n${a.action}`).join('\n\n')||'本次未返回可用行动点。'},
  {title:'育儿参考资料',body:'以下为通用科普资料，不代表本次结果已逐条核对。\n'+referenceSources.map(x=>`${x.title}\n${x.url}`).join('\n\n')},
  ];
 }

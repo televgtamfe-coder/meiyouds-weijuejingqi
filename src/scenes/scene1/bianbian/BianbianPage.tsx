@@ -26,7 +26,7 @@ export function BianbianPage(){
  const [profile,setProfile]=useState<BabyProfile>(initial.profile),[confirmed,setConfirmed]=useState(initial.confirmed),[wizard,setWizard]=useState(!initial.confirmed);
  const [view,setView]=useState<View>('home'),[reportBack,setReportBack]=useState<View>('home'),[panel,setPanel]=useState<Panel>(null);
  const [trends]=useState(createMockTrends);
- const freshForm=(baby:BabyProfile):AnalysisForm=>({...emptyForm,...mockDetailDefaults(trends),...baby,profileSource:'mock_confirmed',trendContext:trends});
+ const freshForm=(baby:BabyProfile):AnalysisForm=>({...emptyForm,...mockDetailDefaults(trends),...baby,consent:true,profileSource:'mock_confirmed',trendContext:trends});
  const [form,setForm]=useState<AnalysisForm>(()=>freshForm(initial.profile));
  const membershipKey='meiyou.bianbian.member-preview.v5';
  const [membershipSeen,setMembershipSeen]=useState(()=>readFlag(membershipKey));
@@ -48,7 +48,7 @@ export function BianbianPage(){
  async function receivePhoto(file:File){setCamera(false);const version=++uploadVersion.current;setPreparing(true);setError('');try{const prepared=await prepareImage(file);if(alive.current&&version===uploadVersion.current){setImage(prepared);setDraftRecordId('');if(newAnalysis.current)setForm(freshForm(profile));setView('details');setQuestion('');}}catch(e){if(alive.current&&version===uploadVersion.current)setError(e instanceof Error?e.message:'照片读取失败，请重试。');}finally{if(alive.current&&version===uploadVersion.current)setPreparing(false);}}
  function showRecord(next:SavedReport,from:View){setRecord(next);setReportBack(from);setNotice('');setView('report');}
  function editReport(){if(image&&(record?.demo||record?.id===draftRecordId)){setView('details');setError('');setQuestion('');}else openPhoto();}
- async function submit(event?:FormEvent,skipPreview=false){event?.preventDefault();if(!membershipSeen&&!skipPreview){setPanel('member-first');return;}if(controller.current||preparing)return;if(!confirmed){setWizard(true);return;}if(!image)return setError('请先添加一张清晰的便便照片。');if(!form.bowelPattern)return setError('请选择最近的排便情况。');if(!form.consent)return setError('请先阅读并勾选照片与资料使用说明。');
+ async function submit(event?:FormEvent,skipPreview=false){event?.preventDefault();if(!skipPreview){setPanel('member-first');return;}if(controller.current||preparing)return;if(!confirmed){setWizard(true);return;}if(!image)return setError('请先添加一张清晰的便便照片。');if(!form.bowelPattern)return setError('请选择最近的排便情况。');if(!form.consent)return setError('请先阅读并勾选照片与资料使用说明。');
   const request=new AbortController();controller.current=request;setLoading(true);setError('');setQuestion('');setNotice('');let timedOut=false;
   const timeout=window.setTimeout(()=>{timedOut=true;request.abort();},90000);
   try{const result=await analyze(image,form,request.signal);if(!alive.current||request.signal.aborted)return;
@@ -59,7 +59,7 @@ export function BianbianPage(){
   finally{window.clearTimeout(timeout);if(controller.current===request)controller.current=null;if(alive.current)setLoading(false);}
  }
 
- function closePanel(){const first=panel==='member-first';setPanel(null);if(first){setMembershipSeen(true);writeFlag(membershipKey,true);if(form.consent)void submit(undefined,true);}}
+ function closePanel(){const first=panel==='member-first';setPanel(null);if(first){setMembershipSeen(true);writeFlag(membershipKey,true);void submit(undefined,true);}}
  function cancelJoint(){jointController.current?.abort();}
  function attachJoint(target:SavedReport,value:JointAnalysis){const updated={...target,jointAnalysis:value};saveRecord(updated);setRecords(prev=>prev.map(r=>r.id===target.id?updated:r));setRecord(prev=>prev?.id===target.id?updated:prev);}
  async function startJoint(target?:SavedReport){

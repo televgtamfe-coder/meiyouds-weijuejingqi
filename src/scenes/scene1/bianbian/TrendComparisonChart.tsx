@@ -1,19 +1,15 @@
 import {useState} from 'react';
 import {TrendSet,dayShort} from './trendData';
-import {comparisonSeries,comparisonScale} from './trendComparison';
+import {focusDay,relationTracks,dayChanges} from './visualTrends';
 export function TrendComparisonChart({data}:{data:TrendSet}){
- const [selected,setSelected]=useState(6),series=comparisonSeries(data),scale=comparisonScale(data);
- const x=(i:number)=>38+i*44,y=(v:number)=>158-(v-scale.min)/(scale.max-scale.min)*130;
- const points=(values:(number|null)[])=>values.map((v,i)=>v===null?null:{x:x(i),y:y(v),value:v}).filter((v):v is {x:number;y:number;value:number}=>v!==null);
- return <section className="bc-comparison" aria-label="四类变化趋势对照"><div className="bc-comparison-heading"><h3>四类变化，同图对照</h3><span className="bt-mock">7 天模拟</span></div><p className="bc-comparison-sub">近 7 天 · 相对各自起点的变化，不比较数值大小</p>
-  <svg className="bc-comparison-chart" viewBox="0 0 320 192" role="img" aria-label="便便次数、体重、已记录奶量与睡眠的相对变化曲线；体重虚线仅连接两次测量">
-   {scale.ticks.map(v=><g key={v}><line x1="38" y1={y(v)} x2="302" y2={y(v)} stroke="#ececf1" strokeDasharray="3 3"/><text x="0" y={y(v)+4} fontSize="9" fill="#999">{v>0?'+':''}{v}%</text></g>)}
-   <line x1="38" y1={y(0)} x2="302" y2={y(0)} stroke="#d5d5dd" strokeDasharray="3 3"/>
-   <line x1={x(selected)} y1="24" x2={x(selected)} y2="164" stroke="#ff4d88" opacity=".16"/>
-   {series.map(s=><g key={s.key}><polyline points={points(s.changes).map(p=>`${p.x},${p.y}`).join(' ')} fill="none" stroke={s.color} strokeWidth="2" strokeDasharray={s.dash||undefined} strokeLinejoin="round"/>{points(s.changes).map((p,i)=><circle key={i} cx={p.x} cy={p.y} r="2.5" fill="white" stroke={s.color} strokeWidth="1.5"/>)}</g>)}
-   {data.days.map((d,i)=><text key={d.date} x={x(i)} y="184" textAnchor="middle" fontSize="9" fill="#999">{dayShort(d.date)}</text>)}
+ const [selected,setSelected]=useState(()=>focusDay(data)),tracks=relationTracks(data),day=data.days[selected],changes=dayChanges(data,selected);
+ const x=(i:number)=>44+i*42;
+ return <section className="bc-comparison bv-relations" aria-label="七天同日变化对照"><div className="bc-comparison-heading"><h3>同一天，发生了什么</h3><span className="bt-mock">7 天模拟</span></div><p className="bc-comparison-sub">沿同一日期向下看，对照便便、奶量和睡眠</p>
+  <svg className="bc-comparison-chart" viewBox="0 0 320 334" role="img" aria-label="七天便便、奶量、睡眠三行对照图；每行使用自己的单位和刻度，共用日期列">
+   <rect x={x(selected)-17} y="2" width="34" height="306" rx="8" fill="#fff0dc"/>
+   {tracks.map((s,k)=>{const top=28+k*100,bottom=top+56,y=(v:number)=>bottom-(v-s.min)/(s.max-s.min)*44;return <g key={s.key}><text x="0" y={top-12} fontSize="11" fill={s.color}>{s.label} · {s.unit}</text><text x="0" y={top+14} fontSize="9" fill="#aaa">{s.max}</text><text x="0" y={bottom+3} fontSize="9" fill="#aaa">{s.min}</text><line x1="30" x2="310" y1={bottom} y2={bottom} stroke="#eeeef2"/>{s.key==='stool'?s.values.map((v,i)=><rect key={i} x={x(i)-8} y={y(v)} width="16" height={bottom-y(v)} rx="4" fill={data.days[i].stools.some(e=>e.risk==='watch'||e.risk==='high')?'#dba152':s.color} opacity=".75"/>):<polyline points={s.values.map((v,i)=>`${x(i)},${y(v)}`).join(' ')} fill="none" stroke={s.color} strokeWidth="2" strokeLinejoin="round"/>}{s.values.map((v,i)=><g key={i}>{s.key!=='stool'&&<circle cx={x(i)} cy={y(v)} r="3" fill="white" stroke={s.color} strokeWidth="1.5"/>}<text x={x(i)} y={y(v)-8} textAnchor="middle" fontSize="9" fill={i===selected?s.color:'#888'}>{v}</text></g>)}</g>;})}
+   {data.days.map((d,i)=><text key={d.date} x={x(i)} y="327" textAnchor="middle" fontSize="9" fill={i===selected?'#ad722d':'#999'}>{dayShort(d.date)}</text>)}
   </svg>
-  <div className="bc-comparison-values"><label><span>查看原始记录</span><select aria-label="四类趋势查看日期" value={selected} onChange={e=>setSelected(Number(e.target.value))}>{data.days.map((d,i)=><option key={d.date} value={i}>{dayShort(d.date)}</option>)}</select></label><div>{series.map(s=><span key={s.key}><i style={{background:s.color}}/><span>{s.label}</span><strong>{s.values[selected]===null?'未测量':`${s.values[selected]} ${s.unit}`}</strong></span>)}</div></div>
-  <p className="bc-comparison-note">体重虚线只连接两次测量；奶量不含未量化亲喂。曲线同向或反向变化不代表因果关系。</p>
+  <div className="bv-day-observation"><label><span>同日变化提醒</span><select aria-label="查看同日变化" value={selected} onChange={e=>setSelected(Number(e.target.value))}>{data.days.map((d,i)=><option key={d.date} value={i}>{dayShort(d.date)}</option>)}</select></label><div>{changes.map(s=><p key={s.key}><span>{s.label}</span><strong>{s.value}<small>{s.unit}</small></strong><em>{s.change}</em></p>)}</div><p className="bv-day-caption">{day.stools.some(s=>s.risk==='watch'||s.risk==='high')?'这一天有便便关注标记，奶量和睡眠的同期变化也值得一起留意。':'对照这一天的三类记录，留意它们是否一起发生变化。'}</p></div><p className="bc-comparison-note">三行刻度各不相同，只对照同一天的变化。共同变化提示可能关联，不代表因果或喂养过量。</p>
  </section>;
 }

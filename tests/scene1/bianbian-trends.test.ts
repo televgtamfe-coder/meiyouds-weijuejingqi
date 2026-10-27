@@ -21,7 +21,7 @@ describe('第四版资料、趋势和报告边界',()=>{
   expect(data.days.filter(d=>d.heightCm!==null)).toHaveLength(2);
   expect(data.source).toBe('mock');
  });
- it('默认选填有数据并保留模拟来源，未同意不预勾选',()=>{
+ it('选填默认数据保留模拟来源，基础表单不替代界面同意状态',()=>{
   const data=createMockTrends(new Date('2026-10-27T09:00:00Z'));
   const form={...emptyForm,...mockBabyProfile,...mockDetailDefaults(data),trendContext:data};
   expect(form.frequency).toBe('2');expect(form.consent).toBe(false);
@@ -36,7 +36,7 @@ describe('第四版资料、趋势和报告边界',()=>{
   expect(r.babyName).toBe('小宝');expect(r.trendSnapshot?.days[0].sleepHours).not.toBe(1);
   expect(recordTimestamp('2026-10-27T09:56:24Z')).toBe('2026年10月27日17:56:24');
  });
- it('联合结果缺少四类领域不得冒充完整分析',()=>{
+ it('联合结果缺少必要领域不得冒充完整分析',()=>{
   expect(()=>parseJointAnalysis('{"summary":"一切正常"}')).toThrow();
   expect(()=>parseJointAnalysis('服务暂不可用')).toThrow();
  });
