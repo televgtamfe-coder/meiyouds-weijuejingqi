@@ -1,4 +1,5 @@
 export type AnalysisForm = {
+  profileSource?: string;
   birthDate: string; feeding: string; complementary: string; frequency: string;
   baseline: string; symptoms: string[]; notes: string; formula: string; consent: boolean;
 };
@@ -40,7 +41,7 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
   const birthday = new Date(`${form.birthDate}T00:00:00`);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   return {
-    source: 'meiyou_parenting_single_page', birthDate: form.birthDate,
+    source: 'meiyou_parenting_single_page', profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
     age_days: Math.round((today.getTime() - birthday.getTime()) / 86400000),
     feeding_method: form.feeding, complementary_food: form.complementary,
     daily_frequency: Number(form.frequency),

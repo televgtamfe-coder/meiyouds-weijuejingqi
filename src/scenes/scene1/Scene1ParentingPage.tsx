@@ -1,15 +1,11 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BianbianIcon } from './bianbian/BianbianIcon';
+import { KitIcon, KitIconName } from './bianbian/KitIcon';
 import './bianbian/bianbian.css';
 import heroBackground from '../../assets/scene1-parenting/ad60b58af7505e4a5892e8ad1f0830db7b9df0f2.webp';
 import babyAvatar from '../../assets/scene1-parenting/Ellipse_8_34771.png';
 import inviteIcon from '../../assets/scene1-parenting/Group_8_34814.png';
 import inviteArrow from '../../assets/scene1-parenting/Frame_8_34821.png';
-import feedingIcon from '../../assets/scene1-parenting/Group_80_49328.png';
-import earlyLearningIcon from '../../assets/scene1-parenting/Group_80_28882.png';
-import storyIcon from '../../assets/scene1-parenting/Boolean_operation_80_38991.png';
-import growthIcon from '../../assets/scene1-parenting/Group_80_48610.png';
-import moreIcon from '../../assets/scene1-parenting/Frame_8_35132.png';
 import todayCardArt from '../../assets/scene1-parenting/Frame_80_146673.png';
 import entryPhotoA from '../../assets/scene1-parenting/63fc3fcc2b72b6ca1b3d9e4770641b7b471e2e57.png';
 import entryPhotoB from '../../assets/scene1-parenting/84737e0ae3402fa33a235e8b6e0d4da68a63cb94.png';
@@ -38,13 +34,13 @@ type RecordEntry = {
   footer?: string;
 };
 
-const quickActions = [
-  { key: 'feeding', label: '喂养记录', icon: feedingIcon },
-  { key: 'early-learning', label: '在家早教', icon: earlyLearningIcon },
-  { key: 'stories', label: '儿歌故事', icon: storyIcon },
-  { key: 'growth', label: '记身高体重', icon: growthIcon },
-  { key: 'more', label: '更多', icon: moreIcon },
-] as const;
+const quickActions: { key: string; label: string; icon: KitIconName }[] = [
+  { key: 'feeding', label: '喂养记录', icon: 'feeding' },
+  { key: 'bianbian', label: '便便分析', icon: 'camera' },
+  { key: 'early-learning', label: '在家早教', icon: 'learning' },
+  { key: 'growth', label: '身高体重', icon: 'growth' },
+  { key: 'more', label: '更多', icon: 'more' },
+];
 
 const recordEntries: RecordEntry[] = [
   {
@@ -98,6 +94,7 @@ function getRecordMediaClassName(imageCount: number) {
 
 export function Scene1ParentingPage() {
   const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(false);
   return (
     <div className="scene1-parenting-page" data-testid="scene1-parenting-shell">
       <StatusBar />
@@ -162,21 +159,16 @@ export function Scene1ParentingPage() {
         </header>
 
         <main className="scene1-parenting-body">
-          <button type="button" className="bb-parenting-entry" onClick={() => navigate('/scene1-bianbian')} aria-label="宝宝便便分析，拍照看便便">
-            <span className="bb-parenting-entry-icon"><BianbianIcon /></span>
-            <span className="bb-parenting-entry-copy"><strong>宝宝便便分析</strong><small>AI</small><p>拍张照片，了解变化与照护建议</p></span>
-            <span className="bb-parenting-entry-arrow" aria-hidden="true">›</span>
-          </button>
-          <p className="bb-parenting-tip">照片 + 宝宝近况，一次提交查看结果</p>
           <section className="scene1-parenting-quick-card" data-testid="scene1-parenting-quick-grid">
             {quickActions.map((item) => (
-              <button key={item.key} type="button" className="scene1-parenting-quick-item">
+              <button key={item.key} type="button" className="scene1-parenting-quick-item" aria-expanded={item.key === 'more' ? expanded : undefined} onClick={() => { if (item.key === 'bianbian') navigate('/scene1-bianbian'); if (item.key === 'more') setExpanded(!expanded); }}>
                 <span className="scene1-parenting-quick-icon-wrap">
-                  <img src={item.icon} alt="" aria-hidden="true" className="scene1-parenting-quick-icon" />
+                  <KitIcon name={item.icon} />
                 </span>
                 <span className="scene1-parenting-quick-label">{item.label}</span>
               </button>
             ))}
+            {expanded && <div className="bb-quick-extra"><button type="button" className="scene1-parenting-quick-item"><span className="scene1-parenting-quick-icon-wrap"><KitIcon name="story" /></span><span className="scene1-parenting-quick-label">儿歌故事</span></button></div>}
           </section>
 
           <section className="scene1-parenting-family-card" data-testid="scene1-parenting-family-card">
