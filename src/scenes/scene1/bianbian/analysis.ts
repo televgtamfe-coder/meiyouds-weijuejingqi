@@ -82,15 +82,16 @@ export async function prepareImage(file: File): Promise<string> {
   } finally { URL.revokeObjectURL(url); }
 }
 
+// Chinese copy adapted from the user's reference screenshots, never used as a live result.
 export const demoReport = normalizeReport({
   status: 'success', risk_level: 'unknown',
   objective_facts: {
-    color: { main: '示例颜色', detail: '这里展示 AI 对照片颜色的描述' },
-    consistency: { main: '示例性状', detail: '这里展示形态与质地描述' },
-    foreign_bodies: { main: '示例观察项', detail: '这里展示可见混合物的观察' },
-    amount: { main: '示例量感', detail: '照片无法用于精确测量' },
+    color: { main: '芥末黄，夹杂深棕绿色', detail: '参考示例中，便便在尿布上呈现芥末黄色与较深的棕绿色混合。这类颜色变化可见于母乳与配方奶混合喂养的宝宝。' },
+    consistency: { main: '柔软、糊状', detail: '参考示例中的便便质地柔软、呈糊状，整体较均匀。未添加辅食的四个月婴儿中，可以观察到类似外观。' },
+    foreign_bodies: { main: '示例中未见明显红色或灰白色区域', detail: '仅描述参考图片，不代表当前宝宝的情况。' },
+    amount: { main: '照片无法精确测量' },
   },
-  core_conclusion: { summary: '先了解这次变化，再看下一步', detail: '这是一份用于查看页面结构的示例，没有分析真实照片，也不代表宝宝的健康情况。实际结果会结合你提交的照片和背景信息生成。' },
-  comprehensive_analysis: { core_cause: '结合照片、年龄与近期变化给出解释', evidence: ['照片中的可见特征', '你填写的喂养方式与排便变化'] },
-  general_advice: ['这里展示本次结果对应的照护建议。'], observation_focus: ['这里展示后续需要关注的变化。'],
+  core_conclusion: { summary: '示例外观与常见描述相近', detail: '参考截图中的便便外观，与四个月、混合喂养宝宝的常见描述相近。黄色与绿色的综合色调，可见于这一阶段宝宝的便便中。\n这是一份中文文案示例，未分析你上传的照片。' },
+  comprehensive_analysis: { core_cause: '参考照片呈现柔软、摊开的便便，可见芥末黄色与深绿褐色混合，示例中未见明显红色或灰白色区域。', evidence: ['一般背景：黄色、绿色和棕色的组合，可见于混合喂养宝宝的便便中；个体情况仍需结合宝宝状态判断。'] },
+  general_advice: ['继续记录每天的尿布更换、排便次数，以及喂养时的舒适程度。', '如果之后发现颜色或质地变化，可以在相近光线下拍摄参考照片，便于对照。', '维持平时的喂养节奏，关注宝宝的摄入和状态；具体喂养安排可向医生咨询。'],
 });
