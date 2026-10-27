@@ -37,8 +37,8 @@ describe('三步资料与参考版导航', () => {
   const user=userEvent.setup();renderPage();await complete(user);
   await user.click(screen.getByRole('button',{name:'我的',exact:true}));
   await user.click(screen.getByRole('button',{name:'升级专业版'}));
-  expect(screen.getByText('会员服务尚未开放')).toBeVisible();
-  await user.click(screen.getByRole('button',{name:'继续免费体验'}));
+  expect(screen.getByText('会员页面预览 · 暂不收费')).toBeVisible();
+  await user.click(screen.getByRole('button',{name:'暂不开通，继续分析'}));
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
  });
 });

@@ -1,0 +1,11 @@
+import {useEffect,useState} from 'react';
+const copy={
+ photo:[['观察照片','观察重点：照片清晰度，以及便便的颜色与性状。'],['结合背景','结合信息：已确认的月龄、喂养方式与近期排便情况。'],['整理建议','报告将包含观察结论、需要关注的变化与下一步建议。']],
+ joint:[['对照记录','将便便、体重、奶量和睡眠放在同一日期下对照。'],['梳理联系','重点关注同时出现的变化，区分共同变化与信息不足。'],['整理建议','建议会说明值得核对的记录，以及接下来具体怎么做。']],
+};
+export function AnalysisWaiting({kind}:{kind:'photo'|'joint'}){
+ const [phase,setPhase]=useState(0);
+ useEffect(()=>{const timer=window.setInterval(()=>setPhase(n=>Math.min(n+1,4)),6000);return()=>window.clearInterval(timer);},[]);
+ const current=Math.min(phase,2);
+ return <div className="bc-waiting" role="status" aria-live="polite"><div className="bc-waiting-steps" aria-label="本次分析关注点">{copy[kind].map(([title],i)=><span key={title} className={i===current?'active':''}>{title}</span>)}</div><p>{phase<4?copy[kind][current][1]:'仍在等待分析结果，记录已保留。你也可以停止等待，稍后重试。'}</p><small>{phase<4?'分析进行中':'分析耗时较长'}</small></div>;
+}
