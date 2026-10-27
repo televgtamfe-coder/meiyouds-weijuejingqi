@@ -1,3 +1,4 @@
+import { BianbianPage } from '../scenes/scene1/bianbian/BianbianPage';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Scene1Page } from '../scenes/scene1/Scene1Page';
 import { Scene1HomePage } from '../scenes/scene1/Scene1HomePage';
@@ -334,6 +335,7 @@ export function AppRouter() {
       <Route path="/scene1-assessment-stage-compare" element={<SceneAssessmentStageCompareRouteShell />} />
       <Route path="/scene1-prep" element={<ScenePrepRouteShell />} />
       <Route path="/scene1-pregnancy" element={<ScenePregnancyRouteShell />} />
+      <Route path="/scene1-bianbian" element={<div className="app-root"><div className="phone-shell"><BianbianPage /></div></div>} />
       <Route path="/scene1-parenting" element={<SceneParentingRouteShell />} />
       <Route path="/scene1-home" element={<SceneHomeRouteShell />} />
       <Route path="/scene1-message" element={<SceneMessageRouteShell />} />

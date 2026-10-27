@@ -1,3 +1,6 @@
+import { useNavigate } from 'react-router-dom';
+import { BianbianIcon } from './bianbian/BianbianIcon';
+import './bianbian/bianbian.css';
 import heroBackground from '../../assets/scene1-parenting/ad60b58af7505e4a5892e8ad1f0830db7b9df0f2.webp';
 import babyAvatar from '../../assets/scene1-parenting/Ellipse_8_34771.png';
 import inviteIcon from '../../assets/scene1-parenting/Group_8_34814.png';
@@ -94,9 +97,13 @@ function getRecordMediaClassName(imageCount: number) {
 }
 
 export function Scene1ParentingPage() {
+  const navigate = useNavigate();
   return (
     <div className="scene1-parenting-page" data-testid="scene1-parenting-shell">
       <StatusBar />
+      <nav className="bb-parenting-modes" aria-label="健康模式">
+        {[['经期', '/scene1'], ['备孕', '/scene1-prep'], ['怀孕', '/scene1-pregnancy'], ['育儿', '/scene1-parenting']].map(([label, path]) => <button type="button" key={label} aria-current={label === '育儿' ? 'page' : undefined} onClick={() => navigate(path)}>{label}</button>)}
+      </nav>
 
       <div className="scene1-parenting-scroll">
         <header className="scene1-parenting-hero" data-testid="scene1-parenting-hero">
@@ -119,17 +126,17 @@ export function Scene1ParentingPage() {
                 <img src={babyAvatar} alt="" aria-hidden="true" className="scene1-parenting-avatar" />
                 <div className="scene1-parenting-profile-copy">
                   <strong>宝宝</strong>
-                  <p className="scene1-parenting-profile-summary">成长第 284 天，今天也有新变化</p>
-                  <button type="button" className="scene1-parenting-age-chip">
-                    <span>9个月10天</span>
+                  <p className="scene1-parenting-profile-summary">陪伴宝宝，记录每一点变化</p>
+                  <button type="button" className="scene1-parenting-age-chip" onClick={() => navigate('/scene1-bianbian')}>
+                    <span>填写宝宝情况</span>
                     <img src={inviteArrow} alt="" aria-hidden="true" />
                   </button>
                 </div>
               </div>
 
-              <button type="button" className="scene1-parenting-invite-pill">
+              <button type="button" className="scene1-parenting-invite-pill" onClick={() => navigate('/scene1')}>
                 <img src={inviteIcon} alt="" aria-hidden="true" />
-                <span>邀请亲友</span>
+                <span>切换模式</span>
                 <img
                   src={inviteArrow}
                   alt=""
@@ -141,20 +148,26 @@ export function Scene1ParentingPage() {
 
             <section className="scene1-parenting-change-card">
               <div className="scene1-parenting-change-copy">
-                <p className="scene1-parenting-change-label">宝宝变化</p>
+                <p className="scene1-parenting-change-label">今日陪伴</p>
                 <p className="scene1-parenting-change-text">
-                  妈妈，当你看到我把水杯碰倒时，不要责怪我。我已经开始学习用杯子喝水，只是还没完全掌握放回去的动作，所以偶尔会把它碰倒呀。
+                  从吃得怎么样，到便便的小变化，把每一次观察留给更安心的照顾。
                 </p>
               </div>
               <div className="scene1-parenting-change-meta">
-                <span>第 1 周 · 11月9日</span>
-                <button type="button">回到今天</button>
+                <span>育儿健康小工具</span>
+                <span className="bb-parenting-label">陪宝宝慢慢长大</span>
               </div>
             </section>
           </div>
         </header>
 
         <main className="scene1-parenting-body">
+          <button type="button" className="bb-parenting-entry" onClick={() => navigate('/scene1-bianbian')} aria-label="宝宝便便分析，拍照看便便">
+            <span className="bb-parenting-entry-icon"><BianbianIcon /></span>
+            <span className="bb-parenting-entry-copy"><strong>宝宝便便分析</strong><small>AI</small><p>拍张照片，了解变化与照护建议</p></span>
+            <span className="bb-parenting-entry-arrow" aria-hidden="true">›</span>
+          </button>
+          <p className="bb-parenting-tip">照片 + 宝宝近况，一次提交查看结果</p>
           <section className="scene1-parenting-quick-card" data-testid="scene1-parenting-quick-grid">
             {quickActions.map((item) => (
               <button key={item.key} type="button" className="scene1-parenting-quick-item">
@@ -180,8 +193,8 @@ export function Scene1ParentingPage() {
           >
             <div className="scene1-parenting-record-section-head">
               <div>
-                <h2>成长记录</h2>
-                <p>把照片、小变化和陪伴瞬间都留在这里</p>
+                <h2>成长记录示例</h2>
+                <p>以下为原页面的示例内容，不是宝宝的真实记录</p>
               </div>
             </div>
 
@@ -248,7 +261,7 @@ export function Scene1ParentingPage() {
         data-testid="scene1-parenting-mode-switch"
         aria-label="育儿模式切换"
       >
-        <button type="button" className="scene1-parenting-mode-pill">
+        <button type="button" className="scene1-parenting-mode-pill" onClick={() => navigate('/scene1')}>
           妈妈
         </button>
         <button type="button" className="scene1-parenting-mode-pill active">
