@@ -1,5 +1,9 @@
+import type {TrendSet} from './trendData';
 export type AnalysisForm = {
   profileSource?: string;
+  deliveryMode?: 'vaginal'|'cesarean';
+  mockFields?: string[];
+  trendContext?: TrendSet;
   allergies?: string[];
   bowelPattern?: string;
   birthDate: string; feeding: string; complementary: string; frequency: string;
@@ -43,7 +47,9 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
   const birthday = new Date(`${form.birthDate}T00:00:00`);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   return {
-    source: 'meiyou_parenting_single_page', profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
+    source: 'meiyou_parenting_single_page', delivery_mode: form.deliveryMode || 'unknown',
+    mock_prefilled_fields: form.mockFields || [], trend_context: form.trendContext,
+    ...(form.trendContext ? {analysis_scope:'趋势为模拟记录，带有 mock_prefilled_fields 的日常字段也仍为示例。请明确标注模拟背景，不据此判断真实健康或生长达标。结合照片与背景给出观察；不得把同时变化写成因果。'} : {}), profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
     age_days: Math.round((today.getTime() - birthday.getTime()) / 86400000),
     feeding_method: form.feeding, feedingType: form.feeding, complementary_food: form.complementary,
     ...(form.frequency.trim() ? { daily_frequency: Number(form.frequency) } : {}),

@@ -22,16 +22,16 @@ describe('三步资料与参考版导航', () => {
   expect(screen.getByRole('heading',{name:'历史报告'})).toBeVisible();
   first.unmount();renderPage();expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
  });
- it('修改取消不覆盖档案，拍照入口统一选择来源', async () => {
+ it('修改取消不覆盖档案，拍照入口直接进入取景框并保留相册', async () => {
   const user=userEvent.setup();renderPage();await complete(user);
   await user.click(screen.getByRole('button',{name:'修改宝宝资料'}));
   await user.clear(screen.getByLabelText('宝宝昵称'));await user.type(screen.getByLabelText('宝宝昵称'),'不保存');
   await user.click(screen.getByRole('button',{name:'取消修改'}));
   expect(screen.getByText('小柚子')).toBeVisible();
   await user.click(screen.getByRole('button',{name:'拍照分析',exact:true}));
-  expect(screen.getByRole('dialog',{name:'添加便便照片'})).toBeVisible();
-  expect(screen.getByRole('button',{name:'拍照',exact:true})).toBeVisible();
-  expect(screen.getByRole('button',{name:'从相册选择'})).toBeVisible();
+  expect(screen.getByRole('dialog',{name:'拍摄便便照片'})).toBeVisible();
+  expect(screen.getByRole('button',{name:'拍摄照片',exact:true})).toBeVisible();
+  expect(screen.getByRole('button',{name:'相册'})).toBeVisible();
  });
  it('设置入口与会员预览有退出路径，不声称付费已开通', async () => {
   const user=userEvent.setup();renderPage();await complete(user);

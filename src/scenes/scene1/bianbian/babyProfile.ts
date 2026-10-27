@@ -1,10 +1,11 @@
 import { AnalysisForm } from './analysis';
-export type BabyProfile = Pick<AnalysisForm, 'birthDate' | 'feeding' | 'complementary' | 'formula'> & { nickname: string; allergies: string[] };
-export const profileKey = 'meiyou.bianbian.confirmed-profile.v3';
+export type BabyProfile = Pick<AnalysisForm, 'birthDate' | 'feeding' | 'complementary' | 'formula'> & { nickname: string; allergies: string[]; deliveryMode:'vaginal'|'cesarean' };
+export const profileKey = 'meiyou.bianbian.confirmed-profile.v4';
+export const deliveryOptions=[['vaginal','自然分娩'],['cesarean','剖宫产']] as const;
 export const feedingOptions = [['pure_breast', '纯母乳喂养'], ['pure_formula', '纯配方奶喂养'], ['mixed', '混合喂养']];
 export const complementaryOptions = [['none', '未添加辅食'], ['just_started', '刚开始添加辅食'], ['established', '已添加辅食']];
 export const allergyOptions = [['none','无已知过敏'],['milk','牛奶及乳制品'],['nuts','花生及坚果'],['gluten','麸质'],['unsure','不确定']];
-export const mockBabyProfile: BabyProfile = { nickname:'小柚子', birthDate:'2026-06-27', feeding:'mixed', complementary:'none', formula:'', allergies:['none'] };
+export const mockBabyProfile: BabyProfile = { nickname:'小柚子', deliveryMode:'vaginal', birthDate:'2026-06-27', feeding:'mixed', complementary:'none', formula:'', allergies:['none'] };
 export function validBirthDate(value: unknown) {
  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
  const date = new Date(`${value}T00:00:00`);
@@ -17,14 +18,14 @@ export function toggleAllergy(current: string[], value: string) {
 }
 export function loadBabyProfile(): {profile: BabyProfile; confirmed: boolean} {
  try {
-  const p = JSON.parse(sessionStorage.getItem(profileKey) || 'null');
-  if(p?.version===3 && typeof p.nickname==='string' && p.nickname.trim() && p.nickname.length<=12 && validBirthDate(p.birthDate) && feedingOptions.some(([v])=>v===p.feeding) && complementaryOptions.some(([v])=>v===p.complementary) && Array.isArray(p.allergies) && p.allergies.length>0 && p.allergies.every((v: unknown)=>allergyOptions.some(([a])=>v===a)) && !(p.allergies.length>1 && p.allergies.some((v:string)=>v==='none'||v==='unsure'))) {
-   return {profile:{nickname:p.nickname,birthDate:p.birthDate,feeding:p.feeding,complementary:p.complementary,formula:typeof p.formula==='string'?p.formula:'',allergies:p.allergies},confirmed:true};
+  const p = JSON.parse(sessionStorage.getItem(profileKey) || sessionStorage.getItem('meiyou.bianbian.confirmed-profile.v3') || 'null');
+  if((p?.version===4||p?.version===3) && typeof p.nickname==='string' && p.nickname.trim() && p.nickname.length<=12 && validBirthDate(p.birthDate) && feedingOptions.some(([v])=>v===p.feeding) && complementaryOptions.some(([v])=>v===p.complementary) && Array.isArray(p.allergies) && p.allergies.length>0 && p.allergies.every((v: unknown)=>allergyOptions.some(([a])=>v===a)) && !(p.allergies.length>1 && p.allergies.some((v:string)=>v==='none'||v==='unsure'))) {
+   return {profile:{nickname:p.nickname,birthDate:p.birthDate,feeding:p.feeding,complementary:p.complementary,formula:typeof p.formula==='string'?p.formula:'',allergies:p.allergies,deliveryMode:p.deliveryMode==='cesarean'?'cesarean':'vaginal'},confirmed:p.version===4&&['vaginal','cesarean'].includes(p.deliveryMode)};
   }
  } catch { /* A disabled or corrupt session never bypasses confirmation. */ }
  return {profile:{...mockBabyProfile,allergies:[...mockBabyProfile.allergies]},confirmed:false};
 }
-export function saveBabyProfile(profile:BabyProfile) { try {sessionStorage.setItem(profileKey,JSON.stringify({...profile,version:3,source:'mock'}));}catch{/* Current page keeps the confirmed profile in memory. */} }
+export function saveBabyProfile(profile:BabyProfile) { try {sessionStorage.setItem(profileKey,JSON.stringify({...profile,version:4,source:'mock'}));}catch{/* Current page keeps the confirmed profile in memory. */} }
 export function babyAge(birthDate:string,now=new Date()) {
  const birth=new Date(`${birthDate}T00:00:00`);
  const months=(now.getFullYear()-birth.getFullYear())*12+now.getMonth()-birth.getMonth()-(now.getDate()<birth.getDate()?1:0);
