@@ -16,13 +16,13 @@ export function StoolWeekChart({data,compact=false}:{data:TrendSet;compact?:bool
     <text x={x} y="181" textAnchor="middle" fontSize="10" fill="#999">{dayShort(d.date)}</text><text x={x} y="197" textAnchor="middle" fontSize="12" fill="#323232">{d.stools.length}次</text><circle cx={x-14} cy="212" r="2.5" fill={risk.color}/><text x={x+3} y="215" textAnchor="middle" fontSize="10" fill={risk.color}>{risk.label}</text>
    </g>;})}
   </svg>
-  <div className="bt-color-legend bt-risk-legend">{(['low','watch','high'] as const).map(risk=><span key={risk}><i style={{background:trendRisks[risk].color}}/>{trendRiskLabels[risk]}</span>)}<span className="bt-risk-note">图中颜色代表风险等级</span></div>
+  <div className="bt-color-legend bt-risk-legend">{(['low','watch','high'] as const).map(risk=><span key={risk}><i style={{background:trendRisks[risk].color}}/>{trendRiskLabels[risk]}</span>)}</div>
   {!compact&&<div className="bt-selected-day"><select aria-label="查看某日便便记录" value={selected} onChange={e=>setSelected(Number(e.target.value))}>{data.days.map((d,i)=><option key={d.date} value={i}>{dayShort(d.date)} 详情</option>)}</select><p>{day.stools.map(e=>`${e.time} ${stoolColors[e.color].label} · ${trendRiskLabels[e.risk]}`).join(' · ')}</p></div>}
 
  </section>;
 }
 export function TrendDashboard({data}:{data:TrendSet}){
 
- return <div className="bt-dashboard"><div className="br-section-title bt-dashboard-title"><h2>宝宝成长趋势</h2><span className="bt-mock">模拟记录</span></div><StoolWeekChart data={data}/>{data.months&&<MonthlyTrendComparison data={data.months}/>}
+ return <div className="bt-dashboard"><StoolWeekChart data={data}/>{data.months&&<MonthlyTrendComparison data={data.months}/>}
  </div>;
 }

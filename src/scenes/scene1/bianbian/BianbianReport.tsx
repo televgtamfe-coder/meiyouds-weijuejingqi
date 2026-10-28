@@ -18,7 +18,7 @@ export function BianbianReport({record,onShare,onDoctor,onEdit,notice,jointLoadi
 
 export function ReportContent({record,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
  const r=record.report;
- return (  <article className="br-report-paper"><div className="br-report-brand">美柚 · 宝宝成长观察</div>
+ return (  <article className="br-report-paper">
    <div className="br-report-meta bs-report-meta"><time dateTime={record.createdAt}>{recordTimestamp(record.createdAt)}</time><span className={`br-risk-badge br-risk-${r.risk}`}>{riskLabels[r.risk]}</span></div>
    {['red','orange'].includes(r.risk)&&<p className="bt-priority-alert" role="alert">{r.risk==='red'?'请优先联系医生，不要等待进一步分析。':'请优先咨询医生，结合宝宝实际状态评估。'}</p>}
 

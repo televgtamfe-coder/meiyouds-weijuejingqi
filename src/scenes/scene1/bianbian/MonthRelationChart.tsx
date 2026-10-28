@@ -18,5 +18,5 @@ export function MonthRelationChart({data,selected,onSelect,linkedDates=[]}:{data
   </g>;})}
   {ticks.map(i=><text key={i} x={x(i)} y="489" textAnchor="middle" fontSize="9" fill="#999">{i+1}日</text>)}
   {current.map((d,i)=><rect key={d.date} x={x(i)-(count===1?120:134/(count-1))} y="0" width={count===1?240:268/(count-1)} height="470" fill="transparent" onClick={()=>onSelect(i)}><title>{dayShort(d.date)}，点击查看当日五项记录</title></rect>)}
- </svg><p className="bm-month-chart-note">黄底为同步变化或关注日期；便便柱按风险着色。身高、体重仅展示测量点，虚线连接已有记录。</p></div>;
+ </svg></div>;
 }
