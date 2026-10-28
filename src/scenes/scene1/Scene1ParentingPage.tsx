@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KitIcon, KitIconName } from './bianbian/KitIcon';
+import stoolIcon from '../../assets/scene1-habit/habit-poop.png';
 import './bianbian/bianbian.css';
 import heroBackground from '../../assets/scene1-parenting/ad60b58af7505e4a5892e8ad1f0830db7b9df0f2.webp';
 import babyAvatar from '../../assets/scene1-parenting/Ellipse_8_34771.png';
@@ -163,7 +164,7 @@ export function Scene1ParentingPage() {
             {quickActions.map((item) => (
               <button key={item.key} type="button" className="scene1-parenting-quick-item" aria-expanded={item.key === 'more' ? expanded : undefined} onClick={() => { if (item.key === 'bianbian') navigate('/scene1-bianbian'); if (item.key === 'more') setExpanded(!expanded); }}>
                 <span className="scene1-parenting-quick-icon-wrap">
-                  <KitIcon name={item.icon} />
+                  {item.key === 'bianbian' ? <img className="bb-stool-entry-icon" src={stoolIcon} alt="" aria-hidden="true" /> : <KitIcon name={item.icon} />}
                 </span>
                 <span className="scene1-parenting-quick-label">{item.label}</span>
               </button>

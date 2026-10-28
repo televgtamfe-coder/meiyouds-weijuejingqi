@@ -85,3 +85,5 @@
 .scene1-parenting-page .scene1-parenting-change-card{border-radius:12px;box-shadow:none}
 @media(max-width:359px){.bb-card{padding:12px}.bb-options button{padding:10px}.bb-result-footer{gap:8px}.bb-secondary{padding:8px 12px}.bb-profile-heading h2{font-size:19px}.bb-profile-row{gap:8px}}
 @media(prefers-reduced-motion:reduce){.bb-loading-line:after,.bb-bottom-sheet{animation:none}}
+
+.scene1-parenting-page .bb-stool-entry-icon{display:block;width:30px;height:30px;object-fit:contain}
