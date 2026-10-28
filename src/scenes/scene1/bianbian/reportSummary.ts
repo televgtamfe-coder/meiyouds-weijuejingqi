@@ -84,6 +84,10 @@ export function conclusionSegments(text:string){
  return text.split(/(?<=[，；。！？])/).filter(Boolean).map((value,i)=>({text:value,strong:i===0||/风险|血丝|奶瓣|灰白|增多|减少|增加|偏|异常|尚未明确/.test(value)}));
 }
 
+export function observationContextIntro(record:SavedReport){
+ return firstObservationSentence(record.report.detail)||firstObservationSentence(record.report.cause);
+}
 export function overviewConclusion(record:SavedReport){
- return [observationConclusion(record),riskObservationConclusion(record),observationTrendConclusion(record)].filter(Boolean).map(text=>/[。！？]$/.test(text)?text:text+'。').join('');
+ const seen=new Set<string>();
+ return [observationContextIntro(record),observationConclusion(record),riskObservationConclusion(record),observationTrendConclusion(record)].filter(Boolean).map(text=>/[。！？]$/.test(text)?text:text+'。').filter(text=>{const key=text.replace(/\s+/g,'');if(seen.has(key))return false;seen.add(key);return true;}).join('');
 }

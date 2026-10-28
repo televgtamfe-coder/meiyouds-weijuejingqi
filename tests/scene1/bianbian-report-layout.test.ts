@@ -8,8 +8,8 @@ import {mockBabyProfile} from '../../src/scenes/scene1/bianbian/babyProfile';
 import {createMockTrends} from '../../src/scenes/scene1/bianbian/trendData';
 it('保存内容先精简总结再七天规律，完整依据仅在末尾参考解读',()=>{
  const r=makeRecord(demoReport,'',true,{profile:mockBabyProfile,trendSnapshot:createMockTrends()});const titles=reportSections(r).map(x=>x.title);
- expect(titles.slice(0,3)).toEqual(['本次分析结论','近 7 天便便规律','联合成长分析']);
- expect(reportSections(r)[0].body).not.toContain(demoReport.detail);expect(reportSections(r).find(s=>s.title==='参考解读')?.body).toContain(demoReport.detail);expect(titles).not.toContain('颜色与性状情况');
+ expect(titles.slice(0,3)).toEqual(['本次分析结论','近 7 天便便规律','联合喂养睡眠分析']);
+ expect(reportSections(r)[0].body).not.toContain('这是一份中文文案示例');expect(reportSections(r).find(s=>s.title==='参考解读')?.body).toContain(demoReport.detail);expect(titles).not.toContain('颜色与性状情况');
  expect(titles.indexOf('行动建议')).toBeLessThan(titles.indexOf('参考解读'));expect(titles.at(-1)).toBe('育儿参考资料');
 });
 it('没有同日睡眠数据时不借用其他日期的记录',()=>{
@@ -25,7 +25,7 @@ it('喂养睡眠差值根据同日与前一日记录生成，不把减少写成�
 it('总结保留颜色性状描述和完整句结论，喂养睡眠只归入一个联合模块',()=>{
  const r=makeRecord(demoReport,'',true,{profile:mockBabyProfile,trendSnapshot:createMockTrends()});
  expect(appearanceConclusion(r).every(f=>f.description.length>0)).toBe(true);expect(observationConclusion(r)).toBe(demoReport.summary);
- const sections=reportSections(r);expect(sections.filter(x=>x.title==='联合成长分析')).toHaveLength(1);expect(sections.some(x=>x.title==='结合喂养与睡眠')).toBe(false);expect(sections[0].title).toBe('本次分析结论');
+ const sections=reportSections(r);expect(sections.filter(x=>x.title==='联合喂养睡眠分析')).toHaveLength(1);expect(sections.some(x=>x.title==='结合喂养与睡眠')).toBe(false);expect(sections[0].title).toBe('本次分析结论');
 });
 
 it('重复结论只展示一次，完整依据保留新的信息及否定表述',()=>{
@@ -78,4 +78,11 @@ it('指标卡不复述颜色结论，细节移至默认展开的完整依据',()
 it('未带句末标点的模型结论与风险补充自然分句',()=>{
  const r=makeRecord({...demoReport,summary:'本次为糊状便'},'',true);
  expect(overviewConclusion(r)).toContain('本次为糊状便。未见明显');
+});
+
+it('结论开头保留本次完整依据首句，不固定套用四个月混合喂养或低风险',()=>{
+ const detail='结合本次照片与八个月配方奶喂养背景，血丝表现需要关注。后续完整依据。';
+ const r=makeRecord({...demoReport,risk:'red',summary:'建议就医。',detail},'',true);
+ const result=overviewConclusion(r);expect(result.startsWith('结合本次照片与八个月配方奶喂养背景，血丝表现需要关注。')).toBe(true);expect(result).not.toContain('四个月');expect(result).toContain('建议就医');expect(result).not.toContain('后续完整依据');
+ r.report.detail=r.report.summary;expect(overviewConclusion(r).match(/建议就医。/g)).toHaveLength(1);
 });

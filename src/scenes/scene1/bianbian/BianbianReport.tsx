@@ -33,7 +33,7 @@ export function ReportContent({record,jointLoading=false,jointError='',onJoint=(
     </div>
    </section>
    {record.trendSnapshot&&<StoolWeekChart data={record.trendSnapshot} compact/>}
-   <section className="bt-report-joint bs-joint-unified" aria-label="联合成长分析"><div className="br-section-title"><h2>联合成长分析</h2></div>   <div className="bs-context bs-context-short bs-joint-context">{reportContext(record).map(x=><p className="bs-context-line" key={x.label}><span>{x.label==='喂养背景'?'喂养':'睡眠'}</span><span><strong>{x.value}</strong>{x.change&&<strong className="bs-key-change">{x.change}</strong>}</span></p>)}</div>
+   <section className="bt-report-joint bs-joint-unified" aria-label="联合喂养睡眠分析"><div className="br-section-title"><h2>联合喂养睡眠分析</h2></div>   <div className="bs-context bs-context-short bs-joint-context">{reportContext(record).map(x=><p className="bs-context-line" key={x.label}><span>{x.label==='喂养背景'?'喂养':'睡眠'}</span><span><strong>{x.value}</strong>{x.change&&<strong className="bs-key-change">{x.change}</strong>}</span></p>)}</div>
 {record.trendSnapshot&&(record.jointAnalysis?<JointAnalysisContent analysis={record.jointAnalysis} data={record.trendSnapshot}/>:<JointStatus loading={jointLoading} error={jointError} onRetry={onJoint} onCancel={onCancelJoint}/>)}</section>
    {r.question&&<section className="br-report-section"><h3>可补充的信息</h3><p>{r.question}</p><button className="br-text-button" type="button" onClick={onEdit}>补充信息<Icon name="next"/></button></section>}
    <section className="br-report-section bv-actions"><h3>行动建议</h3>{importantActions(record).map((a,i)=><div className="bt-plan" key={i}><span>{i+1}</span><div><h4>{a.title}</h4><p>{a.action}</p></div></div>)}</section>
