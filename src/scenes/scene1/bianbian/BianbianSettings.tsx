@@ -10,7 +10,7 @@ export type Panel='photo'|'member-first'|'member'|'restore'|'reminder'|'first-re
 export function BianbianSettings({reminder,onPanel}:{reminder:boolean;onPanel:(p:Panel)=>void}){
  const row=(icon:IconName,title:string,panel:Panel,sub?:string)=><button type="button" className="br-setting-row" onClick={()=>onPanel(panel)}><span className="br-setting-icon"><Icon name={icon}/></span><span><strong>{title}</strong>{sub&&<small>{sub}</small>}</span><Icon name="next"/></button>;
  return <div className="br-scroll br-settings">
-  <section className="br-membership-card"><span className="br-plan-tag">美柚会员体验</span><h2>美柚会员</h2><p>更多记录与家庭照护支持，<br/>陪你了解宝宝的每一次变化。</p><button className="br-primary" type="button" onClick={()=>onPanel('member')}>查看美柚会员权益</button></section>
+  <section className="br-membership-card"><span className="br-plan-tag">美柚会员</span><h2>美柚会员</h2><p>更多记录与家庭照护支持，<br/>陪你了解宝宝的每一次变化。</p><button className="br-primary" type="button" onClick={()=>onPanel('member')}>查看美柚会员权益</button></section>
   <div className="br-setting-card">{row('restore','恢复购买','restore','更换设备后恢复订阅')}</div>
   <div className="br-setting-card"><button type="button" className="br-setting-row" onClick={()=>onPanel('reminder')} role="switch" aria-checked={reminder} aria-label="每日提醒"><span className="br-setting-icon"><Icon name="bell"/></span><span><strong>每日提醒</strong><small>{reminder?'已确认添加到日历':'每天 20:00 · 导入手机日历生效'}</small></span><i className={`br-switch ${reminder?'on':''}`}><span/></i></button></div>
   <div className="br-setting-card">{row('mail','联系支持','support','问题反馈与使用帮助')}</div>
