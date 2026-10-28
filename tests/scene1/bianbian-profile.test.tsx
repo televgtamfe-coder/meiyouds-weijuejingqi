@@ -12,7 +12,6 @@ async function activate(user: ReturnType<typeof userEvent.setup>) {
 async function complete(user: ReturnType<typeof userEvent.setup>) {
  await activate(user);
  await user.click(screen.getByRole('button', {name:'下一步',exact:true}));
- await user.click(screen.getByRole('button', {name:'下一步',exact:true}));
  await user.click(screen.getByRole('button', {name:'完成',exact:true}));
  await user.click(screen.getByRole('button',{name:'关闭相机',exact:true}));
 }
@@ -24,8 +23,7 @@ describe('三步资料与参考版导航', () => {
   await user.click(screen.getByRole('button',{name:'关闭会员页，返回示例'}));
   expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
   await activate(user);
-  expect(screen.getByLabelText('宝宝昵称')).toHaveValue('小柚子');
-  await user.click(screen.getByRole('button',{name:'下一步',exact:true}));
+  expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
   expect(screen.getByRole('heading',{name:'02 喂养方式'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'下一步',exact:true}));
   expect(screen.getByRole('heading',{name:'03 过敏情况'})).toBeVisible();
@@ -46,13 +44,12 @@ describe('三步资料与参考版导航', () => {
   expect(screen.getByRole('button',{name:'拍摄照片',exact:true})).toBeVisible();
   expect(screen.getByRole('button',{name:'相册'})).toBeVisible();
  });
- it('设置入口与会员预览有退出路径，不声称付费已开通', async () => {
+ it('重置返回首次示例但保留基础资料，原设置入口删除', async () => {
   const user=userEvent.setup();renderPage();await complete(user);
-  await user.click(screen.getByRole('button',{name:'功能设置',exact:true}));
-  await user.click(screen.getByRole('button',{name:'查看会员权益'}));
-  expect(screen.getByText(/会员页面预览 · 暂不收费/)).toBeVisible();
-  await user.click(screen.getByRole('button',{name:'关闭会员页'}));
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  expect(screen.queryByRole('button',{name:'功能设置'})).not.toBeInTheDocument();
+  await user.click(screen.getByRole('button',{name:'重置',exact:true}));
+  expect(screen.getByRole('article',{name:'便便解读示例'})).toBeVisible();
+  await activate(user);expect(screen.getByRole('heading',{name:'02 喂养方式'})).toBeVisible();
  });
 });
 

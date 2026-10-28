@@ -13,3 +13,10 @@ it('新会话保留已确认档案与入口进度，清除后重置首次体验'
  expect(loadBabyProfile().confirmed).toBe(true);expect(readEntryStage(loadBabyProfile().confirmed)).toBe('ready');
  clearBianbianData();expect(localStorage.getItem(profileKey)).toBeNull();expect(localStorage.getItem(entryKey)).toBeNull();expect(loadBabyProfile().confirmed).toBe(false);expect(readEntryStage(false)).toBe('preview');
 });
+
+it('有完整默认资料跳过01，缺少分娩方式或损坏资料时必须补充',()=>{
+ expect(loadBabyProfile().needsBasicInfo).toBe(false);
+ localStorage.setItem(profileKey,JSON.stringify({...mockBabyProfile,version:4,deliveryMode:undefined}));
+ expect(loadBabyProfile()).toMatchObject({confirmed:false,needsBasicInfo:true});
+ localStorage.setItem(profileKey,'broken');expect(loadBabyProfile().needsBasicInfo).toBe(true);
+});

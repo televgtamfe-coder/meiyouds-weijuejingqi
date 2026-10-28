@@ -1,3 +1,4 @@
+import {reportContext} from './reportSummary';
 import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {dayRisk,dayShort,stoolColors,trendRisks,trendRiskLabels} from './trendData';
@@ -11,24 +12,26 @@ export function reportSections(record:SavedReport) {
  const others=r.facts.filter(f=>!['颜色','性状'].includes(f.label));
  return [
  {title:'观察总结',body:[r.summary,r.detail, r.risk==='red'?'请优先联系医生，不要等待再次拍照或 AI 分析。':''].filter(Boolean).join('\n')},
- {title:'01 颜色与性状',body:`颜色：${factText(color)}\n\n性状：${factText(texture)}`},
- {title:'02 参考解读',body:[r.cause,...r.evidence,...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
+ {title:'颜色与性状情况',body:`颜色：${factText(color)}\n\n性状：${factText(texture)}`},
+ {title:'结合喂养与睡眠',body:reportContext(record).map(x=>`${x.label}：${x.value}`).join('\n')},
+ ...(record.trendSnapshot?[{title:'近 7 天便便规律',body:record.trendSnapshot.days.map(d=>`${d.date} · ${d.stools.length}次 · ${trendRisks[dayRisk(d)].label}（模拟记录）`).join('\n')}]:[]),
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
  ...(record.jointAnalysis?[{title:'成长联合分析 · 模拟记录',body:'同日变化提醒：便便、奶量与睡眠。仅用于模拟演示。'},{title:'这些变化可能有关联',body:record.jointAnalysis.relationships.join('\n\n')},{title:'联合分析的边界',body:record.jointAnalysis.limitations.join('\n')+'\n'+record.jointAnalysis.alert}]:record.trendSnapshot?[{title:'成长联合分析',body:'本次保存时尚未生成联合分析结果；上方趋势图为独立模拟记录，不代表本次照片观察。'}]:[]),
- {title:'03 重要行动点',body:importantActions(record).map((a,i)=>`${i+1}. ${a.title}\n${a.action}`).join('\n\n')||'本次未返回可用行动点。'},
+ {title:'行动建议',body:importantActions(record).map((a,i)=>`${i+1}. ${a.title}\n${a.action}`).join('\n\n')||'本次未返回可用行动点。'},
+ {title:'参考解读',body:[r.cause,...r.evidence,...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
  {title:'育儿参考资料',body:'以下为通用科普资料，不代表本次结果已逐条核对。\n'+referenceSources.map(x=>`${x.title}\n${x.url}`).join('\n\n')},
  ];
 }
-export function reportText(record:SavedReport){return ['美柚 · 宝宝便便分析',`${record.babyName||'宝宝'} ${recordTimestamp(record.createdAt)}${record.demo?' · 示例报告，未分析真实照片':''}`,record.demo?'示例内容':riskLabels[record.report.risk],...(record.trendSnapshot?['近7天便便规律 · 模拟记录',...record.trendSnapshot.days.map(d=>`${d.date} ${d.stools.length}次，模拟风险${trendRisks[dayRisk(d)].label}：${d.stools.map(e=>e.time+' '+stoolColors[e.color].label).join('、')}；体重${d.weightKg===null?'未测量':d.weightKg+'kg'}，已记录奶量${d.loggedMilkMl}ml，睡眠${d.sleepHours}小时，夜醒${d.nightWakings}次`)]:[]),...reportSections(record).map(s=>`${s.title}\n${s.body}`),'仅供育儿记录和信息参考，不用于诊断。请结合宝宝状态咨询医生。'].join('\n\n');}
+export function reportText(record:SavedReport){return ['美柚 · 宝宝便便分析',`${record.babyName||'宝宝'} ${recordTimestamp(record.createdAt)}${record.demo?' · 示例报告，未分析真实照片':''}`,record.demo?'示例内容':riskLabels[record.report.risk],...reportSections(record).map(s=>`${s.title}\n${s.body}`),'仅供育儿记录和信息参考，不用于诊断。请结合宝宝状态咨询医生。'].join('\n\n');}
 export async function reportImage(record:SavedReport):Promise<Blob>{
  await document.fonts?.ready;
  const width=900,pad=48,inner=width-pad*2,canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
  if(!ctx)throw new Error('当前浏览器无法生成长图，请复制报告文字。');
  const font="'PingFang SC','Microsoft YaHei',sans-serif";
  function lines(text:string,size:number,max=inner-64){ctx!.font=`400 ${size}px ${font}`;const out:string[]=[];for(const paragraph of text.split('\n')){let line='';for(const ch of paragraph){if(ctx!.measureText(line+ch).width>max&&line){out.push(line);line=ch;}else line+=ch;}out.push(line);}return out;}
- const sections=reportSections(record).map(s=>({...s,comparison:s.title==='成长联合分析 · 模拟记录'&&!!record.trendSnapshot,lines:lines(s.title==='育儿参考资料'?'通用科普资料，不代表本次结果已逐条核对。\n'+referenceSources.map(x=>`${x.title}\n${new URL(x.url).hostname}`).join('\n\n')+'\n\n完整资料链接可在报告页面查看。':s.body,25)}));
+ const sections=reportSections(record).map(s=>({...s,week:s.title==='近 7 天便便规律',comparison:s.title==='成长联合分析 · 模拟记录'&&!!record.trendSnapshot,lines:lines(s.title==='育儿参考资料'?'通用科普资料，不代表本次结果已逐条核对。\n'+referenceSources.map(x=>`${x.title}\n${new URL(x.url).hostname}`).join('\n\n')+'\n\n完整资料链接可在报告页面查看。':s.body,25)}));
  const chartHeight=record.trendSnapshot?590:0;
- const height=300+chartHeight+sections.reduce((sum,s)=>sum+106+s.lines.length*40+(s.comparison?520:0),0)+180;
+ const height=300+sections.reduce((sum,s)=>sum+(s.week?chartHeight:106+s.lines.length*40+(s.comparison?520:0)),0)+180;
  if(height>30000)throw new Error('报告内容较长，请使用复制文字保存完整内容。');
  canvas.width=width;canvas.height=height;ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
  const text=(s:string,x:number,y:number,size:number,color='#323232',weight=400)=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(s,x,y);};
@@ -37,16 +40,17 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  const riskColor=riskPresentation[record.report.risk].color;
  text(record.demo?'示例内容，不代表健康结论':riskLabels[record.report.risk],pad,168,26,riskColor,500);
  let y=214;
- if(record.trendSnapshot){
+ function drawWeek(){if(record.trendSnapshot){
   const data=record.trendSnapshot;ctx.fillStyle='#fff6f9';ctx.beginPath();ctx.roundRect(pad,y,inner,560,24);ctx.fill();text('近 7 天便便规律 · 模拟记录',pad+28,y+45,28,'#bd3565',500);text('时间、次数与风险等级',pad+28,y+80,21,'#999');
   const left=pad+70,step=(inner-100)/7,top=y+120,bottom=y+390;
   [24,18,12,6,0].forEach(hour=>{const yy=bottom-hour/24*(bottom-top);ctx.strokeStyle='#e4dce1';ctx.setLineDash([4,5]);ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(width-pad-24,yy);ctx.stroke();ctx.setLineDash([]);text(hour+'时',pad+16,yy+7,17,'#999');});
   data.days.forEach((d,i)=>{const x=left+(i+.5)*step;d.stools.forEach(e=>{const [h,m]=e.time.split(':').map(Number);ctx.fillStyle=trendRisks[e.risk].color;ctx.beginPath();ctx.roundRect(x-16,bottom-(h+m/60)/24*(bottom-top)-5,32,10,5);ctx.fill();});ctx.textAlign='center';text(dayShort(d.date),x,y+425,19,'#999');text(d.stools.length+'次',x,y+457,23);text(trendRisks[dayRisk(d)].label,x,y+488,20,trendRisks[dayRisk(d)].color);ctx.textAlign='left';});
   let lx=pad+28;(['low','watch','high'] as const).forEach(risk=>{ctx.fillStyle=trendRisks[risk].color;ctx.fillRect(lx,y+510,16,7);text(trendRiskLabels[risk],lx+24,y+520,18,'#777');lx+=185;});
   text('图中颜色表示模拟风险等级，不表示原始便色。',pad+28,y+547,18,'#999');y+=chartHeight;
- }
+ }}
 
  for(const [index,s]of sections.entries()){
+  if(s.week){drawWeek();continue;}
   const h=86+s.lines.length*40+(s.comparison?520:0);ctx.fillStyle=index===0?riskPresentation[record.report.risk].background:'#f7f7f9';
   ctx.beginPath();ctx.roundRect(pad,y,inner,h,24);ctx.fill();
   text(s.title,pad+32,y+49,28,index===0?riskColor:'#323232',500);

@@ -28,7 +28,7 @@ export function BianbianPage(){
  const navigate=useNavigate();const [initial]=useState(loadBabyProfile);
  const [entryStage,setEntryStage]=useState(()=>readEntryStage(initial.confirmed));
  const [profile,setProfile]=useState<BabyProfile>(initial.profile),[confirmed,setConfirmed]=useState(initial.confirmed),[wizard,setWizard]=useState(entryStage==='profile');
- const [wizardStep,setWizardStep]=useState(0),[wizardQuick,setWizardQuick]=useState(false),[wizardFormula,setWizardFormula]=useState(false);
+ const [wizardStep,setWizardStep]=useState(initial.needsBasicInfo?0:1),[wizardQuick,setWizardQuick]=useState(false),[wizardFormula,setWizardFormula]=useState(false);
  function editProfile(section?:'feeding'|'allergies'|'formula'){setWizardStep(section==='feeding'||section==='formula'?1:section==='allergies'?2:0);setWizardQuick(!!section);setWizardFormula(section==='formula');setWizard(true);}
  const [view,setView]=useState<View>('home'),[reportBack,setReportBack]=useState<View>('home'),[panel,setPanel]=useState<Panel>(null);
  const [trends]=useState(createMockTrends);
@@ -47,7 +47,7 @@ export function BianbianPage(){
  useEffect(()=>{if((error||question)&&view==='details')document.querySelector('.br-feedback')?.scrollIntoView?.({block:'center',behavior:'smooth'});},[error,question,view]);
  function confirmProfile(next:BabyProfile){const firstSetup=entryStage==='profile';jointController.current?.abort();jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});setProfile(next);saveBabyProfile(next);setConfirmed(true);setWizard(false);setForm(prev=>({...prev,...next}));saveEntryStage('ready');setEntryStage('ready');if(firstSetup){newAnalysis.current=true;setView('home');setCamera(true);}}
  function closeProfile(){if(entryStage==='ready'&&confirmed)setWizard(false);else navigate('/scene1-parenting');}
- function activateEntry(){saveEntryStage('profile');setEntryStage('profile');setPanel(null);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(true);}
+ function activateEntry(){saveEntryStage('profile');setEntryStage('profile');setPanel(null);setWizardStep(loadBabyProfile().needsBasicInfo?0:1);setWizardQuick(false);setWizardFormula(false);setWizard(true);}
  function openPhoto(){newAnalysis.current=view!=='details';setCamera(true);}
  async function upload(event:ChangeEvent<HTMLInputElement>){const file=event.target.files?.[0];event.target.value='';if(file)await receivePhoto(file);}
  async function receivePhoto(file:File){setCamera(false);const version=++uploadVersion.current;setPreparing(true);setError('');try{const prepared=await prepareImage(file);if(alive.current&&version===uploadVersion.current){setImage(prepared);setDraftRecordId('');if(newAnalysis.current)setForm(freshForm(profile));setView('details');setQuestion('');}}catch(e){if(alive.current&&version===uploadVersion.current)setError(e instanceof Error?e.message:'照片读取失败，请重试。');}finally{if(alive.current&&version===uploadVersion.current)setPreparing(false);}}
@@ -64,6 +64,7 @@ export function BianbianPage(){
   finally{window.clearTimeout(timeout);if(controller.current===request)controller.current=null;if(alive.current)setLoading(false);}
  }
 
+ function resetEntry(){saveEntryStage('preview');setEntryStage('preview');setWizard(false);setCamera(false);setPanel(null);setView('home');setError('');setNotice('');}
  function closePanel(){setPanel(null);}
  function cancelJoint(){jointController.current?.abort();}
  function attachJoint(target:SavedReport,value:JointAnalysis){const updated={...target,jointAnalysis:value};saveRecord(updated);setRecords(prev=>prev.map(r=>r.id===target.id?updated:r));setRecord(prev=>prev?.id===target.id?updated:prev);}
@@ -86,7 +87,7 @@ export function BianbianPage(){
  return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'}`} data-testid="bianbian-page">
   <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
    {entryStage==='preview'?<EntryPreview onBack={()=>navigate('/scene1-parenting')} onActivate={()=>setPanel('member-first')}/>:wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={entryStage==='profile'||!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
-    <PageHeader title={title} onBack={back} onAction={view==='report'?saveReport:undefined} onMenu={view==='home'?()=>setView('settings'):undefined}/>
+    <PageHeader title={title} onBack={back} onAction={view==='report'?saveReport:undefined} onReset={view==='home'?resetEntry:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
     {view==='home'&&<BianbianHome profile={profile} records={mockHistory(profile,trends)} onEdit={editProfile} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} onExample={()=>showRecord(makeRecord(demoReport,'',true,{profile,trendSnapshot:trends,jointAnalysis:joint||undefined}),'home')} trends={trends} onJoint={openJoint} analyzing={jointState.loading} hasAnalysis={!!joint}/>}
     {view==='details'&&<BianbianDetails image={image} form={form} onChange={setForm} onSubmit={submit} onPhoto={openPhoto} error={error} question={question} busy={preparing}/>}
