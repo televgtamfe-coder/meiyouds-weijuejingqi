@@ -7,7 +7,7 @@ beforeEach(() => {sessionStorage.clear();localStorage.clear();});
 const renderPage = () => render(<MemoryRouter><BianbianPage /></MemoryRouter>);
 async function activate(user: ReturnType<typeof userEvent.setup>) {
  await user.click(screen.getByRole('button',{name:'立即开通',exact:true}));
- await user.click(screen.getByRole('button',{name:'模拟开通并继续',exact:true}));
+ await user.click(screen.getByRole('button',{name:'开通并继续',exact:true}));
 }
 async function complete(user: ReturnType<typeof userEvent.setup>) {
  await activate(user);

@@ -31,7 +31,7 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  function lines(text:string,size:number,max=inner-64){ctx!.font=`400 ${size}px ${font}`;const out:string[]=[];for(const paragraph of text.split('\n')){let line='';for(const ch of paragraph){if(ctx!.measureText(line+ch).width>max&&line){out.push(line);line=ch;}else line+=ch;}out.push(line);}return out;}
  const sections=reportSections(record).map(s=>({...s,week:s.title==='近 7 天便便规律',comparison:s.title==='联合成长分析'&&!!record.trendSnapshot&&!!record.jointAnalysis,lines:lines(s.title==='育儿参考资料'?'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${new URL(x.url).hostname}`).join('\n\n')+'\n\n完整资料链接可在报告页面查看。':s.body,25)}));
  const chartHeight=record.trendSnapshot?590:0;
- const height=300+sections.reduce((sum,s)=>sum+(s.week?chartHeight:106+s.lines.length*40+(s.comparison?520:0)),0)+180;
+ const height=300+sections.reduce((sum,s)=>sum+(s.week?chartHeight:106+s.lines.length*40+(s.comparison?450:0)),0)+180;
  if(height>30000)throw new Error('报告内容较长，请使用复制文字保存完整内容。');
  canvas.width=width;canvas.height=height;ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
  const text=(s:string,x:number,y:number,size:number,color='#323232',weight=400)=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(s,x,y);};
@@ -51,7 +51,7 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
 
  for(const [index,s]of sections.entries()){
   if(s.week){drawWeek();continue;}
-  const h=86+s.lines.length*40+(s.comparison?520:0);ctx.fillStyle=index===0?riskPresentation[record.report.risk].background:'#f7f7f9';
+  const h=86+s.lines.length*40+(s.comparison?450:0);ctx.fillStyle=index===0?riskPresentation[record.report.risk].background:'#f7f7f9';
   ctx.beginPath();ctx.roundRect(pad,y,inner,h,24);ctx.fill();
   text(s.title,pad+32,y+49,28,index===0?riskColor:'#323232',500);
   s.lines.forEach((line,i)=>text(line,pad+32,y+92+i*40,25,'#555'));
