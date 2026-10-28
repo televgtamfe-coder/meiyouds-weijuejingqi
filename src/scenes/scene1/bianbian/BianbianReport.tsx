@@ -1,17 +1,18 @@
+import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {StoolWeekChart} from './TrendCharts';
 import {JointAnalysisContent,JointStatus} from './TrendsPage';
 import { SavedReport,recordTimestamp,riskLabels } from './records';
 import { referenceSources } from './referenceSources';
 import { Icon } from './ui';
-export function BianbianReport({record,onShare,onEdit,notice,canEdit,jointLoading,jointError,onJoint,onCancelJoint,saving}:{record:SavedReport;onShare:()=>void; jointLoading:boolean;jointError:string;onJoint:()=>void;onCancelJoint:()=>void;saving:boolean;onEdit:()=>void;notice?:string;canEdit:boolean}) {
+export function BianbianReport({record,onShare,onDoctor,onEdit,notice,canEdit,jointLoading,jointError,onJoint,onCancelJoint,saving}:{record:SavedReport;onShare:()=>void;onDoctor:()=>void; jointLoading:boolean;jointError:string;onJoint:()=>void;onCancelJoint:()=>void;saving:boolean;onEdit:()=>void;notice?:string;canEdit:boolean}) {
  const r=record.report,color=r.facts.find(f=>f.label==='颜色'),texture=r.facts.find(f=>f.label==='性状');
  const facts=(fact:typeof color)=><>{fact?<><strong className="br-fact-main">{fact.value}</strong>{fact.detail&&<p>{fact.detail}</p>}{fact.comparison&&<p>{fact.comparison}</p>}</>:<p>本次未返回该项描述。</p>}</>;
  return <><div className="br-scroll br-report-scroll">
   {record.demo&&<p className="br-demo-note">示例报告 · 未分析真实照片，不代表健康结论</p>}
   {notice&&<p className="br-error" role="status">{notice}</p>}
   <article className="br-report-paper"><div className="br-report-brand">美柚 · 宝宝成长观察</div>
-   <div className="br-report-meta"><div><h2>{record.babyName||'宝宝'}</h2><p>{recordTimestamp(record.createdAt)}</p></div><span className={`br-risk-badge br-risk-${r.risk}`}>{record.demo?'示例':riskLabels[r.risk]}</span></div><p className="br-report-classification">照片观察与背景分析</p>
+   <div className="br-report-meta"><div><h2>{record.babyName||'宝宝'}</h2><p>{recordTimestamp(record.createdAt)}</p></div><span className={`br-risk-badge br-risk-${r.risk}`}>{riskLabels[r.risk]}</span></div><p className="br-report-classification">照片观察与背景分析 · 观察状态不代表诊断{r.risk==='unknown'?' · 当前信息不足':''}</p>
    {['red','orange'].includes(r.risk)&&<p className="bt-priority-alert" role="alert">{r.risk==='red'?'请优先联系医生，不要等待进一步分析。':'请优先咨询医生，结合宝宝实际状态评估。'}</p>}
    {record.trendSnapshot&&<StoolWeekChart data={record.trendSnapshot} compact/>}
    <section className={`br-summary br-risk-${r.risk}`}><h3>观察总结</h3><h2>{r.summary}</h2>{r.detail&&<p>{r.detail}</p>}{r.risk==='red'&&<strong className="br-urgent">请优先联系医生，不要等待再次拍照或 AI 分析。</strong>}{r.risk==='orange'&&<strong className="br-urgent">请优先咨询医生，结合宝宝的实际状态评估。</strong>}</section>
@@ -24,5 +25,5 @@ export function BianbianReport({record,onShare,onEdit,notice,canEdit,jointLoadin
    <section className="br-report-section br-sources"><h3><Icon name="book"/>育儿参考资料</h3><p>以下为通用科普资料，不代表本次结果已逐条核对。部分资料为英文。</p>{referenceSources.map(s=><a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.title}<span aria-hidden="true">↗</span></a>)}</section>
    <p className="br-report-disclaimer">仅供育儿记录和信息参考。<br/>照片不能单独判断疾病，请结合宝宝状态咨询医生。</p>
   </article><button className="br-text-button br-report-again" type="button" onClick={onEdit}>{record.demo?'开始我的分析':canEdit?'补充信息或再次分析':'再次拍照分析'}<Icon name="next"/></button>
- </div><footer className="br-action-footer"><button type="button" className="br-primary" onClick={onShare}><Icon name="share"/>分享给家人</button></footer></>;
+ </div><footer className="br-action-footer"><button type="button" className={`br-primary ${riskPresentation[r.risk].doctor?'br-doctor-cta':''}`} onClick={riskPresentation[r.risk].doctor?onDoctor:onShare}><Icon name="share"/>{riskPresentation[r.risk].doctor?'分享给医生 · 一键问诊':'分享给家人'}</button></footer></>;
 }

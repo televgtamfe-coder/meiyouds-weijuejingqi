@@ -1,3 +1,4 @@
+import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {dayRisk,dayShort,stoolColors,trendRisks} from './trendData';
 import {drawComparison} from './drawComparison';
@@ -34,7 +35,7 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  const text=(s:string,x:number,y:number,size:number,color='#323232',weight=400)=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(s,x,y);};
  text('美柚 · 宝宝便便分析',pad,72,36,'#323232',500);
  text(`${(record.babyName||'宝宝').slice(0,20)} ${recordTimestamp(record.createdAt)}`,pad,118,23,'#999');
- const riskColor=record.report.risk==='red'?'#c63c3c':record.report.risk==='orange'?'#b66b00':'#4f7cae';
+ const riskColor=riskPresentation[record.report.risk].color;
  text(record.demo?'示例内容，不代表健康结论':riskLabels[record.report.risk],pad,168,26,riskColor,500);
  let y=214;
  if(record.trendSnapshot){
@@ -47,10 +48,10 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  }
 
  for(const [index,s]of sections.entries()){
-  const h=86+s.lines.length*40+(s.comparison?520:0);ctx.fillStyle=index===0?(record.report.risk==='red'?'#fff0ed':'#fff0f6'):'#f7f7f9';
+  const h=86+s.lines.length*40+(s.comparison?520:0);ctx.fillStyle=index===0?riskPresentation[record.report.risk].background:'#f7f7f9';
   ctx.beginPath();ctx.roundRect(pad,y,inner,h,24);ctx.fill();
-  text(s.title,pad+32,y+49,28,index===0?'#b62c5e':'#323232',500);
-  s.lines.forEach((line,i)=>text(line,pad+32,y+92+i*40,25,index===0?'#9a3156':'#555'));
+  text(s.title,pad+32,y+49,28,index===0?riskColor:'#323232',500);
+  s.lines.forEach((line,i)=>text(line,pad+32,y+92+i*40,25,index===0?riskColor:'#555'));
   if(s.comparison&&record.trendSnapshot)drawComparison(ctx,record.trendSnapshot,pad+32,y+100+s.lines.length*40,inner-64);
   y+=h+24;
  }

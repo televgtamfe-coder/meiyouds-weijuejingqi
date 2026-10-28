@@ -15,3 +15,6 @@ describe('实际值对照和有依据的提醒',()=>{
  it('行动点去重最多三项，优先处理内容完整保留',()=>{const r=makeRecord({...demoReport,actions:[{title:'日常照护建议',items:['重复动作','重复动作','另一动作','末项']},{title:'优先处理',items:['紧急一','紧急二']}]});const points=importantActions(r);expect(points).toHaveLength(3);expect(points[0].action).toContain('紧急二');expect(points.filter(x=>x.action==='重复动作')).toHaveLength(1);});
  it('接受三类关联且不要求AI输出行动方案',()=>{const d={summary:'模拟',domains:['stool','feeding','sleep'].map(key=>({key,observation:'变化',relation:'可能关联'})),relationships:['同日变化'],plan:[],limitations:['模拟'],alert:''};expect(parseJointAnalysis(JSON.stringify(d)).plan).toEqual([]);d.domains[1].key='stool';expect(()=>parseJointAnalysis(JSON.stringify(d))).toThrow();});
 });
+
+it('当日时段结束不伪装成今天的未来预测',()=>{const d=data();const w=routineWindow(d,new Date('2026-10-27T14:00:00Z'))!;expect(w.status).toBe('finished');expect(w.label).toContain('今天');expect(w.label).not.toContain('明天');});
+it('正在预测窗口内的日历提醒仍在未来，跨日旧数据不沿用',()=>{const d=data(),now=new Date('2026-10-27T10:30:00Z'),w=routineWindow(d,now)!;expect(w.status).toBe('current');expect(w.at.getTime()).toBeGreaterThan(now.getTime());expect(routineWindow(d,new Date('2026-10-27T16:00:00Z'))).toBeNull();});

@@ -3,24 +3,24 @@ import { BabyProfile, deliveryOptions, allergyOptions, feedingOptions, toggleAll
 import { Avatar, Icon, IconName } from './ui';
 const feedingIcons:IconName[]=['drop','milk','mixed'];
 const allergyIcons:IconName[]=['none','milk','nuts','wheat','question'];
-export function BabyProfileWizard({profile,first,onConfirm,onClose}:{profile:BabyProfile;first:boolean;onConfirm:(p:BabyProfile)=>void;onClose:()=>void}) {
+export function BabyProfileWizard({profile,first,onConfirm,onClose,initialStep=0,singleStep=false}:{profile:BabyProfile;first:boolean;initialStep?:number;singleStep?:boolean;onConfirm:(p:BabyProfile)=>void;onClose:()=>void}) {
  const [draft,setDraft]=useState<BabyProfile>({...profile,allergies:[...profile.allergies]});
- const [step,setStep]=useState(0);const [error,setError]=useState('');
+ const [step,setStep]=useState(initialStep);const [error,setError]=useState('');
  const today=new Date();const maxDate=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
- function submit(e:FormEvent) {e.preventDefault();setError('');if(step===0&&(!draft.nickname.trim()||!validBirthDate(draft.birthDate)))return setError('请填写宝宝昵称，并检查出生日期。');if(step<2){setStep(step+1);return;}if(!draft.allergies.length)return setError('请选择过敏情况；不了解时可选择“不确定”。');onConfirm({...draft,nickname:draft.nickname.trim()});}
- return <form className="br-wizard" onSubmit={submit}>
+ function submit(e:FormEvent) {e.preventDefault();setError('');if(step===0&&(!draft.nickname.trim()||!validBirthDate(draft.birthDate)))return setError('请填写宝宝昵称，并检查出生日期。');if(!singleStep&&step<2){setStep(step+1);return;}if(!draft.allergies.length)return setError('请选择过敏情况；不了解时可选择“不确定”。');onConfirm({...draft,nickname:draft.nickname.trim()});}
+ return <form className={`br-wizard ${singleStep?'br-wizard-quick':''}`} onSubmit={submit}>
   <button className="br-wizard-close" type="button" onClick={onClose} aria-label={first?'返回育儿':'取消修改'}><Icon name={first?'back':'close'}/></button>
-  <div className="br-wizard-heading"><h1>宝宝基本信息</h1><p>{first?'首次分析，请确认宝宝的基本情况':'宝宝情况有变化时，可随时修改'}</p><span className="br-example-label">已带入示例资料，可直接调整</span></div>
+  <div className="br-wizard-heading"><h1>{singleStep?(step===1?'修改喂养方式':'修改过敏原'):'宝宝基本信息'}</h1><p>{first?'首次分析，请确认宝宝的基本情况':'宝宝情况有变化时，可随时修改'}</p>{!singleStep&&<span className="br-example-label">已带入示例资料，可直接调整</span>}</div>
   <section className="br-wizard-card">
-   <header><button type="button" aria-label="上一步" onClick={()=>step?setStep(step-1):onClose()}><Icon name="back"/></button><h2>{['01 基本信息','02 喂养方式','03 过敏情况'][step]}</h2><span/></header>
+   <header><button type="button" aria-label="上一步" onClick={()=>!singleStep&&step?setStep(step-1):onClose()}><Icon name="back"/></button><h2>{singleStep?(step===1?'喂养方式':'过敏情况'):['01 基本信息','02 喂养方式','03 过敏情况'][step]}</h2><span/></header>
    <div className="br-wizard-content" key={step}>
    {step===0&&<><div className="br-wizard-avatar"><Avatar name={draft.nickname}/><span>宝宝档案</span></div><div className="br-form-rows"><label className="br-form-row"><span>宝宝昵称</span><input aria-label="宝宝昵称" maxLength={12} required value={draft.nickname} onChange={e=>setDraft({...draft,nickname:e.target.value})}/></label><label className="br-form-row"><span>出生日期</span><input aria-label="出生日期" type="date" min="2008-01-01" max={maxDate} required value={draft.birthDate} onChange={e=>setDraft({...draft,birthDate:e.target.value})}/></label><div className="br-delivery-row"><span>分娩方式</span><div role="group" aria-label="分娩方式">{deliveryOptions.map(([value,label])=><button type="button" key={value} aria-pressed={draft.deliveryMode===value} onClick={()=>setDraft({...draft,deliveryMode:value})}>{label}</button>)}</div></div></div><p className="br-support">资料已按示例预填，请确认或修改宝宝的实际情况。</p></>}
    {step===1&&<><div className="br-choice-list" role="group" aria-label="喂养方式">{feedingOptions.map(([value,label],i)=><button type="button" key={value} className={`br-choice ${draft.feeding===value?'is-selected':''}`} aria-pressed={draft.feeding===value} onClick={()=>setDraft({...draft,feeding:value})}><Icon name={feedingIcons[i]}/><span><strong>{label}</strong><small>{['宝宝只喝母乳','宝宝只喝配方奶','母乳与配方奶搭配'][i]}</small></span><i className="br-choice-check">{draft.feeding===value&&<Icon name="check"/>}</i></button>)}</div><section className="br-solids"><h3><Icon name="bowl"/>已经添加辅食了吗？</h3><div>{[['none','还没有'],['established','已添加']].map(([v,label])=><button key={v} type="button" aria-pressed={v==='none'?draft.complementary==='none':draft.complementary!=='none'} onClick={()=>setDraft({...draft,complementary:v})}>{label}</button>)}</div></section>{['mixed','pure_formula'].includes(draft.feeding)&&<label className="br-form-row br-formula"><span>奶粉品牌<small>选填</small></span><input aria-label="奶粉品牌" placeholder="品牌或类型" maxLength={80} value={draft.formula} onChange={e=>setDraft({...draft,formula:e.target.value})}/></label>}</>}
    {step===2&&<><div className="br-choice-list" role="group" aria-label="过敏情况">{allergyOptions.map(([value,label],i)=><button type="button" key={value} className={`br-choice ${draft.allergies.includes(value)?'is-selected':''}`} aria-pressed={draft.allergies.includes(value)} onClick={()=>setDraft({...draft,allergies:toggleAllergy(draft.allergies,value)})}><Icon name={allergyIcons[i]}/><span><strong>{label}</strong></span><i className="br-choice-check">{draft.allergies.includes(value)&&<Icon name="check"/>}</i></button>)}</div><p className="br-support">可选择多个已知过敏项；尚未确认时请选择“不确定”。</p></>}
    </div>
-   <div className="br-steps" aria-label={`第 ${step+1} 步，共 3 步`}>{[0,1,2].map(i=><span key={i} className={i===step?'active':''}/>)}</div>
+   {!singleStep&&<div className="br-steps" aria-label={`第 ${step+1} 步，共 3 步`}>{[0,1,2].map(i=><span key={i} className={i===step?'active':''}/>)}</div>}
   </section>
   {error&&<p className="br-error" role="alert">{error}</p>}
-  <footer className="br-wizard-footer"><button className="br-primary" type="submit" disabled={step===2&&!draft.allergies.length}>{step===2?'完成':'下一步'}</button></footer>
+  <footer className="br-wizard-footer"><button className="br-primary" type="submit" disabled={step===2&&!draft.allergies.length}>{singleStep?'保存修改':step===2?'完成':'下一步'}</button></footer>
  </form>;
 }

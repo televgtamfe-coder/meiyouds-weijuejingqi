@@ -1,3 +1,4 @@
+import {DoctorShareSheet} from './DoctorShareSheet';
 import {MemberPreview} from './MemberPreview';
 import { useEffect, useState } from 'react';
 import { BottomSheet } from './BottomSheet';
@@ -5,7 +6,7 @@ import { KitIcon } from './KitIcon';
 import { Icon,IconName } from './ui';
 import { SavedReport,downloadBlob,reminderCalendar } from './records';
 import { reportImage,reportText } from './reportExport';
-export type Panel='photo'|'member-first'|'member'|'restore'|'reminder'|'first-reminder'|'support'|'privacy'|'terms'|'about'|'delete'|'share'|null;
+export type Panel='photo'|'member-first'|'member'|'restore'|'reminder'|'first-reminder'|'support'|'privacy'|'terms'|'about'|'delete'|'share'|'doctor'|null;
 export function BianbianSettings({reminder,onPanel}:{reminder:boolean;onPanel:(p:Panel)=>void}){
  const row=(icon:IconName,title:string,panel:Panel,sub?:string)=><button type="button" className="br-setting-row" onClick={()=>onPanel(panel)}><span className="br-setting-icon"><Icon name={icon}/></span><span><strong>{title}</strong>{sub&&<small>{sub}</small>}</span><Icon name="next"/></button>;
  return <div className="br-scroll br-settings">
@@ -27,8 +28,9 @@ function ShareSheet({record,onClose}:{record:SavedReport;onClose:()=>void}){
 export function BianbianPanels({panel,reminder,record,onClose,onReminder,onClear}:{panel:Exclude<Panel,'photo'|null>;reminder:boolean;record:SavedReport|null;onClose:()=>void;onReminder:(value:boolean)=>void;onClear:()=>void}) {
  const [message,setMessage]=useState(''),[downloaded,setDownloaded]=useState(false);
  if(panel==='member'||panel==='member-first')return <MemberPreview onClose={onClose}/>;
+ if(panel==='doctor')return record?<DoctorShareSheet record={record} onClose={onClose}/>:null;
  if(panel==='share')return record?<ShareSheet record={record} onClose={onClose}/>:null;
- const titles:Record<Exclude<Panel,'photo'|'share'|null>,string>={member:'专业版权益','member-first':'开通会员',restore:'恢复购买',reminder:'每日提醒','first-reminder':'第一次记录完成',support:'联系支持',privacy:'隐私与数据说明',terms:'使用条款',about:'关于宝宝便便分析',delete:'清除本地数据'};
+ const titles:Record<Exclude<Panel,'photo'|'share'|'doctor'|null>,string>={member:'专业版权益','member-first':'开通会员',restore:'恢复购买',reminder:'每日提醒','first-reminder':'第一次记录完成',support:'联系支持',privacy:'隐私与数据说明',terms:'使用条款',about:'关于宝宝便便分析',delete:'清除本地数据'};
  async function copySupport(){try{await navigator.clipboard.writeText('宝宝便便分析 v1.0.0\n页面：https://televgtamfe-coder.github.io/meiyouds-weijuejingqi/#/scene1-bianbian\n遇到的问题：\n发生时间：');setMessage('反馈模板已复制，请补充问题后交给页面提供方。');}catch{setMessage('请记录问题和发生时间，反馈给页面提供方。');}}
  return <BottomSheet title={titles[panel]} onClose={onClose} className={`br-panel br-panel-${panel}`}><div className="bb-sheet-handle"/><button className="bb-sheet-close" type="button" aria-label="关闭弹窗" onClick={onClose}><Icon name="close"/></button>
   {panel==='reminder'||panel==='first-reminder'?<><div className="br-panel-symbol"><Icon name="bell"/></div><h2>{panel==='first-reminder'?'第一次记录完成':reminder?'管理每日提醒':'开启每日提醒'}</h2><p>{reminder?'如需关闭，请同时在手机日历中删除“宝宝日常记录”重复日程。':'每天晚上 20:00，温柔提醒你记录宝宝的日常。下载并导入手机日历后生效。'}</p>{reminder?<button type="button" className="br-primary" onClick={()=>onReminder(false)}>我已移除日历提醒</button>:<><button type="button" className="br-primary" onClick={()=>{downloadBlob(new Blob([reminderCalendar()],{type:'text/calendar;charset=utf-8'}),'宝宝每日记录提醒.ics');setDownloaded(true);}}>下载日历提醒</button>{downloaded&&<><p className="br-panel-message">请打开下载的日历文件并添加到手机日历。</p><button type="button" className="br-secondary" onClick={()=>onReminder(true)}>我已添加到日历</button></>}</>}<button type="button" className="br-text-button" onClick={onClose}>以后再说</button></>:

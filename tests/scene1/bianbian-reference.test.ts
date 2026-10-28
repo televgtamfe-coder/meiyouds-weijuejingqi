@@ -34,7 +34,7 @@ describe('参考版资料和记录边界', () => {
  it('导出包含风险和真实内容，不使用正常模板覆盖', () => {
   const actual = makeRecord({...demoReport,risk:'red',summary:'需要立即评估',detail:'测试返回说明'},'',false);
   const text = reportText(actual);
-  expect(text).toContain('请优先寻求医疗帮助'); expect(text).toContain('需要立即评估');
+  expect(text).toContain('建议就医');expect(text).toContain('请优先联系医生'); expect(text).toContain('需要立即评估');
   expect(text).not.toContain('小柚子'); expect(text).not.toContain('data:image');
  });
 });

@@ -1,12 +1,14 @@
 import {TrendSet} from './trendData';
-const stamp=(d:Date)=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+import {shanghaiDate} from './trendData';
 export function routineWindow(data:TrendSet,now=new Date()){
- const date=stamp(now),days=data.days.filter(d=>d.date<date);if(data.days[data.days.length-1]?.date!==date||days.length<3)return null;
- const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',hourCycle:'h23'}).format(now));
+ const date=shanghaiDate(now),days=data.days.filter(d=>d.date<date);if(data.days[data.days.length-1]?.date!==date||days.length<3)return null;
  const bins=Array.from({length:8},(_,i)=>({start:i*3,end:i*3+3,count:days.filter(d=>d.stools.some(s=>Math.floor(Number(s.time.split(':')[0])/3)===i)).length})).filter(b=>b.count>=3);
- if(!bins.length)return null;const next=bins.find(b=>b.start>hour)||bins[0],tomorrow=next.start<=hour;
- const at=new Date(`${date}T${String(next.start).padStart(2,'0')}:00:00+08:00`);if(tomorrow)at.setTime(at.getTime()+86400000);
- return {...next,days:days.length,at,label:`${tomorrow?'明天':'今天'} ${String(next.start).padStart(2,'0')}:00–${String(next.end).padStart(2,'0')}:00`};
+ if(!bins.length)return null;
+ const startAt=(hour:number)=>new Date(new Date(`${date}T00:00:00+08:00`).getTime()+hour*3600000);
+ const next=bins.find(b=>startAt(b.end).getTime()>now.getTime())||bins[bins.length-1];
+ const start=startAt(next.start),end=startAt(next.end),status=now>=end?'finished':now>=start?'current':'upcoming';
+ const at=new Date(Math.min(Math.max(start.getTime(),now.getTime()+60000),end.getTime()-1000));
+ return {...next,days:days.length,at,status,label:`今天 ${String(next.start).padStart(2,'0')}:00–${String(next.end).padStart(2,'0')}:00`};
 }
 export function feedingReminder(data:TrendSet){
  const today=data.days[data.days.length-1],yesterday=data.days[data.days.length-2];if(!yesterday)return null;

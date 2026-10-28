@@ -1,3 +1,4 @@
+import babyPortrait from '../../../assets/scene1-parenting/4cd678b252d3a58fa1c120bcaba0c80224947098.png';
 import { ReactNode } from 'react';
 import { KitIcon } from './KitIcon';
 export type IconName='moon'|'spark'|'gallery'|'back'|'close'|'next'|'check'|'home'|'user'|'edit'|'birthday'|'milk'|'mixed'|'drop'|'bowl'|'none'|'nuts'|'wheat'|'question'|'bell'|'restore'|'mail'|'shield'|'file'|'info'|'download'|'plus'|'share'|'book'|'star';
@@ -10,7 +11,7 @@ const paths: Record<IconName,ReactNode>={
  bell:<><path d="M5 17h14l-2-4V9a5 5 0 0 0-10 0v4l-2 4ZM10 20q2 2 4 0M12 2v2M3 8v4M21 8v4"/></>,restore:<><path d="M3 10a9 9 0 0 1 16-4l2 3M21 4v5h-5M21 14a9 9 0 0 1-16 4l-2-3M3 20v-5h5"/></>,mail:<><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></>,shield:<path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6z"/>,file:<><path d="M6 2h8l5 5v15H6ZM14 2v6h5M9 12h7M9 16h7"/></>,info:<><circle cx="12" cy="12" r="9"/><path d="M12 10v7M12 6h.01"/></>,download:<><path d="M12 2v13m-5-5 5 5 5-5M4 14v7h16v-7"/></>,plus:<path d="M12 4v16M4 12h16"/>,share:<><path d="M12 15V2m-4 4 4-4 4 4M7 8H4v13h16V8h-3"/></>,book:<><path d="M5 3h14v18H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM5 3v14h14M5 17a2 2 0 0 0 0 4M9 7h6M9 11h6"/></>,star:<path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
 };
 export function Icon({name}:{name:IconName}) {return <svg className="br-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;}
-export function Avatar({name='宝'}:{name?:string}) {return <span className="br-avatar" aria-hidden="true">{name.replace(/^小/,'').slice(0,1)||'宝'}</span>;}
+export function Avatar({name='宝'}:{name?:string}) {return <span className="br-avatar"><img src={babyPortrait} alt={`${name}的示例头像`} decoding="async"/></span>;}
 export function PageHeader({title,onBack,onAction,actionLabel='保存报告'}:{title:string;onBack:()=>void;onAction?:()=>void;actionLabel?:string}) {
  return <header className="br-nav"><button type="button" aria-label="返回" onClick={onBack}><Icon name="back"/><span>返回</span></button><h1>{title}</h1>{onAction?<button type="button" aria-label={actionLabel} onClick={onAction}><Icon name="download"/><span>保存</span></button>:<span className="br-nav-spacer"/>}</header>;
 }

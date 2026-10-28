@@ -42,3 +42,15 @@ describe('三步资料与参考版导航', () => {
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
  });
 });
+
+it('首页标签直达单项修改，保存生效，取消不覆盖',async()=>{
+ const user=userEvent.setup();renderPage();await complete(user);
+ await user.click(screen.getByRole('button',{name:'修改喂养方式',exact:true}));
+ expect(screen.getByRole('heading',{name:'喂养方式',exact:true})).toBeVisible();
+ await user.click(screen.getByRole('button',{name:/纯母乳喂养/}));await user.click(screen.getByRole('button',{name:'保存修改',exact:true}));
+ expect(screen.getByRole('button',{name:'修改喂养方式'})).toHaveTextContent('纯母乳喂养');
+ await user.click(screen.getByRole('button',{name:'修改过敏原'}));await user.click(screen.getByRole('button',{name:'牛奶及乳制品'}));await user.click(screen.getByRole('button',{name:'取消修改'}));
+ expect(screen.getByRole('button',{name:'修改过敏原'})).toHaveTextContent('无已知过敏');
+ await user.click(screen.getByRole('button',{name:'修改过敏原'}));await user.click(screen.getByRole('button',{name:'牛奶及乳制品'}));await user.click(screen.getByRole('button',{name:'保存修改'}));
+ expect(screen.getByRole('button',{name:'修改过敏原'})).toHaveTextContent('牛奶及乳制品');
+});
