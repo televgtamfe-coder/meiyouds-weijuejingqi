@@ -17,7 +17,7 @@ export function MemberPreview({onClose,onActivate}:{onClose:()=>void;onActivate?
   <header className="bm-member-nav"><button type="button" aria-label={onActivate?'关闭美柚会员页，返回示例':'关闭美柚会员页'} onClick={onClose}><Icon name="close"/></button><h2>美柚会员</h2><span/></header>
   <div className="bm-member-content">
    <div className="bm-v7-path"><span><Icon name="gallery"/>拍照记录</span><i/><span><Icon name="spark"/>查看分析</span><i/><span><Icon name="bell"/>关注变化</span></div>
-   <section className="bm-v7-benefits"><h3>当前可用的功能<span>{benefits.length} 项</span></h3>{benefits.map(b=><div className="bm-v7-benefit" key={b.title}><span className="bm-v7-icon"><Icon name={b.icon}/></span><div><h4>{b.title}</h4><p>{b.body}</p><small>{b.tag}</small></div></div>)}</section>
+   <section className="bm-v7-benefits"><h3>美柚会员权益<span>{benefits.length} 项</span></h3>{benefits.map(b=><div className="bm-v7-benefit" key={b.title}><span className="bm-v7-icon"><Icon name={b.icon}/></span><div><h4>{b.title}</h4><p>{b.body}</p><small>{b.tag}</small></div></div>)}</section>
 
   </div>
   <footer className="bm-member-footer">{message&&<p className="bm-member-message" role="status">{message}</p>}<div className="bm-cta-wrap"><span className="bm-discount">限时 4.1 折 <time>{clock}</time></span><button type="button" className="bm-open-button" onClick={()=>onActivate?onActivate():setMessage('美柚会员暂未接入真实支付，不会扣费。')}>{onActivate?'开通并继续':'了解美柚会员权益'}</button></div></footer>
