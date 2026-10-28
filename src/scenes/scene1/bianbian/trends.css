@@ -81,7 +81,8 @@
 .bs-observation-v19 .bs-observation-result{margin:0 0 10px;padding:14px;background:var(--observation-background);border-radius:12px;border:1px solid color-mix(in srgb,var(--observation-color) 12%,transparent)}
 .bs-observation-v19 h3{display:flex;align-items:center;gap:7px;font-size:16px;font-weight:600;line-height:24px;margin:0 0 9px;color:#323232}
 .bs-observation-v19 h3:before{content:'';width:4px;height:16px;border-radius:3px;background:#ff4d88;flex-shrink:0}
-.bs-observation-v19 .bs-observation-result h3:before{background:var(--observation-color)}
+.bs-observation-v19 .bs-observation-result .bs-risk-heading{justify-content:center;text-align:center;font-size:24px;line-height:32px;font-weight:600;color:var(--observation-color);margin:0 0 10px}
+.bs-observation-v19 .bs-risk-heading:before{display:none}
 .bs-observation-v19 .bs-observation-result p{color:#555;font-size:14px;line-height:24px;font-weight:400;margin:0}
 .bs-observation-v19 .bs-observation-result strong{font-weight:600;color:var(--observation-color)}
 .bs-important-indicators{padding:14px;background:#fff;border-radius:12px}
