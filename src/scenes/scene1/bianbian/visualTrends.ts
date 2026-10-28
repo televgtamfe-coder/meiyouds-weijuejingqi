@@ -20,3 +20,13 @@ export function relationTracks(data:TrendSet){return [
  {key:'sleep',label:'睡眠时长',unit:'小时',color:'#648fb9',values:data.days.map(d=>d.sleepHours),min:Math.max(0,Math.floor(Math.min(...data.days.map(d=>d.sleepHours)))-1),max:Math.ceil(Math.max(...data.days.map(d=>d.sleepHours)))+1},
  ];}
 export function dayChanges(data:TrendSet,index:number){return relationTracks(data).map(s=>{const value=s.values[index],prev=index>0?s.values[index-1]:null,delta=prev===null?null:Number((value-prev).toFixed(1));return {...s,value,change:delta===null?'本周首日':delta===0?'与前日相同':`比前日${delta>0?'增加':'减少'} ${Math.abs(delta)} ${s.unit}`};});}
+
+/** Marks observed co-changes, not a medical or statistical correlation. */
+export function highlightedDays(data:TrendSet){
+ return data.days.flatMap((day,index)=>{
+  const previous=data.days[index-1];
+  const changed=previous?[day.stools.length!==previous.stools.length,day.loggedMilkMl!==previous.loggedMilkMl,day.sleepHours!==previous.sleepHours].filter(Boolean).length:0;
+  const flagged=day.stools.some(s=>s.risk==='watch'||s.risk==='high');
+  return changed>=2||flagged?[index]:[];
+ });
+}

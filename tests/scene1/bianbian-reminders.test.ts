@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import {createMockTrends} from '../../src/scenes/scene1/bianbian/trendData';
-import {monthMetrics,relationTracks,focusDay,dayChanges} from '../../src/scenes/scene1/bianbian/visualTrends';
+import {monthMetrics,relationTracks,focusDay,dayChanges,highlightedDays} from '../../src/scenes/scene1/bianbian/visualTrends';
 import {routineWindow,feedingReminder,reminderCalendar} from '../../src/scenes/scene1/bianbian/reminderLogic';
 import {importantActions} from '../../src/scenes/scene1/bianbian/importantActions';
 import {makeRecord} from '../../src/scenes/scene1/bianbian/records';
@@ -18,3 +18,12 @@ describe('实际值对照和有依据的提醒',()=>{
 
 it('当日时段结束不伪装成今天的未来预测',()=>{const d=data();const w=routineWindow(d,new Date('2026-10-27T14:00:00Z'))!;expect(w.status).toBe('finished');expect(w.label).toContain('今天');expect(w.label).not.toContain('明天');});
 it('正在预测窗口内的日历提醒仍在未来，跨日旧数据不沿用',()=>{const d=data(),now=new Date('2026-10-27T10:30:00Z'),w=routineWindow(d,now)!;expect(w.status).toBe('current');expect(w.at.getTime()).toBeGreaterThan(now.getTime());expect(routineWindow(d,new Date('2026-10-27T16:00:00Z'))).toBeNull();});
+
+it('共同变化标记覆盖所有日期，单项变化或首日不误标',()=>{
+ const d=data();const base=d.days[0];d.days=d.days.map(day=>({...base,date:day.date,stools:base.stools.map(s=>({...s,risk:'low' as const}))}));
+ expect(highlightedDays(d)).toEqual([]);
+ d.days[1].loggedMilkMl+=10;expect(highlightedDays(d)).toEqual([]);
+ d.days[1].sleepHours+=.5;expect(highlightedDays(d)).toEqual([1,2]);
+ d.days[4].stools[0].risk='watch';expect(highlightedDays(d)).toEqual([1,2,4]);
+ d.days[0].stools[0].risk='high';expect(highlightedDays(d)).toEqual([0,1,2,4]);
+});
