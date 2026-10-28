@@ -15,7 +15,7 @@ export function EntryPreview({onBack,onActivate}:{onBack:()=>void;onActivate:()=
  });
  return <><header className="br-nav be-entry-nav"><button type="button" onClick={onBack} aria-label="返回育儿"><Icon name="back"/></button><h1>宝宝便便解读 <span>VIP</span></h1><span/></header><div className="br-scroll be-entry-scroll">
  <div className="be-entry-banner"><KitIcon name="camera"/><div><strong>拍一张，读懂宝宝的日常变化</strong><p>照片观察 · 成长对照 · 家人分享</p></div></div>
- <section className="be-entry-intro"><h2>一份解读，帮你看清这些变化</h2><p>结合宝宝月龄、喂养方式与照片，记录便便颜色、性状及值得关注的表现。</p></section>
+
  <article className="be-sample-full" aria-label="便便解读示例"><div className="be-sample-report" ref={el=>el?.setAttribute('inert','')}><ReportContent record={sample}/></div><div className="be-sample-cover" aria-hidden="true"><strong>示例数据</strong></div><span className="be-sample-accessible">完整示例包含观察总结、颜色与性状、喂养睡眠背景、近七天规律、联合成长分析、行动建议、参考解读和育儿参考资料。未分析真实照片。</span></article></div>
  <footer className="be-entry-footer"><div className="bm-cta-wrap"><span className="bm-discount">限时 4.1 折 · 体验展示</span><button type="button" className="bm-open-button" onClick={onActivate}>立即开通</button></div><p>当前为模拟开通，不产生费用</p></footer></>;
 }

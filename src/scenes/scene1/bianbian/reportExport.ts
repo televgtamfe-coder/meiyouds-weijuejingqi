@@ -1,4 +1,4 @@
-import {reportContext,appearanceConclusion,observationConclusion} from './reportSummary';
+import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations} from './reportSummary';
 import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {dayRisk,dayShort,stoolColors,trendRisks,trendRiskLabels} from './trendData';
@@ -11,12 +11,12 @@ export function reportSections(record:SavedReport) {
  const factText=(f:typeof color)=>f?[f.value,f.detail,f.comparison].filter(Boolean).join('\n'):'本次未返回该项描述。';
  const others=r.facts.filter(f=>!['颜色','性状'].includes(f.label));
  return [
- {title:'观察总结',body:appearanceConclusion(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n观察结论：'+observationConclusion(record)+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
+ {title:'观察总结',body:appearanceConclusion(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n风险观察：'+riskObservations(record).map(x=>`${x.label}：${x.value}`).join('；')+'\n\n观察结论：'+observationConclusion(record)+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
  ...(record.trendSnapshot?[{title:'近 7 天便便规律',body:record.trendSnapshot.days.map(d=>`${d.date} · ${d.stools.length}次 · ${trendRisks[dayRisk(d)].label}（模拟记录）`).join('\n')}]:[]),
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
  {title:'联合成长分析',body:[...reportContext(record).map(x=>`${x.label}：${x.value}${x.change?'，'+x.change:''}${x.mock?'（示例数据）':''}`),...(record.jointAnalysis?['这些变化可能有关联：',...record.jointAnalysis.relationships,record.jointAnalysis.alert]:record.trendSnapshot?['联合分析尚未生成，可返回报告查看。']:[])].filter(Boolean).join('\n\n')},
  {title:'行动建议',body:importantActions(record).map((a,i)=>`${i+1}. ${a.title}\n${a.action}`).join('\n\n')||'本次未返回可用行动点。'},
- {title:'参考解读',body:['完整分析依据',r.summary,r.detail,r.cause,...r.evidence,...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
+ {title:'参考解读',body:['完整分析依据',...referenceParagraphs(record),...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
  {title:'育儿参考资料',body:'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${x.url}`).join('\n\n')},
  ];
 }

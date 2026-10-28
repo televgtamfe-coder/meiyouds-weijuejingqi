@@ -1,3 +1,4 @@
+import {firstObservationSentence} from './reportSummary';
 import {JointAnalysis,domainLabels} from './trendAnalysis';
 import {TrendSet} from './trendData';
 import {TrendComparisonChart} from './TrendComparisonChart';
@@ -6,8 +7,8 @@ import {AnalysisWaiting} from './AnalysisWaiting';
 import {Icon} from './ui';
 export function JointAnalysisContent({analysis,data,monthly=false}:{analysis:JointAnalysis;data?:TrendSet;monthly?:boolean}){
  return <div className="bt-joint-content bc-concise-joint">
-  <section className="bt-joint-summary"><div><Icon name="spark"/><span>同日变化提醒</span><span className="bt-mock">模拟数据</span></div>{data&&<TrendComparisonChart data={data}/>}</section>
-  <section className="bt-white-card bc-connections"><h3>这些变化可能有关联</h3>{analysis.relationships.slice(0,2).map((text,i)=><div className="bt-relation" key={i}><span>{i+1}</span><p>{text}</p></div>)}</section>
+  {data&&<section className="bt-joint-summary"><TrendComparisonChart data={data}/></section>}
+  <section className="bt-white-card bc-connections"><h3>这些变化可能有关联</h3>{[...new Set(analysis.relationships)].slice(0,2).map((text,i)=>{const cleaned=text.trim(),lead=firstObservationSentence(cleaned);return <div className="bt-relation" key={i}><span>{i+1}</span><p><strong>{lead}</strong>{cleaned.slice(lead.length)}</p></div>;})}</section>
   <details className="bc-fold bc-domain-details"><summary><span>查看分项观察</span><Icon name="next"/></summary><div className="bt-domain-grid">{analysis.domains.filter(d=>d.key!=='growth').map(d=><section key={d.key}><h3>{domainLabels[d.key]}</h3><p>{d.observation}</p><small>{d.relation}</small></section>)}</div></details>
   {analysis.alert&&<p className="bc-joint-boundary">{analysis.alert}</p>}
  </div>;
