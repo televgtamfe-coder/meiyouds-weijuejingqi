@@ -21,7 +21,7 @@ export function BianbianHome({profile,records,onEdit,onPhoto,onHistory,onRecord,
  </div>;
 }
 export function BianbianHistory({records,onRecord,onPhoto}:{records:SavedReport[];onRecord:(r:SavedReport)=>void;onPhoto:()=>void}) {
- return <div className="br-scroll br-history"><p className="br-support">真实报告仅保留当前浏览器会话；下方另含 3 条模拟示例。</p>{records.length?records.map(r=><HistoryCard key={r.id} record={r} onClick={()=>onRecord(r)}/>):<div className="br-empty"><Icon name="file"/><h2>还没有分析记录</h2><p>添加一张照片，记录宝宝的便便变化。</p><button type="button" className="br-primary" onClick={onPhoto}>添加第一条记录</button></div>}</div>;
+ return <div className="br-scroll br-history"><p className="br-support">重要报告请及时保存，示例已单独标注。</p>{records.length?records.map(r=><HistoryCard key={r.id} record={r} onClick={()=>onRecord(r)}/>):<div className="br-empty"><Icon name="file"/><h2>还没有分析记录</h2><p>添加一张照片，记录宝宝的便便变化。</p><button type="button" className="br-primary" onClick={onPhoto}>添加第一条记录</button></div>}</div>;
 }
 
 function HistoryCard({record:r,onClick}:{record:SavedReport;onClick:()=>void}){
