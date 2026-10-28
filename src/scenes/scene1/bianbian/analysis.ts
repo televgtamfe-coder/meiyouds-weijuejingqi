@@ -49,7 +49,7 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
   return {
     source: 'meiyou_parenting_single_page', delivery_mode: form.deliveryMode || 'unknown',
     mock_prefilled_fields: form.mockFields || [], trend_context: form.trendContext,
-    ...(form.trendContext ? {analysis_scope:'完整分析依据 core_conclusion.detail 的首句，请结合实际月龄、喂养方式与照片外观，概括本次表现与宝宝背景的对应情况；如果有关注点，直接写出关注点，不固定套用常见、正常或低风险结论。资料不足时说明缺失，不编造月龄或喂养方式。趋势为模拟记录，带有 mock_prefilled_fields 的日常字段也仍为示例。请明确标注模拟背景，不据此判断真实健康或生长达标。结合照片与背景给出观察；不得把同时变化写成因果；输出仅呈现实际观察和重点，不输出“可能有关联”“不能认定因果”等解释性文案。'} : {}), profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
+    ...(form.trendContext ? {analysis_scope:'完整分析依据 core_conclusion.detail 首句必须是一句连贯的综合描述：先说明本次照片的具体颜色和性状，再结合已确认的实际月龄与喂养方式，判断是否符合这一阶段的常见便便表现。颜色、性状和阶段判断各描述一次，不要先说相近，再重复解释常见颜色或性状；如果有关注点，直接写出关注点，不固定套用常见、正常或低风险结论。资料不足时说明缺失，不编造月龄或喂养方式。趋势为模拟记录，带有 mock_prefilled_fields 的日常字段也仍为示例。请明确标注模拟背景，不据此判断真实健康或生长达标。结合照片与背景给出观察；不得把同时变化写成因果；输出仅呈现实际观察和重点，不输出“可能有关联”“不能认定因果”等解释性文案。'} : {}), profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
     age_days: Math.round((today.getTime() - birthday.getTime()) / 86400000),
     feeding_method: form.feeding, feedingType: form.feeding, complementary_food: form.complementary,
     ...(form.frequency.trim() ? { daily_frequency: Number(form.frequency) } : {}),
@@ -97,7 +97,7 @@ export const demoReport = normalizeReport({
     foreign_bodies: { main: '未见明显血丝、奶瓣或灰白色区域', detail: '示例照片中未见明显血丝，未见明显奶瓣，未见明显灰白色区域。' },
     amount: { main: '照片无法精确测量' },
   },
-  core_conclusion: { summary: '便便质地柔软糊状，未见明显血丝、奶瓣或灰白色区域，本次分析为低风险。', detail: '本次便便外观与四个月、混合喂养宝宝的常见情况相近，黄色与绿色的综合色调可见于这一阶段。\n这是一份中文文案示例，未分析你上传的照片。' },
+  core_conclusion: { summary: '便便质地柔软糊状，未见明显血丝、奶瓣或灰白色区域，本次分析为低风险。', detail: '本次便便呈芥末黄与深棕绿色、质地柔软糊状，与四个月混合喂养宝宝的常见便便表现相近。\n这是一份中文文案示例，未分析你上传的照片。' },
   comprehensive_analysis: { core_cause: '参考照片呈现柔软、摊开的便便，可见芥末黄色与深绿褐色混合，示例中未见明显血丝、奶瓣或灰白色区域。', evidence: ['一般背景：黄色、绿色和棕色的组合，可见于混合喂养宝宝的便便中；个体情况仍需结合宝宝状态判断。'] },
   general_advice: ['继续记录每天的尿布更换、排便次数，以及喂养时的舒适程度。', '如果之后发现颜色或质地变化，可以在相近光线下拍摄参考照片，便于对照。', '维持平时的喂养节奏，关注宝宝的摄入和状态；具体喂养安排可向医生咨询。'],
 });

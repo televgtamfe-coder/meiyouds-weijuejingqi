@@ -1,5 +1,6 @@
 import {dayShort,shanghaiDate,dayRisk} from './trendData';
 import {SavedReport} from './records';
+import {riskPresentation} from './riskPresentation';
 import {feedingOptions,complementaryOptions} from './babyProfile';
 // Keep complete source sentences so a shortened display never drops half a qualification.
 export function firstObservationSentence(value:string){return value.trim().match(/^[^。！？\n]+[。！？]?/)?.[0]||'';}
@@ -20,7 +21,7 @@ export function reportContext(record:SavedReport){
 
 export function referenceParagraphs(record:SavedReport){
  const r=record.report,normalize=(text:string)=>text.replace(/\s+/g,'').replace(/[。！？]+$/,'');
- const seen=new Set([observationConclusion(record),...indicatorDetails(record).map(f=>f.description)].filter(Boolean).map(normalize));
+ const seen=new Set([...indicatorDetails(record).map(f=>f.description)].filter(Boolean).map(normalize));
  const paragraphs:string[]=[];
  for(const block of [r.summary,r.detail,r.cause,...r.evidence,...r.facts.filter(f=>['颜色','性状'].includes(f.label)).flatMap(f=>[f.detail,f.comparison])].flatMap(text=>text.split(/\n+/))){
   const unique=(block.match(/[^。！？\n]+[。！？]?/g)||[]).filter(sentence=>{const key=normalize(sentence);if(!key||seen.has(key))return false;seen.add(key);return true;});
@@ -72,7 +73,7 @@ export function indicatorDetails(record:SavedReport){
  });
 }
 export function riskObservationConclusion(record:SavedReport){
- const summary=observationConclusion(record);
+ const summary=observationContextIntro(record);
  const missing=riskObservations(record).filter(x=>!summary.includes(x.label)&&!(x.label==='灰白色'&&summary.includes('灰白')));
  return (['present','absent','unknown'] as const).map(state=>{
   const labels=missing.filter(x=>x.state===state).map(x=>x.label).join('、');
@@ -85,9 +86,9 @@ export function conclusionSegments(text:string){
 }
 
 export function observationContextIntro(record:SavedReport){
- return firstObservationSentence(record.report.detail)||firstObservationSentence(record.report.cause);
+ return firstObservationSentence(record.report.detail)||firstObservationSentence(record.report.cause)||observationConclusion(record);
 }
 export function overviewConclusion(record:SavedReport){
  const seen=new Set<string>();
- return [observationContextIntro(record),observationConclusion(record),riskObservationConclusion(record),observationTrendConclusion(record)].filter(Boolean).map(text=>/[。！？]$/.test(text)?text:text+'。').filter(text=>{const key=text.replace(/\s+/g,'');if(seen.has(key))return false;seen.add(key);return true;}).join('');
+ return [observationContextIntro(record),riskObservationConclusion(record),riskPresentation[record.report.risk].doctor&&!observationContextIntro(record).includes('建议就医')?'建议就医。':'',observationTrendConclusion(record)].filter(Boolean).map(text=>/[。！？]$/.test(text)?text:text+'。').filter(text=>{const key=text.replace(/\s+/g,'');if(seen.has(key))return false;seen.add(key);return true;}).join('');
 }

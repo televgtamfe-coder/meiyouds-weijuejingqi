@@ -30,7 +30,7 @@ it('总结保留颜色性状描述和完整句结论，喂养睡眠只归入一�
 
 it('重复结论只展示一次，完整依据保留新的信息及否定表述',()=>{
  const r=makeRecord({...demoReport,facts:[],summary:'观察结论。',detail:'观察结论。\n未见明显红色。仍需留意后续变化。',cause:'未见明显红色。',evidence:['仍需留意后续变化。','照片光线可能影响颜色。']},'',true);
- expect(referenceParagraphs(r).join('\n')).toBe('未见明显红色。仍需留意后续变化。\n照片光线可能影响颜色。');
+ expect(referenceParagraphs(r).join('\n')).toBe('观察结论。\n未见明显红色。仍需留意后续变化。\n照片光线可能影响颜色。');
 });
 
 it('风险观察只使用当前照片的明确事实，不把缺失、疑似或建议当成阴性',()=>{
@@ -66,7 +66,7 @@ it('去掉关联解释套话但保留数据和临床否定描述',()=>{
 it('顶部补齐风险观察，未知项目不当作未见，已有描述不重复',()=>{
  const r=makeRecord({...demoReport,summary:'本次为棕色糊状便。',facts:[{label:'可见混合物',value:'未见血丝，未见灰白色。',detail:'',comparison:''}]},'',true);
  expect(riskObservationConclusion(r)).toBe('未见明显血丝、灰白色；奶瓣尚未明确');
- expect(riskObservationConclusion(makeRecord(demoReport,'',true))).toBe('');
+ expect(riskObservationConclusion(makeRecord(demoReport,'',true))).toBe('未见明显血丝、奶瓣、灰白色');
  expect(conclusionSegments('排便增多，奶量与睡眠同步减少。').every(x=>x.strong)).toBe(true);
 });
 it('指标卡不复述颜色结论，细节移至默认展开的完整依据',()=>{
@@ -76,7 +76,7 @@ it('指标卡不复述颜色结论，细节移至默认展开的完整依据',()
 });
 
 it('未带句末标点的模型结论与风险补充自然分句',()=>{
- const r=makeRecord({...demoReport,summary:'本次为糊状便'},'',true);
+ const r=makeRecord({...demoReport,summary:'本次为糊状便',detail:'',cause:''},'',true);
  expect(overviewConclusion(r)).toContain('本次为糊状便。未见明显');
 });
 
@@ -85,4 +85,12 @@ it('结论开头保留本次完整依据首句，不固定套用四个月混合�
  const r=makeRecord({...demoReport,risk:'red',summary:'建议就医。',detail},'',true);
  const result=overviewConclusion(r);expect(result.startsWith('结合本次照片与八个月配方奶喂养背景，血丝表现需要关注。')).toBe(true);expect(result).not.toContain('四个月');expect(result).toContain('建议就医');expect(result).not.toContain('后续完整依据');
  r.report.detail=r.report.summary;expect(overviewConclusion(r).match(/建议就医。/g)).toHaveLength(1);
+});
+
+it('开头合并颜色性状与阶段判断，不再追加一遍模型总结',()=>{
+ const r=makeRecord(demoReport,'',true);const result=overviewConclusion(r);
+ expect(result.startsWith('本次便便呈芥末黄与深棕绿色、质地柔软糊状，与四个月混合喂养宝宝的常见便便表现相近。')).toBe(true);
+ expect(result.match(/柔软糊状/g)).toHaveLength(1);expect(result.match(/未见明显/g)).toHaveLength(1);
+ expect(result).not.toContain('便便质地柔软糊状');expect(result).not.toContain('当前观察为低风险');
+ expect(referenceParagraphs(r).join('')).toContain(demoReport.summary);
 });
