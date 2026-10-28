@@ -20,9 +20,9 @@ export function reportContext(record:SavedReport){
 
 export function referenceParagraphs(record:SavedReport){
  const r=record.report,normalize=(text:string)=>text.replace(/\s+/g,'').replace(/[。！？]+$/,'');
- const seen=new Set([observationConclusion(record),...appearanceConclusion(record).map(f=>f.description)].filter(Boolean).map(normalize));
+ const seen=new Set([observationConclusion(record),...indicatorDetails(record).map(f=>f.description)].filter(Boolean).map(normalize));
  const paragraphs:string[]=[];
- for(const block of [r.summary,r.detail,r.cause,...r.evidence].flatMap(text=>text.split(/\n+/))){
+ for(const block of [r.summary,r.detail,r.cause,...r.evidence,...r.facts.filter(f=>['颜色','性状'].includes(f.label)).flatMap(f=>[f.detail,f.comparison])].flatMap(text=>text.split(/\n+/))){
   const unique=(block.match(/[^。！？\n]+[。！？]?/g)||[]).filter(sentence=>{const key=normalize(sentence);if(!key||seen.has(key))return false;seen.add(key);return true;});
   if(unique.length)paragraphs.push(unique.join('').trim());
  }
@@ -60,4 +60,30 @@ export function observationTrendConclusion(record:SavedReport){
  if(!focus)return `${routine}，暂未见排便、奶量和睡眠同日共同变化。`;
  const relation=(focus.milk>0)===(focus.sleep>0)?`奶量与睡眠同步${focus.milk>0?'增加':'减少'}`:`奶量${focus.milk>0?'增加':'减少'}、睡眠${focus.sleep>0?'增加':'减少'}`;
  return `${routine}；${dayShort(focus.day.date)} 排便${focus.stool>0?'增多':'减少'}时，${relation}，值得共同关注。`;
+}
+
+// Overview owns the assessment; indicator cards keep only additional physical detail.
+export function indicatorDetails(record:SavedReport){
+ const summary=observationConclusion(record).replace(/\s+/g,'');
+ return appearanceConclusion(record).map(f=>{
+  const fact=record.report.facts.find(item=>item.label===f.label);
+  const extra=(fact?.detail||'').split(/[，,。；;\n]+/).map(x=>x.trim()).filter(x=>x&&/边缘|颗粒|软块|水分|均匀|分离|泡沫|黏|粘/.test(x)&&!summary.includes(x.replace(/\s+/g,''))&&!/血丝|奶瓣|灰白/.test(x));
+  return {...f,description:[...new Set(extra)].slice(0,2).join('；')};
+ });
+}
+export function riskObservationConclusion(record:SavedReport){
+ const summary=observationConclusion(record);
+ const missing=riskObservations(record).filter(x=>!summary.includes(x.label)&&!(x.label==='灰白色'&&summary.includes('灰白')));
+ return (['present','absent','unknown'] as const).map(state=>{
+  const labels=missing.filter(x=>x.state===state).map(x=>x.label).join('、');
+  return !labels?'':state==='present'?`可见${labels}`:state==='absent'?`未见明显${labels}`:`${labels}尚未明确`;
+ }).filter(Boolean).join('；');
+}
+// Highlight complete clauses to preserve qualifications and negations.
+export function conclusionSegments(text:string){
+ return text.split(/(?<=[，；。！？])/).filter(Boolean).map((value,i)=>({text:value,strong:i===0||/风险|血丝|奶瓣|灰白|增多|减少|增加|偏|异常|尚未明确/.test(value)}));
+}
+
+export function overviewConclusion(record:SavedReport){
+ return [observationConclusion(record),riskObservationConclusion(record),observationTrendConclusion(record)].filter(Boolean).map(text=>/[。！？]$/.test(text)?text:text+'。').join('');
 }

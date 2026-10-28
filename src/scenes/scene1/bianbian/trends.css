@@ -106,3 +106,23 @@
 /* A short chart-backed takeaway, following the current photo conclusion. */
 .bs-observation-v19 .bs-observation-result .bs-overview-trends{margin-top:7px;padding-top:7px;border-top:1px solid color-mix(in srgb,var(--observation-color) 12%,transparent);font-size:13px;line-height:22px}
 .bs-observation-v19 .bs-overview-trends strong{color:#444;font-weight:600}
+
+/* V21: one continuous overview, two compact indicators and a matching risk row. */
+.bs-observation-v19 .bs-observation-result{padding:12px;margin-bottom:8px}
+.bs-observation-v19 .bs-observation-result p{font-size:13px;line-height:23px}
+.bs-observation-v19 .bs-observation-result strong{font-weight:600}
+.bs-observation-v19 h3{margin-bottom:8px}
+.bs-important-indicators{padding:12px}
+.bs-observation-v19 .bs-observation-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.bs-observation-v19 .bs-observation-facts>div{background:#f8f6f8;padding:10px;min-width:0}
+.bs-observation-v19 .bs-observation-fact{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.bs-observation-v19 .bs-observation-fact>span{font-size:13px;line-height:20px}
+.bs-observation-v19 .bs-observation-fact strong{font-size:14px;line-height:21px;padding:0;background:transparent;color:#aa365f;text-align:left;max-width:100%;overflow-wrap:anywhere}
+.bs-observation-v19 .bs-observation-description{font-size:12px;line-height:20px;margin-top:5px;color:#666}
+.bs-observation-v19 .bs-risk-observations{margin-top:8px;padding:10px;background:#f8f6f8;border:0;border-radius:8px}
+.bs-observation-v19 .bs-risk-observations h4{font-size:13px;line-height:20px;margin-bottom:6px}
+.bs-observation-v19 .bs-risk-observation{padding:0;background:transparent;font-size:12px;line-height:19px;gap:1px}
+.bs-observation-v19 .bs-risk-observation strong{font-size:12px;line-height:20px}
+.bs-observation-v19 .bs-risk-observation-present{background:transparent}
+.bs-observation-v19 .bs-risk-observation-present strong{color:#276caa;font-weight:600}
+@media(max-width:359px){.bs-observation-v19 .bs-observation-facts{gap:6px}.bs-important-indicators{padding:10px}.bs-observation-v19 .bs-observation-facts>div{padding:9px}}

@@ -1,5 +1,5 @@
 import {displayCopy} from './presentationCopy';
-import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion} from './reportSummary';
+import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion,indicatorDetails,riskObservationConclusion,conclusionSegments,overviewConclusion} from './reportSummary';
 import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {StoolWeekChart} from './TrendCharts';
@@ -21,13 +21,14 @@ export function BianbianReport({record,onShare,onDoctor,onEdit,notice,jointLoadi
 export function ReportContent({record,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
  record=displayCopy(record);
  const r=record.report;
+ const conclusion=overviewConclusion(record);
  return (  <article className="br-report-paper">
    <div className="br-report-meta bs-report-meta"><time dateTime={record.createdAt}>{recordTimestamp(record.createdAt)}</time><span className={`br-risk-badge br-risk-${r.risk}`}>{riskLabels[r.risk]}</span></div>
    {['red','orange'].includes(r.risk)&&<p className="bt-priority-alert" role="alert">{r.risk==='red'?'请优先联系医生，不要等待进一步分析。':'请优先咨询医生，结合宝宝实际状态评估。'}</p>}
 
    <section className={`br-summary bs-observation-summary bs-observation-v19 br-risk-${r.risk}`} aria-label="观察总结" style={{'--observation-color':riskPresentation[r.risk].color,'--observation-background':riskPresentation[r.risk].background} as import('react').CSSProperties}>
-    <div className="bs-observation-result"><h3>本次观察结论</h3><p><strong>{observationConclusion(record).split(/(?<=[，；])/)[0]}</strong>{observationConclusion(record).split(/(?<=[，；])/).slice(1).join('')}</p>{observationTrendConclusion(record)&&<p className="bs-overview-trends"><strong>{observationTrendConclusion(record).split('；')[0]}</strong>{observationTrendConclusion(record).includes('；')?'；'+observationTrendConclusion(record).split('；').slice(1).join('；'):''}</p>}</div>
-    <div className="bs-important-indicators"><h3>重要指标解读</h3><div className="bs-observation-facts">{appearanceConclusion(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{f.value}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description"><span>观察解读：</span>{f.description}</p>}</div>)}</div>
+    <div className="bs-observation-result"><h3>本次观察结论</h3><p>{conclusionSegments(conclusion).map((part,i)=>part.strong?<strong key={i}>{part.text}</strong>:<span key={i}>{part.text}</span>)}</p></div>
+    <div className="bs-important-indicators"><h3>重要指标解读</h3><div className="bs-observation-facts">{indicatorDetails(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{f.value}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description">{f.description}</p>}</div>)}</div>
      <div className="bs-risk-observations" aria-label="风险观察"><h4>风险观察</h4><div>{riskObservations(record).map(item=><span className={`bs-risk-observation bs-risk-observation-${item.state}`} key={item.label}><span>{item.label}</span><strong>{item.value}</strong></span>)}</div></div>
     </div>
    </section>

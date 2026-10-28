@@ -1,7 +1,7 @@
 import {cleanReportCopy} from '../../src/scenes/scene1/bianbian/presentationCopy';
 import {it,expect} from 'vitest';
 import {reportSections} from '../../src/scenes/scene1/bianbian/reportExport';
-import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion} from '../../src/scenes/scene1/bianbian/reportSummary';
+import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion,indicatorDetails,riskObservationConclusion,conclusionSegments,overviewConclusion} from '../../src/scenes/scene1/bianbian/reportSummary';
 import {makeRecord} from '../../src/scenes/scene1/bianbian/records';
 import {demoReport} from '../../src/scenes/scene1/bianbian/analysis';
 import {mockBabyProfile} from '../../src/scenes/scene1/bianbian/babyProfile';
@@ -29,7 +29,7 @@ it('总结保留颜色性状描述和完整句结论，喂养睡眠只归入一�
 });
 
 it('重复结论只展示一次，完整依据保留新的信息及否定表述',()=>{
- const r=makeRecord({...demoReport,summary:'观察结论。',detail:'观察结论。\n未见明显红色。仍需留意后续变化。',cause:'未见明显红色。',evidence:['仍需留意后续变化。','照片光线可能影响颜色。']},'',true);
+ const r=makeRecord({...demoReport,facts:[],summary:'观察结论。',detail:'观察结论。\n未见明显红色。仍需留意后续变化。',cause:'未见明显红色。',evidence:['仍需留意后续变化。','照片光线可能影响颜色。']},'',true);
  expect(referenceParagraphs(r).join('\n')).toBe('未见明显红色。仍需留意后续变化。\n照片光线可能影响颜色。');
 });
 
@@ -61,4 +61,21 @@ it('去掉关联解释套话但保留数据和临床否定描述',()=>{
  expect(cleanReportCopy('今天奶量减少，可能有关联，不能认定因果。')).toBe('今天奶量减少。');
  expect(cleanReportCopy('共同变化不代表因果。今天睡眠减少 1 小时。')).toBe('今天睡眠减少 1 小时。');
  expect(cleanReportCopy('未见明显血丝，不能排除其他情况。')).toBe('未见明显血丝，不能排除其他情况。');
+});
+
+it('顶部补齐风险观察，未知项目不当作未见，已有描述不重复',()=>{
+ const r=makeRecord({...demoReport,summary:'本次为棕色糊状便。',facts:[{label:'可见混合物',value:'未见血丝，未见灰白色。',detail:'',comparison:''}]},'',true);
+ expect(riskObservationConclusion(r)).toBe('未见明显血丝、灰白色；奶瓣尚未明确');
+ expect(riskObservationConclusion(makeRecord(demoReport,'',true))).toBe('');
+ expect(conclusionSegments('排便增多，奶量与睡眠同步减少。').every(x=>x.strong)).toBe(true);
+});
+it('指标卡不复述颜色结论，细节移至默认展开的完整依据',()=>{
+ const r=makeRecord({...demoReport,summary:'棕色糊状便。',facts:[{label:'颜色',value:'棕色',detail:'整体呈棕色，未见灰白色。',comparison:''},{label:'性状',value:'糊状',detail:'稠厚糊状，局部夹少量软块，边缘不规则。',comparison:''}]},'',true);
+ expect(indicatorDetails(r)[0].description).toBe('');expect(indicatorDetails(r)[1].description).toBe('局部夹少量软块；边缘不规则');
+ expect(referenceParagraphs(r).join('')).toContain('整体呈棕色，未见灰白色。');
+});
+
+it('未带句末标点的模型结论与风险补充自然分句',()=>{
+ const r=makeRecord({...demoReport,summary:'本次为糊状便'},'',true);
+ expect(overviewConclusion(r)).toContain('本次为糊状便。未见明显');
 });
