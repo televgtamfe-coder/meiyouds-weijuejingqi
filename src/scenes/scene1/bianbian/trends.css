@@ -139,3 +139,12 @@
 .br-app .br-more-details>summary>span,.br-app .br-notes>label>span{font-size:12px;font-weight:400;color:#999}
 .br-details-card>.br-more-details{margin-top:14px;padding-top:4px;border-top:1px solid #f0edf0}
 .br-details-card>.br-notes{margin-top:14px;padding-top:14px}
+
+/* V26: visible estimated progress, capped below completion until the report arrives. */
+.bc-waiting-progress{margin-top:12px}
+.bc-waiting-progress>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;line-height:20px;color:#888;margin-bottom:6px}
+.br-app .bc-waiting-progress strong{font-size:14px;font-weight:600;color:#d63770;font-variant-numeric:tabular-nums}
+.bc-progress-track{height:6px;background:#f6e6ed;border-radius:6px;overflow:hidden}
+.bc-progress-track>span{display:block;height:100%;background:#ff4d88;border-radius:inherit;transition:width .8s linear}
+@media(prefers-reduced-motion:reduce){.bc-progress-track>span{transition:none}}
+.br-app .br-loading-card h2{font-weight:600}

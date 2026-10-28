@@ -18,15 +18,19 @@ async function complete(user: ReturnType<typeof userEvent.setup>) {
 describe('三步资料与参考版导航', () => {
  it('首次示例与模拟开通，确认后直接拍照，再次进入不重复向导', async () => {
   const user=userEvent.setup();const first=renderPage();
+  expect(screen.getByRole('heading',{name:/便便智能分析/})).toBeVisible();
   expect(screen.getByRole('article',{name:'便便解读示例'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'立即开通',exact:true}));
-  await user.click(screen.getByRole('button',{name:'关闭会员页，返回示例'}));
+  expect(screen.getByRole('dialog',{name:'美柚会员'})).toBeVisible();
+  expect(screen.getByRole('heading',{name:/美柚会员/})).toBeVisible();
+  expect(screen.queryByText('宝宝成长会员')).not.toBeInTheDocument();
+  await user.click(screen.getByRole('button',{name:'关闭美柚会员页，返回示例'}));
   expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
   await activate(user);
   expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
-  expect(screen.getByRole('heading',{name:'02 喂养方式'})).toBeVisible();
+  expect(screen.getByRole('heading',{name:'喂养方式'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'下一步',exact:true}));
-  expect(screen.getByRole('heading',{name:'03 过敏情况'})).toBeVisible();
+  expect(screen.getByRole('heading',{name:'过敏情况'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'完成',exact:true}));
   expect(screen.getByRole('dialog',{name:'拍摄便便照片'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'关闭相机'}));
@@ -48,7 +52,7 @@ describe('三步资料与参考版导航', () => {
   expect(screen.queryByRole('button',{name:'功能设置'})).not.toBeInTheDocument();
   await user.click(screen.getByRole('button',{name:'重置',exact:true}));
   expect(screen.getByRole('article',{name:'便便解读示例'})).toBeVisible();
-  await activate(user);expect(screen.getByRole('heading',{name:'02 喂养方式'})).toBeVisible();
+  await activate(user);expect(screen.getByRole('heading',{name:'喂养方式'})).toBeVisible();
  });
 });
 

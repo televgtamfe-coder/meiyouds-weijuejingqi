@@ -17,7 +17,7 @@ export function JointAnalysisContent({analysis,data,monthly=false}:{analysis:Joi
  </div>;
 }
 export function JointStatus({loading,error,onRetry,onCancel}:{loading:boolean;error:string;onRetry:()=>void;onCancel:()=>void}){
- return <section className="bt-joint-status" aria-live="polite"><span className="bt-status-icon"><Icon name="spark"/></span><h3>{loading?'正在结合三类记录观察':error?'联合分析暂未完成':'查看三类趋势之间的联系'}</h3>{loading?<AnalysisWaiting kind="joint"/>:<p>{error||'看看便便、奶量和睡眠有哪些共同变化。'}</p>}{loading?<><div className="br-loading-progress"/><button type="button" className="br-text-button" onClick={onCancel}>停止联合分析</button></>:<button type="button" className="br-secondary" onClick={onRetry}>{error?'重新生成联合分析':'生成联合分析'}</button>}</section>;
+ return <section className="bt-joint-status" aria-live="polite"><span className="bt-status-icon"><Icon name="spark"/></span><h3>{loading?'正在结合三类记录观察':error?'联合分析暂未完成':'查看三类趋势之间的联系'}</h3>{loading?<AnalysisWaiting kind="joint"/>:<p>{error||'看看便便、奶量和睡眠有哪些共同变化。'}</p>}{loading?<><button type="button" className="br-text-button" onClick={onCancel}>停止联合分析</button></>:<button type="button" className="br-secondary" onClick={onRetry}>{error?'重新生成联合分析':'生成联合分析'}</button>}</section>;
 }
 export function TrendsPage({data,analysis,loading,error,onRetry,onCancel}:{data:TrendSet;analysis:JointAnalysis|null;loading:boolean;error:string;onRetry:()=>void;onCancel:()=>void}){
  return <div className="br-scroll bt-joint-page"><p className="bt-data-banner">近 7 天记录 · 对照便便、奶量与睡眠</p>{analysis?<JointAnalysisContent analysis={analysis} data={data}/>:<JointStatus loading={loading} error={error} onRetry={onRetry} onCancel={onCancel}/>}</div>;

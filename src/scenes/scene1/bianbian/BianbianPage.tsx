@@ -82,7 +82,7 @@ export function BianbianPage(){
  function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView(reportBack==='report'?'home':reportBack);else if(view==='home')navigate('/scene1-parenting');else setView('home');}
  function clear(){setEntryStage('preview');jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(false);setView('home');}
  const displayedRecords=[...records,...mockHistory(profile,trends)];
- const title={home:'宝宝便便分析',details:'补充信息',report:'便便分析报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
+ const title={home:'便便智能分析',details:'补充信息',report:'便便分析报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
  return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'}`} data-testid="bianbian-page">
   <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
    {entryStage==='preview'?<EntryPreview onBack={()=>navigate('/scene1-parenting')} onActivate={()=>setPanel('member-first')}/>:wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={entryStage==='profile'||!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
@@ -101,6 +101,6 @@ export function BianbianPage(){
   <input ref={cameraInput} type="file" accept="image/*" capture="environment" onChange={upload} hidden aria-label="拍摄便便照片"/>
   {camera&&<CameraCapture onClose={()=>setCamera(false)} onPhoto={file=>void receivePhoto(file)} onAlbum={()=>photoInput.current?.click()} onNative={()=>cameraInput.current?.click()}/>}
   {panel&&panel!=='photo'&&<BianbianPanels key={panel} panel={panel} reminder={reminder} record={record} onClose={closePanel} onReminder={value=>{setReminder(value);writeFlag(reminderKey,value);setPanel(null);}} onClear={clear} onActivate={activateEntry}/>}
-  {loading&&<div className="br-loading-mask" role="dialog" aria-modal="true" aria-labelledby="br-loading-title" onKeyDown={e=>{if(e.key==='Tab')e.preventDefault();if(e.key==='Escape')controller.current?.abort();}}><div className="br-loading-card"><div className="br-loading-symbol"><KitIcon name="camera"/></div><h2 id="br-loading-title">正在观察宝宝的便便</h2><AnalysisWaiting kind="photo"/><div className="br-loading-progress"/><button autoFocus type="button" className="br-text-button" onClick={()=>controller.current?.abort()}>停止等待，返回填写</button></div></div>}
+  {loading&&<div className="br-loading-mask" tabIndex={-1} ref={el=>el?.focus()} role="dialog" aria-modal="true" aria-labelledby="br-loading-title" onKeyDown={e=>{if(e.key==='Tab')e.preventDefault();if(e.key==='Escape')controller.current?.abort();}}><div className="br-loading-card"><div className="br-loading-symbol"><KitIcon name="camera"/></div><h2 id="br-loading-title">正在分析宝宝的便便</h2><AnalysisWaiting kind="photo"/></div></div>}
  </div>;
 }

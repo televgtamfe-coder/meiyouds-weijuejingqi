@@ -32,9 +32,10 @@ describe('联合趋势与精简布局',()=>{
  it('等待说明逐步变化，长时间等待保持未完成状态',()=>{
   vi.useFakeTimers();const view=render(<AnalysisWaiting kind="joint"/>);
   expect(screen.getByText(/将便便、奶量和睡眠/)).toBeVisible();
-  act(()=>vi.advanceTimersByTime(6000));expect(screen.getByText(/重点关注同时出现的变化/)).toBeVisible();
+  expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow','15');
+  act(()=>vi.advanceTimersByTime(6000));expect(screen.getByText(/重点关注同时出现的变化/)).toBeVisible();expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow','40');
   act(()=>vi.advanceTimersByTime(6000));expect(screen.getByText(/呈现同一天的变化/)).toBeVisible();
-  act(()=>vi.advanceTimersByTime(12000));expect(screen.getByText(/仍在等待分析结果/)).toBeVisible();
+  act(()=>vi.advanceTimersByTime(12000));expect(screen.getByText(/仍在等待分析结果/)).toBeVisible();expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow','92');act(()=>vi.advanceTimersByTime(60000));expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow','92');
   view.unmount();expect(vi.getTimerCount()).toBe(0);
  });
 });
