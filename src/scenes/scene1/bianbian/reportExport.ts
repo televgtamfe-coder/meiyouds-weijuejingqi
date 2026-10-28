@@ -1,6 +1,6 @@
 import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
-import {dayRisk,dayShort,stoolColors,trendRisks} from './trendData';
+import {dayRisk,dayShort,stoolColors,trendRisks,trendRiskLabels} from './trendData';
 import {drawComparison} from './drawComparison';
 import { SavedReport,riskLabels,recordTimestamp } from './records';
 import { referenceSources } from './referenceSources';
@@ -38,19 +38,19 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  text(record.demo?'示例内容，不代表健康结论':riskLabels[record.report.risk],pad,168,26,riskColor,500);
  let y=214;
  if(record.trendSnapshot){
-  const data=record.trendSnapshot;ctx.fillStyle='#fff6f9';ctx.beginPath();ctx.roundRect(pad,y,inner,560,24);ctx.fill();text('近 7 天便便规律 · 模拟记录',pad+28,y+45,28,'#bd3565',500);text('时间、次数、颜色与风险等级',pad+28,y+80,21,'#999');
+  const data=record.trendSnapshot;ctx.fillStyle='#fff6f9';ctx.beginPath();ctx.roundRect(pad,y,inner,560,24);ctx.fill();text('近 7 天便便规律 · 模拟记录',pad+28,y+45,28,'#bd3565',500);text('时间、次数与风险等级',pad+28,y+80,21,'#999');
   const left=pad+70,step=(inner-100)/7,top=y+120,bottom=y+390;
   [24,18,12,6,0].forEach(hour=>{const yy=bottom-hour/24*(bottom-top);ctx.strokeStyle='#e4dce1';ctx.setLineDash([4,5]);ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(width-pad-24,yy);ctx.stroke();ctx.setLineDash([]);text(hour+'时',pad+16,yy+7,17,'#999');});
-  data.days.forEach((d,i)=>{const x=left+(i+.5)*step;d.stools.forEach(e=>{const [h,m]=e.time.split(':').map(Number);ctx.fillStyle=stoolColors[e.color].fill;ctx.beginPath();ctx.roundRect(x-16,bottom-(h+m/60)/24*(bottom-top)-5,32,10,5);ctx.fill();});ctx.textAlign='center';text(dayShort(d.date),x,y+425,19,'#999');text(d.stools.length+'次',x,y+457,23);text(trendRisks[dayRisk(d)].label,x,y+488,20,trendRisks[dayRisk(d)].color);ctx.textAlign='left';});
-  let lx=pad+28;[...new Set(data.days.flatMap(d=>d.stools.map(e=>e.color)))].forEach(color=>{ctx.fillStyle=stoolColors[color].fill;ctx.fillRect(lx,y+510,16,7);text(stoolColors[color].label,lx+24,y+520,18,'#777');lx+=112;});
-  text('风险为独立模拟标签，颜色不能单独判断健康。',pad+28,y+547,18,'#999');y+=chartHeight;
+  data.days.forEach((d,i)=>{const x=left+(i+.5)*step;d.stools.forEach(e=>{const [h,m]=e.time.split(':').map(Number);ctx.fillStyle=trendRisks[e.risk].color;ctx.beginPath();ctx.roundRect(x-16,bottom-(h+m/60)/24*(bottom-top)-5,32,10,5);ctx.fill();});ctx.textAlign='center';text(dayShort(d.date),x,y+425,19,'#999');text(d.stools.length+'次',x,y+457,23);text(trendRisks[dayRisk(d)].label,x,y+488,20,trendRisks[dayRisk(d)].color);ctx.textAlign='left';});
+  let lx=pad+28;(['low','watch','high'] as const).forEach(risk=>{ctx.fillStyle=trendRisks[risk].color;ctx.fillRect(lx,y+510,16,7);text(trendRiskLabels[risk],lx+24,y+520,18,'#777');lx+=185;});
+  text('图中颜色表示模拟风险等级，不表示原始便色。',pad+28,y+547,18,'#999');y+=chartHeight;
  }
 
  for(const [index,s]of sections.entries()){
   const h=86+s.lines.length*40+(s.comparison?520:0);ctx.fillStyle=index===0?riskPresentation[record.report.risk].background:'#f7f7f9';
   ctx.beginPath();ctx.roundRect(pad,y,inner,h,24);ctx.fill();
   text(s.title,pad+32,y+49,28,index===0?riskColor:'#323232',500);
-  s.lines.forEach((line,i)=>text(line,pad+32,y+92+i*40,25,index===0?riskColor:'#555'));
+  s.lines.forEach((line,i)=>text(line,pad+32,y+92+i*40,25,'#555'));
   if(s.comparison&&record.trendSnapshot)drawComparison(ctx,record.trendSnapshot,pad+32,y+100+s.lines.length*40,inner-64);
   y+=h+24;
  }

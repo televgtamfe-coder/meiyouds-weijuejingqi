@@ -25,8 +25,8 @@ type View='home'|'details'|'report'|'history'|'settings'|'trends';
 export function BianbianPage(){
  const navigate=useNavigate();const [initial]=useState(loadBabyProfile);
  const [profile,setProfile]=useState<BabyProfile>(initial.profile),[confirmed,setConfirmed]=useState(initial.confirmed),[wizard,setWizard]=useState(!initial.confirmed);
- const [wizardStep,setWizardStep]=useState(0),[wizardQuick,setWizardQuick]=useState(false);
- function editProfile(section?:'feeding'|'allergies'){setWizardStep(section==='feeding'?1:section==='allergies'?2:0);setWizardQuick(!!section);setWizard(true);}
+ const [wizardStep,setWizardStep]=useState(0),[wizardQuick,setWizardQuick]=useState(false),[wizardFormula,setWizardFormula]=useState(false);
+ function editProfile(section?:'feeding'|'allergies'|'formula'){setWizardStep(section==='feeding'||section==='formula'?1:section==='allergies'?2:0);setWizardQuick(!!section);setWizardFormula(section==='formula');setWizard(true);}
  const [view,setView]=useState<View>('home'),[reportBack,setReportBack]=useState<View>('home'),[panel,setPanel]=useState<Panel>(null);
  const [trends]=useState(createMockTrends);
  const freshForm=(baby:BabyProfile):AnalysisForm=>({...emptyForm,...mockDetailDefaults(trends),...baby,consent:true,profileSource:'mock_confirmed',trendContext:trends});
@@ -78,12 +78,12 @@ export function BianbianPage(){
  function openJoint(){setView('trends');void startJoint();}
  async function saveReport(){if(!record||saving)return;setSaving(true);setNotice('');try{const blob=await reportImage(record);if(!alive.current)return;const name=(record.babyName||'宝宝').replace(/[\/:*?"<>|]/g,'');downloadBlob(blob,`${name}_${record.createdAt.slice(0,10)}_成长观察报告.png`);setNotice('报告长图已生成，请在浏览器下载记录中查看。');}catch(e){setNotice(e instanceof Error?e.message:'报告保存失败，请重试。');}finally{if(alive.current)setSaving(false);}}
  function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView(reportBack==='report'?'home':reportBack);else if(view==='home')navigate('/scene1-parenting');else setView('home');}
- function clear(){setMembershipSeen(false);jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizard(true);setView('home');}
+ function clear(){setMembershipSeen(false);jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(true);setView('home');}
  const displayedRecords=[...records,...mockHistory(profile,trends)];
  const title={home:'宝宝便便分析',details:'补充信息',report:'便便观察报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
  return <div className="bb-page br-app" data-testid="bianbian-page">
   <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
-   {wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} profile={profile} first={!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
+   {wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
     <PageHeader title={title} onBack={back} onAction={view==='report'?saveReport:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
     {view==='home'&&<BianbianHome profile={profile} records={mockHistory(profile,trends)} onEdit={editProfile} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} onExample={()=>showRecord(makeRecord(demoReport,'',true,{profile,trendSnapshot:trends,jointAnalysis:joint||undefined}),'home')} trends={trends} onJoint={openJoint} analyzing={jointState.loading} hasAnalysis={!!joint}/>}

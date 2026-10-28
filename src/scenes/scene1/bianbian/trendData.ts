@@ -1,3 +1,4 @@
+import {riskPresentation} from './riskPresentation';
 import type {AnalysisForm} from './analysis';
 export type StoolColor='yellow'|'green'|'brown'|'red'|'pale';
 export type TrendRisk='low'|'watch'|'high'|'unknown';
@@ -7,7 +8,8 @@ export type MonthTrend={label:string;days:DayTrend[]};
 export type MonthComparison={previous:MonthTrend;current:MonthTrend;comparisonDays:number};
 export type TrendSet={source:'mock';days:DayTrend[];note:string;months?:MonthComparison};
 export const stoolColors:Record<StoolColor,{label:string;fill:string}>={yellow:{label:'黄色',fill:'#d5a637'},green:{label:'绿色',fill:'#6e8c63'},brown:{label:'棕色',fill:'#a77552'},red:{label:'红色',fill:'#cb6565'},pale:{label:'灰白色',fill:'#bcc4c8'}};
-export const trendRisks:Record<TrendRisk,{label:string;color:string}>={low:{label:'健康',color:'#23866c'},watch:{label:'关注',color:'#387cb6'},high:{label:'就医',color:'#c74858'},unknown:{label:'未评估',color:'#387cb6'}};
+export const trendRisks:Record<TrendRisk,{label:string;color:string}>={low:{label:'健康',color:riskPresentation.green.color},watch:{label:'关注',color:riskPresentation.yellow.color},high:{label:'就医',color:riskPresentation.red.color},unknown:{label:'未评估',color:riskPresentation.yellow.color}};
+export const trendRiskLabels:Record<TrendRisk,string>={low:riskPresentation.green.label,watch:riskPresentation.yellow.label,high:riskPresentation.red.label,unknown:'需要关注（未评估）'};
 export function shanghaiDate(value=new Date()){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(value);const get=(type:string)=>parts.find(x=>x.type===type)!.value;return `${get('year')}-${get('month')}-${get('day')}`;}
 export function createMockTrends(now=new Date()):TrendSet{
  const end=new Date(`${shanghaiDate(now)}T12:00:00+08:00`);
