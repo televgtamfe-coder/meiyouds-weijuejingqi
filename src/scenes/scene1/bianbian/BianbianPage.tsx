@@ -1,3 +1,4 @@
+import {mockHistory} from './mockHistory';
 import { ChangeEvent,FormEvent,useEffect,useRef,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StatusBar } from '../components/StatusBar';
@@ -76,16 +77,17 @@ export function BianbianPage(){
  async function saveReport(){if(!record||saving)return;setSaving(true);setNotice('');try{const blob=await reportImage(record);if(!alive.current)return;const name=(record.babyName||'宝宝').replace(/[\/:*?"<>|]/g,'');downloadBlob(blob,`${name}_${record.createdAt.slice(0,10)}_成长观察报告.png`);setNotice('报告长图已生成，请在浏览器下载记录中查看。');}catch(e){setNotice(e instanceof Error?e.message:'报告保存失败，请重试。');}finally{if(alive.current)setSaving(false);}}
  function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView(reportBack==='report'?'home':reportBack);else if(view==='home')navigate('/scene1-parenting');else setView('home');}
  function clear(){setMembershipSeen(false);jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizard(true);setView('home');}
+ const displayedRecords=[...records,...mockHistory(profile,trends)];
  const title={home:'宝宝便便分析',details:'补充信息',report:'便便观察报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
  return <div className="bb-page br-app" data-testid="bianbian-page">
   <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
    {wizard?<BabyProfileWizard profile={profile} first={!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
     <PageHeader title={title} onBack={back} onAction={view==='report'?saveReport:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
-    {view==='home'&&<BianbianHome profile={profile} records={records} onEdit={()=>setWizard(true)} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} onExample={()=>showRecord(makeRecord(demoReport,'',true,{profile,trendSnapshot:trends,jointAnalysis:joint||undefined}),'home')} trends={trends} onJoint={openJoint} analyzing={jointState.loading} hasAnalysis={!!joint}/>}
+    {view==='home'&&<BianbianHome profile={profile} records={mockHistory(profile,trends)} onEdit={()=>setWizard(true)} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} onExample={()=>showRecord(makeRecord(demoReport,'',true,{profile,trendSnapshot:trends,jointAnalysis:joint||undefined}),'home')} trends={trends} onJoint={openJoint} analyzing={jointState.loading} hasAnalysis={!!joint}/>}
     {view==='details'&&<BianbianDetails image={image} form={form} onChange={setForm} onSubmit={submit} onPhoto={openPhoto} error={error} question={question} busy={preparing} membershipSeen={membershipSeen} onMember={()=>setPanel('member-first')}/>}
     {view==='report'&&record&&<BianbianReport record={record} canEdit={!!image&&record.id===draftRecordId} onShare={()=>setPanel('share')} saving={saving} jointLoading={jointState.loading&&jointState.key===jointKey(record.profileSnapshot||profile,record.trendSnapshot||trends)} jointError={jointState.key===jointKey(record.profileSnapshot||profile,record.trendSnapshot||trends)?jointState.error:''} onJoint={()=>void startJoint(record)} onCancelJoint={cancelJoint} onEdit={editReport} notice={notice}/>}
-    {view==='history'&&<BianbianHistory records={records} onRecord={r=>showRecord(r,'history')} onPhoto={openPhoto}/>}
+    {view==='history'&&<BianbianHistory records={displayedRecords} onRecord={r=>showRecord(r,'history')} onPhoto={openPhoto}/>}
     {view==='trends'&&<TrendsPage data={trends} analysis={joint} loading={jointState.loading} error={jointState.error} onRetry={()=>void startJoint()} onCancel={cancelJoint}/>}
     {view==='settings'&&<BianbianSettings reminder={reminder} onPanel={setPanel}/>}
     {(view==='home'||view==='settings')&&<BottomNav active={view} onHome={()=>setView('home')} onPhoto={openPhoto} onSettings={()=>setView('settings')}/>}

@@ -1,17 +1,25 @@
 import {useEffect,useState} from 'react';
 import {BottomSheet} from './BottomSheet';
-import {Icon} from './ui';
+import {Icon,IconName} from './ui';
+const benefits:{icon:IconName;title:string;body:string;tag:string}[]=[
+ {icon:'gallery',title:'便便照片分析',body:'拍照或上传照片，结合宝宝资料，查看颜色、性状与行动点。',tag:'一次提交 · 完整报告'},
+ {icon:'spark',title:'变化趋势对照',body:'近 7 天对照便便、奶量与睡眠；月度对比六项记录变化。',tag:'同日关联 · 月度对比'},
+ {icon:'bell',title:'智能记录提醒',body:'参考历史排便时段，关注奶量与排便变化，添加换尿布提醒。',tag:'日历导入后提醒'},
+ {icon:'share',title:'报告保存与分享',body:'保存报告长图，分享给家人，一起了解宝宝近期的变化。',tag:'长图保存 · 家人分享'},
+];
 export function MemberPreview({onClose}:{onClose:()=>void}){
  const [seconds,setSeconds]=useState(29*60+48),[message,setMessage]=useState('');
  useEffect(()=>{const timer=window.setInterval(()=>setSeconds(s=>Math.max(0,s-1)),1000);return()=>window.clearInterval(timer);},[]);
  const clock=`00:${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
- return <BottomSheet title="开通会员" onClose={onClose} className="bm-member-sheet">
-  <header className="bm-member-nav"><button type="button" aria-label="关闭会员页，继续分析" onClick={onClose}><Icon name="close"/></button><h2>宝宝成长解读<span>会员</span></h2><span/></header>
-  <div className="bm-member-content"><p className="bm-preview-label">会员页面预览 · 暂不收费</p><div className="bm-member-hero"><span className="bm-member-symbol"><Icon name="star"/></span><h2>让每次变化，都有迹可循</h2><p>便便观察与成长记录，一起看懂</p></div>
-   <div className="bm-benefits"><h3>会员权益展示</h3>{[['file','照片观察报告','便便颜色、性状与需要关注的变化'],['spark','成长联合分析','身高、体重、饮食、睡眠与便便一起对照'],['share','和家人一起记录','保存报告，分享照护信息']] .map(([icon,title,body])=><div key={title}><span><Icon name={icon as 'file'|'spark'|'share'}/></span><section><h4>{title}</h4><p>{body}</p></section><Icon name="check"/></div>)}</div>
-   <div className="bm-member-offer"><div><strong>成长陪伴会员</strong><span>限时优惠</span></div><p>专属报告与成长趋势解读</p><small>价格及活动待上线，本页仅展示开通样式</small></div>
-   {message&&<p className="bm-member-message" role="status">{message}</p>}
+ return <BottomSheet title="开通会员" onClose={onClose} className="bm-member-sheet bm-v7">
+  <header className="bm-member-nav"><button type="button" aria-label="关闭会员页，继续分析" onClick={onClose}><Icon name="close"/></button><h2>宝宝成长会员<span>体验</span></h2><span/></header>
+  <div className="bm-member-content"><div className="bm-v7-hero"><span className="bm-v7-brand"><Icon name="star"/>美柚育儿</span><h2>看懂每次便便<br/><em>关注每天的小变化</em></h2><p>从一张照片，到一份清晰的照护参考</p></div>
+   <div className="bm-v7-path"><span><Icon name="gallery"/>拍照记录</span><i/><span><Icon name="spark"/>查看分析</span><i/><span><Icon name="bell"/>关注变化</span></div>
+   <section className="bm-v7-benefits"><h3>当前可体验的功能<span>4 项</span></h3>{benefits.map(b=><div className="bm-v7-benefit" key={b.title}><span className="bm-v7-icon"><Icon name={b.icon}/></span><div><h4>{b.title}</h4><p>{b.body}</p><small>{b.tag}</small></div></div>)}</section>
+   <section className="bm-v7-scope"><h3>体验说明</h3><p>趋势和历史示例使用模拟数据；报告仅供记录与参考。换尿布提醒需导入日历并确认通知。</p><p>真实报告仅保留当前浏览器会话，重要记录可先保存长图。</p></section>
+   <div className="bm-v7-offer"><span>成长陪伴会员</span><strong>限时优惠展示</strong><small>价格待上线确认 · 当前暂不收费</small></div>
+
   </div>
-  <footer className="bm-member-footer"><div className="bm-cta-wrap"><span className="bm-discount">限时 4.1 折 <time>{clock}</time></span><button type="button" className="bm-open-button" onClick={()=>setMessage('会员服务尚未开放，本次不会收费。关闭此页即可继续分析体验。')}>立即开通</button></div><p>折扣与倒计时为演示，不产生支付或订阅</p><button type="button" className="br-text-button" onClick={onClose}>暂不开通，继续分析</button></footer>
+  <footer className="bm-member-footer">{message&&<p className="bm-member-message" role="status">{message}</p>}<div className="bm-cta-wrap"><span className="bm-discount">限时 4.1 折 <time>{clock}</time></span><button type="button" className="bm-open-button" onClick={()=>setMessage('会员服务尚未开放，本次不会收费。关闭此页即可继续分析体验。')}>立即开通</button></div><p>会员页面预览 · 暂不收费 · 折扣与倒计时仅作展示</p><button type="button" className="br-text-button" onClick={onClose}>暂不开通，继续分析</button></footer>
  </BottomSheet>;
 }

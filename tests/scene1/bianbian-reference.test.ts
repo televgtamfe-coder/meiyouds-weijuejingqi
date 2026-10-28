@@ -1,3 +1,5 @@
+import {mockHistory,historyMonthDay} from '../../src/scenes/scene1/bianbian/mockHistory';
+import {createMockTrends} from '../../src/scenes/scene1/bianbian/trendData';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { buildMetadata, emptyForm, demoReport } from '../../src/scenes/scene1/bianbian/analysis';
 import { toggleAllergy, loadBabyProfile, saveBabyProfile, mockBabyProfile } from '../../src/scenes/scene1/bianbian/babyProfile';
@@ -36,3 +38,5 @@ describe('参考版资料和记录边界', () => {
   expect(text).not.toContain('小柚子'); expect(text).not.toContain('data:image');
  });
 });
+
+it('三个不同状态的历史示例不写入真实历史，仅格式化月日',()=>{const entries=mockHistory(mockBabyProfile,createMockTrends(new Date('2026-10-28T04:00:00Z')));expect(entries).toHaveLength(3);expect(new Set(entries.map(r=>r.report.risk)).size).toBe(3);expect(entries.every(r=>r.demo&&!saveRecord(r))).toBe(true);expect(loadRecords()).toHaveLength(0);expect(historyMonthDay(entries[0].createdAt)).toBe('10月28日');});

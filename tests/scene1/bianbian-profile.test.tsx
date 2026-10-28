@@ -19,7 +19,7 @@ describe('三步资料与参考版导航', () => {
   await user.click(screen.getByRole('button',{name:'下一步',exact:true}));
   expect(screen.getByRole('heading',{name:'03 过敏情况'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'完成',exact:true}));
-  expect(screen.getByRole('heading',{name:'历史报告'})).toBeVisible();
+  expect(screen.getByRole('heading',{name:/历史报告/})).toBeVisible();
   first.unmount();renderPage();expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
  });
  it('修改取消不覆盖档案，拍照入口直接进入取景框并保留相册', async () => {
@@ -37,7 +37,7 @@ describe('三步资料与参考版导航', () => {
   const user=userEvent.setup();renderPage();await complete(user);
   await user.click(screen.getByRole('button',{name:'我的',exact:true}));
   await user.click(screen.getByRole('button',{name:'升级专业版'}));
-  expect(screen.getByText('会员页面预览 · 暂不收费')).toBeVisible();
+  expect(screen.getByText(/会员页面预览 · 暂不收费/)).toBeVisible();
   await user.click(screen.getByRole('button',{name:'暂不开通，继续分析'}));
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
  });

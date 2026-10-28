@@ -12,9 +12,9 @@ describe('联合趋势与精简布局',()=>{
   expect(series.find(s=>s.key==='weight')?.changes).toEqual([0,null,null,null,null,null,1.5]);
   expect(series.find(s=>s.key==='feeding')?.changes[4]).toBe(-9);
  });
- it('三类详情默认收起，首页恢复七天规律并展示月度指标',()=>{
+ it('首页删除分项折叠区，保留七天规律与六项月度指标',()=>{
   const view=render(<TrendDashboard data={createMockTrends()} onAnalyze={()=>{}}/>);
-  expect(view.container.querySelectorAll('.bt-growth-card:not([open]),.bt-mini-card:not([open])')).toHaveLength(3);
+  expect(view.container.querySelectorAll('.bt-growth-card,.bt-mini-card')).toHaveLength(0);
   expect(screen.getByRole('region',{name:'月度变化对比'})).toBeVisible();
   expect(screen.getByRole('button',{name:'智能联合分析'})).toBeVisible();
  });
