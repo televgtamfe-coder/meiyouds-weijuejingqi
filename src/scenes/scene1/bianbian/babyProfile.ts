@@ -18,14 +18,15 @@ export function toggleAllergy(current: string[], value: string) {
 }
 export function loadBabyProfile(): {profile: BabyProfile; confirmed: boolean} {
  try {
-  const p = JSON.parse(sessionStorage.getItem(profileKey) || sessionStorage.getItem('meiyou.bianbian.confirmed-profile.v3') || 'null');
+  let stored:string|null=null;try{stored=localStorage.getItem(profileKey);}catch{}
+  const p = JSON.parse(stored || sessionStorage.getItem(profileKey) || sessionStorage.getItem('meiyou.bianbian.confirmed-profile.v3') || 'null');
   if((p?.version===4||p?.version===3) && typeof p.nickname==='string' && p.nickname.trim() && p.nickname.length<=12 && validBirthDate(p.birthDate) && feedingOptions.some(([v])=>v===p.feeding) && complementaryOptions.some(([v])=>v===p.complementary) && Array.isArray(p.allergies) && p.allergies.length>0 && p.allergies.every((v: unknown)=>allergyOptions.some(([a])=>v===a)) && !(p.allergies.length>1 && p.allergies.some((v:string)=>v==='none'||v==='unsure'))) {
    return {profile:{nickname:p.nickname,birthDate:p.birthDate,feeding:p.feeding,complementary:p.complementary,formula:typeof p.formula==='string'?p.formula:'',allergies:p.allergies,deliveryMode:p.deliveryMode==='cesarean'?'cesarean':'vaginal'},confirmed:p.version===4&&['vaginal','cesarean'].includes(p.deliveryMode)};
   }
  } catch { /* A disabled or corrupt session never bypasses confirmation. */ }
  return {profile:{...mockBabyProfile,allergies:[...mockBabyProfile.allergies]},confirmed:false};
 }
-export function saveBabyProfile(profile:BabyProfile) { try {sessionStorage.setItem(profileKey,JSON.stringify({...profile,version:4,source:'mock'}));}catch{/* Current page keeps the confirmed profile in memory. */} }
+export function saveBabyProfile(profile:BabyProfile) { const value=JSON.stringify({...profile,version:4,source:'mock'});for(const getStorage of [()=>localStorage,()=>sessionStorage]){try{getStorage().setItem(profileKey,value);}catch{/* Current page keeps the confirmed profile in memory. */}} }
 export function babyAge(birthDate:string,now=new Date()) {
  const birth=new Date(`${birthDate}T00:00:00`);
  const months=(now.getFullYear()-birth.getFullYear())*12+now.getMonth()-birth.getMonth()-(now.getDate()<birth.getDate()?1:0);

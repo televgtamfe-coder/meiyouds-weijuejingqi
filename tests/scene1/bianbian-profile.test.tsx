@@ -3,24 +3,37 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { BianbianPage } from '../../src/scenes/scene1/bianbian/BianbianPage';
-beforeEach(() => sessionStorage.clear());
+beforeEach(() => {sessionStorage.clear();localStorage.clear();});
 const renderPage = () => render(<MemoryRouter><BianbianPage /></MemoryRouter>);
+async function activate(user: ReturnType<typeof userEvent.setup>) {
+ await user.click(screen.getByRole('button',{name:'立即开通',exact:true}));
+ await user.click(screen.getByRole('button',{name:'模拟开通并继续',exact:true}));
+}
 async function complete(user: ReturnType<typeof userEvent.setup>) {
+ await activate(user);
  await user.click(screen.getByRole('button', {name:'下一步',exact:true}));
  await user.click(screen.getByRole('button', {name:'下一步',exact:true}));
  await user.click(screen.getByRole('button', {name:'完成',exact:true}));
+ await user.click(screen.getByRole('button',{name:'关闭相机',exact:true}));
 }
 describe('三步资料与参考版导航', () => {
- it('预填资料，三步确认后到首页，同会话不重复向导', async () => {
+ it('首次示例与模拟开通，确认后直接拍照，再次进入不重复向导', async () => {
   const user=userEvent.setup();const first=renderPage();
+  expect(screen.getByRole('article',{name:'便便解读示例'})).toBeVisible();
+  await user.click(screen.getByRole('button',{name:'立即开通',exact:true}));
+  await user.click(screen.getByRole('button',{name:'关闭会员页，返回示例'}));
+  expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
+  await activate(user);
   expect(screen.getByLabelText('宝宝昵称')).toHaveValue('小柚子');
   await user.click(screen.getByRole('button',{name:'下一步',exact:true}));
   expect(screen.getByRole('heading',{name:'02 喂养方式'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'下一步',exact:true}));
   expect(screen.getByRole('heading',{name:'03 过敏情况'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'完成',exact:true}));
+  expect(screen.getByRole('dialog',{name:'拍摄便便照片'})).toBeVisible();
+  await user.click(screen.getByRole('button',{name:'关闭相机'}));
   expect(screen.getByRole('heading',{name:/历史报告/})).toBeVisible();
-  first.unmount();renderPage();expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
+  first.unmount();sessionStorage.clear();renderPage();expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
  });
  it('修改取消不覆盖档案，拍照入口直接进入取景框并保留相册', async () => {
   const user=userEvent.setup();renderPage();await complete(user);
@@ -35,10 +48,10 @@ describe('三步资料与参考版导航', () => {
  });
  it('设置入口与会员预览有退出路径，不声称付费已开通', async () => {
   const user=userEvent.setup();renderPage();await complete(user);
-  await user.click(screen.getByRole('button',{name:'我的',exact:true}));
-  await user.click(screen.getByRole('button',{name:'升级专业版'}));
+  await user.click(screen.getByRole('button',{name:'功能设置',exact:true}));
+  await user.click(screen.getByRole('button',{name:'查看会员权益'}));
   expect(screen.getByText(/会员页面预览 · 暂不收费/)).toBeVisible();
-  await user.click(screen.getByRole('button',{name:'暂不开通，继续分析'}));
+  await user.click(screen.getByRole('button',{name:'关闭会员页'}));
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
  });
 });

@@ -4,7 +4,7 @@ import {buildMetadata,emptyForm,demoReport} from '../../src/scenes/scene1/bianbi
 import {createMockTrends,mockDetailDefaults} from '../../src/scenes/scene1/bianbian/trendData';
 import {parseJointAnalysis} from '../../src/scenes/scene1/bianbian/trendAnalysis';
 import {makeRecord,recordTimestamp} from '../../src/scenes/scene1/bianbian/records';
-beforeEach(()=>sessionStorage.clear());
+beforeEach(()=>{sessionStorage.clear();localStorage.clear();});
 describe('第四版资料、趋势和报告边界',()=>{
  it('默认自然分娩，确认后的剖宫产可保存重读',()=>{
   expect(loadBabyProfile().profile.deliveryMode).toBe('vaginal');

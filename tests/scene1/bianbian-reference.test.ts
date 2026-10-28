@@ -5,7 +5,7 @@ import { buildMetadata, emptyForm, demoReport } from '../../src/scenes/scene1/bi
 import { toggleAllergy, loadBabyProfile, saveBabyProfile, mockBabyProfile } from '../../src/scenes/scene1/bianbian/babyProfile';
 import { loadRecords, saveRecord, makeRecord, recordsKey } from '../../src/scenes/scene1/bianbian/records';
 import { reportText } from '../../src/scenes/scene1/bianbian/reportExport';
-beforeEach(() => sessionStorage.clear());
+beforeEach(() => {sessionStorage.clear();localStorage.clear();});
 describe('参考版资料和记录边界', () => {
  it('没有过敏与不确定不能和具体过敏项并存', () => {
   expect(toggleAllergy(['none'], 'milk')).toEqual(['milk']);

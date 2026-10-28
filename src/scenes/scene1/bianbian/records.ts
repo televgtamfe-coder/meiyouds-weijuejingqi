@@ -1,3 +1,4 @@
+import {entryKey} from './entryFlow';
 import {BabyProfile} from './babyProfile';
 import {TrendSet,validTrends} from './trendData';
 import {JointAnalysis,validJoint} from './trendAnalysis';
@@ -19,7 +20,7 @@ export function saveRecord(record:SavedReport) {if(record.demo||!validRecord(rec
 export function dateLabel(value:string){return new Date(value).toLocaleString('zh-CN',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});}
 export function readFlag(key:string){try{return sessionStorage.getItem(key)==='true';}catch{return false;}}
 export function writeFlag(key:string,value:boolean){try{sessionStorage.setItem(key,String(value));}catch{/* In-page state remains usable. */}}
-export function clearBianbianData(){for(const key of [recordsKey,reminderKey,reminderSeenKey,'meiyou.bianbian.member-preview.v5','meiyou.bianbian.confirmed-profile.v4','meiyou.bianbian.confirmed-profile.v3','meiyou.bianbian.confirmed-profile.v2']){try{sessionStorage.removeItem(key);}catch{/* No inaccessible keys are used. */}}}
+export function clearBianbianData(){for(const key of [entryKey,recordsKey,reminderKey,reminderSeenKey,'meiyou.bianbian.member-preview.v5','meiyou.bianbian.confirmed-profile.v4','meiyou.bianbian.confirmed-profile.v3','meiyou.bianbian.confirmed-profile.v2']){for(const getStorage of [()=>localStorage,()=>sessionStorage]){try{getStorage().removeItem(key);}catch{/* No inaccessible keys are used. */}}}}
 export async function createThumbnail(image:string):Promise<string>{const img=new Image();img.src=image;await img.decode();const canvas=document.createElement('canvas');canvas.width=160;canvas.height=Math.round(160*img.height/img.width);if(canvas.height>220){canvas.height=220;canvas.width=Math.round(220*img.width/img.height);}canvas.getContext('2d')?.drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/jpeg',.55);}
 export function downloadBlob(blob:Blob,name:string){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(url),30000);}
 export function reminderCalendar(now=new Date()){

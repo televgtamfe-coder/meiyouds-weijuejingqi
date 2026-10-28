@@ -5,7 +5,7 @@ import {JointAnalysisContent,JointStatus} from './TrendsPage';
 import { SavedReport,recordTimestamp,riskLabels } from './records';
 import { referenceSources } from './referenceSources';
 import { Icon } from './ui';
-export function BianbianReport({record,onShare,onDoctor,onEdit,notice,canEdit,jointLoading,jointError,onJoint,onCancelJoint,saving}:{record:SavedReport;onShare:()=>void;onDoctor:()=>void; jointLoading:boolean;jointError:string;onJoint:()=>void;onCancelJoint:()=>void;saving:boolean;onEdit:()=>void;notice?:string;canEdit:boolean}) {
+export function BianbianReport({record,onPhoto,onShare,onDoctor,onEdit,notice,canEdit,jointLoading,jointError,onJoint,onCancelJoint,saving}:{record:SavedReport;onPhoto:()=>void;onShare:()=>void;onDoctor:()=>void; jointLoading:boolean;jointError:string;onJoint:()=>void;onCancelJoint:()=>void;saving:boolean;onEdit:()=>void;notice?:string;canEdit:boolean}) {
  const r=record.report,color=r.facts.find(f=>f.label==='颜色'),texture=r.facts.find(f=>f.label==='性状');
  const appearance=[{label:'颜色',fact:color},{label:'性状',fact:texture}];
  const hasAppearanceDetail=appearance.some(({fact})=>fact?.detail||fact?.comparison);
@@ -25,5 +25,5 @@ export function BianbianReport({record,onShare,onDoctor,onEdit,notice,canEdit,jo
    <section className="br-report-section br-sources"><h3><Icon name="book"/>育儿参考资料</h3><p>以下为通用科普资料，不代表本次结果已逐条核对。部分资料为英文。</p>{referenceSources.map(s=><a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.title}<span aria-hidden="true">↗</span></a>)}</section>
    <p className="br-report-disclaimer">仅供育儿记录和信息参考。<br/>照片不能单独判断疾病，请结合宝宝状态咨询医生。</p>
   </article><button className="br-text-button br-report-again" type="button" onClick={onEdit}>{record.demo?'开始我的分析':canEdit?'补充信息或再次分析':'再次拍照分析'}<Icon name="next"/></button>
- </div><footer className="br-action-footer"><button type="button" className={`br-primary ${riskPresentation[r.risk].doctor?'br-doctor-cta':''}`} onClick={riskPresentation[r.risk].doctor?onDoctor:onShare}><Icon name="share"/>{riskPresentation[r.risk].doctor?'分享给医生 · 一键问诊':'分享给家人'}</button></footer></>;
+ </div><footer className={`br-action-footer be-report-actions ${riskPresentation[r.risk].doctor?'has-doctor':''}`}>{riskPresentation[r.risk].doctor?<><button type="button" className="br-primary br-doctor-cta" onClick={onDoctor}><Icon name="share"/>分享给医生 · 一键问诊</button><button type="button" className="br-secondary" onClick={onPhoto}>拍照分析</button></>:<><button type="button" className="br-primary" onClick={onPhoto}><Icon name="gallery"/>拍照分析</button><button type="button" className="br-secondary" onClick={onShare}><Icon name="share"/>分享给家人</button></>}</footer></>;
 }
