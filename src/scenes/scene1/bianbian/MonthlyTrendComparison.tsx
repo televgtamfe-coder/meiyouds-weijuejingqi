@@ -4,7 +4,7 @@ import {MonthComparison,dayShort} from './trendData';
 import {monthMetrics,deltaLabel} from './visualTrends';
 import {Icon,IconName} from './ui';
 import {MonthRelationChart} from './MonthRelationChart';
-import {analyzeMonth,MonthReading,monthDays,monthFocus,monthDayObservation} from './monthlyAnalysis';
+import {analyzeMonth,MonthReading,monthDays,monthFocus} from './monthlyAnalysis';
 const icons:IconName[]=['file','info','milk','moon','birthday','user'];
 const readings=new Map<string,MonthReading>();
 export function MonthlyTrendComparison({data}:{data:MonthComparison}){
@@ -20,7 +20,6 @@ export function MonthlyTrendComparison({data}:{data:MonthComparison}){
  }
  return <section className="bv-month bm-joint-month" aria-label="月度联合成长分析"><div className="br-section-title"><h2>月度联合成长分析</h2></div><p className="bv-month-period">{data.current.label} 对照 {data.previous.label} · 同为前 {data.comparisonDays} 天</p>
  <MonthRelationChart data={data} selected={selected} onSelect={setSelected} linkedDates={reading?.connections.map(c=>c.date)}/>
- <section className="bm-month-day"><label><span>这一天，发生了什么</span><select aria-label="查看月度关联日期" value={selected} onChange={e=>setSelected(Number(e.target.value))}>{current.map((d,i)=><option key={d.date} value={i}>{dayShort(d.date)}</option>)}</select></label><p>{monthDayObservation(data,selected)}</p></section>
  <section className="bm-month-reading" aria-live="polite"><h3><Icon name="spark"/>月度联合解读</h3>{reading&&<><p className="bm-month-takeaway">{reading.summary}</p>{reading.connections.map(c=><div className="bm-month-connection" key={c.date+c.note}><button type="button" onClick={()=>setSelected(current.findIndex(d=>d.date===c.date))} aria-label={`在图中查看${dayShort(c.date)}关联`}>{dayShort(c.date)}<Icon name="next"/></button><p>{c.note}</p></div>)}<p className="bm-month-limit">{reading.limitations.join('；')}</p></>}
  {!reading&&!loading&&<p>结合整月五类记录，查看值得关注的共同变化。</p>}{loading&&<p className="bm-month-loading">{['正在对齐上月与本月的记录范围…','正在对照便便、奶量、睡眠与生长测量…','正在整理变化日期和可核对的依据…','仍在等待月度解读，图表可以继续查看…'][phase]}</p>}{error&&<p className="br-error" role="status">{error}</p>}
  {loading?<button type="button" className="br-text-button" onClick={()=>controller.current?.abort()}>停止月度解读</button>:<button type="button" className={reading?'br-text-button':'br-secondary'} onClick={()=>void generate()}>{reading?'重新生成月度解读':error?'重试月度联合解读':'生成月度联合解读'}</button>}</section>

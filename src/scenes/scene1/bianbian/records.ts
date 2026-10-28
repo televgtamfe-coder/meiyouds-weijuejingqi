@@ -2,25 +2,38 @@ import {entryKey} from './entryFlow';
 import {BabyProfile} from './babyProfile';
 import {TrendSet,validTrends} from './trendData';
 import {JointAnalysis,validJoint} from './trendAnalysis';
-import { Report } from './analysis';
-export type SavedReport={id:string;createdAt:string;report:Report;thumbnail:string;demo:boolean;babyName?:string;profileSnapshot?:BabyProfile;trendSnapshot?:TrendSet;jointAnalysis?:JointAnalysis};
+import { AnalysisForm,Report } from './analysis';
+export type SavedReport={id:string;createdAt:string;report:Report;thumbnail:string;demo:boolean;babyName?:string;profileSnapshot?:BabyProfile;trendSnapshot?:TrendSet;jointAnalysis?:JointAnalysis;formSnapshot?:AnalysisForm};
+export const mockRecordsKey='meiyou.bianbian.mock-history.v1';
 export const recordsKey='meiyou.bianbian.records.v3';
 export const reminderKey='meiyou.bianbian.reminder.v3';
 export const reminderSeenKey='meiyou.bianbian.reminder-seen.v3';
 export const riskLabels={green:'低风险',yellow:'需要关注',orange:'建议就医',red:'建议就医',unknown:'需要关注'};
-export function makeRecord(report:Report,thumbnail='',demo=false,context?:{profile:BabyProfile;trendSnapshot:TrendSet;jointAnalysis?:JointAnalysis}):SavedReport {return {id:crypto.randomUUID(),createdAt:new Date().toISOString(),report,thumbnail,demo,...(context?JSON.parse(JSON.stringify({babyName:context.profile.nickname,profileSnapshot:context.profile,trendSnapshot:context.trendSnapshot,jointAnalysis:context.jointAnalysis})):{} )};}
+export function makeRecord(report:Report,thumbnail='',demo=false,context?:{profile:BabyProfile;trendSnapshot:TrendSet;jointAnalysis?:JointAnalysis;form?:AnalysisForm}):SavedReport {
+ return JSON.parse(JSON.stringify({id:crypto.randomUUID(),createdAt:new Date().toISOString(),report,thumbnail,demo,...(context?{babyName:context.profile.nickname,profileSnapshot:context.profile,trendSnapshot:context.trendSnapshot,jointAnalysis:context.jointAnalysis,formSnapshot:context.form}:{})}));
+}
 export function recordTimestamp(value:string){const parts=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value));const v=(key:string)=>parts.find(p=>p.type===key)?.value||'';return `${v('year')}年${v('month')}月${v('day')}日${v('hour')}:${v('minute')}:${v('second')}`;}
-function validRecord(v:unknown):v is SavedReport {
+export function validRecord(v:unknown,allowDemo=false):v is SavedReport {
  if(!v||typeof v!=='object')return false;
  const x=v as SavedReport,r=x.report;
- return (x.babyName===undefined||typeof x.babyName==='string')&&(x.trendSnapshot===undefined||validTrends(x.trendSnapshot))&&(x.jointAnalysis===undefined||validJoint(x.jointAnalysis))&&typeof x.id==='string'&&typeof x.createdAt==='string'&&Number.isFinite(Date.parse(x.createdAt))&&typeof x.thumbnail==='string'&&x.demo===false&&!!r&&r.kind==='report'&&['green','yellow','orange','red','unknown'].includes(r.risk)&&['summary','detail','question','cause'].every(k=>typeof r[k as keyof Report]==='string')&&Array.isArray(r.facts)&&r.facts.every(f=>f&&['label','value','detail','comparison'].every(k=>typeof f[k as keyof typeof f]==='string'))&&Array.isArray(r.actions)&&r.actions.every(a=>a&&typeof a.title==='string'&&Array.isArray(a.items)&&a.items.every(i=>typeof i==='string'))&&Array.isArray(r.evidence)&&r.evidence.every(e=>typeof e==='string');
+ return (x.babyName===undefined||typeof x.babyName==='string')&&(x.trendSnapshot===undefined||validTrends(x.trendSnapshot))&&(x.jointAnalysis===undefined||validJoint(x.jointAnalysis))&&typeof x.id==='string'&&typeof x.createdAt==='string'&&Number.isFinite(Date.parse(x.createdAt))&&typeof x.thumbnail==='string'&&(x.demo===false||allowDemo&&x.demo===true)&&!!r&&r.kind==='report'&&['green','yellow','orange','red','unknown'].includes(r.risk)&&['summary','detail','question','cause'].every(k=>typeof r[k as keyof Report]==='string')&&Array.isArray(r.facts)&&r.facts.every(f=>f&&['label','value','detail','comparison'].every(k=>typeof f[k as keyof typeof f]==='string'))&&Array.isArray(r.actions)&&r.actions.every(a=>a&&typeof a.title==='string'&&Array.isArray(a.items)&&a.items.every(i=>typeof i==='string'))&&Array.isArray(r.evidence)&&r.evidence.every(e=>typeof e==='string');
 }
-export function loadRecords():SavedReport[] {try{const values=JSON.parse(sessionStorage.getItem(recordsKey)||'[]');return Array.isArray(values)?values.filter(validRecord).slice(0,20):[];}catch{return [];}}
-export function saveRecord(record:SavedReport) {if(record.demo||!validRecord(record))return false;try{sessionStorage.setItem(recordsKey,JSON.stringify([record,...loadRecords().filter(x=>x.id!==record.id)].slice(0,20)));return true;}catch{return false;}}
+export function loadRecords():SavedReport[] {
+ const merged=new Map<string,SavedReport>();
+ for(const getStorage of [()=>localStorage,()=>sessionStorage]){try{const values=JSON.parse(getStorage().getItem(recordsKey)||'[]');if(Array.isArray(values))values.filter(x=>validRecord(x)).forEach(x=>merged.set(x.id,x));}catch{}}
+ const records=[...merged.values()].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt)).slice(0,20);
+ if(records.length)try{localStorage.setItem(recordsKey,JSON.stringify(records));sessionStorage.removeItem(recordsKey);}catch{}
+ return records;
+}
+export function saveRecord(record:SavedReport) {
+ if(record.demo||!validRecord(record))return false;
+ const value=JSON.stringify([record,...loadRecords().filter(x=>x.id!==record.id)].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt)).slice(0,20));
+ try{localStorage.setItem(recordsKey,value);sessionStorage.removeItem(recordsKey);return true;}catch{try{sessionStorage.setItem(recordsKey,value);}catch{}return false;}
+}
 export function dateLabel(value:string){return new Date(value).toLocaleString('zh-CN',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});}
 export function readFlag(key:string){try{return sessionStorage.getItem(key)==='true';}catch{return false;}}
 export function writeFlag(key:string,value:boolean){try{sessionStorage.setItem(key,String(value));}catch{/* In-page state remains usable. */}}
-export function clearBianbianData(){for(const key of [entryKey,recordsKey,reminderKey,reminderSeenKey,'meiyou.bianbian.member-preview.v5','meiyou.bianbian.confirmed-profile.v4','meiyou.bianbian.confirmed-profile.v3','meiyou.bianbian.confirmed-profile.v2']){for(const getStorage of [()=>localStorage,()=>sessionStorage]){try{getStorage().removeItem(key);}catch{/* No inaccessible keys are used. */}}}}
+export function clearBianbianData(){for(const key of [entryKey,recordsKey,mockRecordsKey,reminderKey,reminderSeenKey,'meiyou.bianbian.member-preview.v5','meiyou.bianbian.confirmed-profile.v4','meiyou.bianbian.confirmed-profile.v3','meiyou.bianbian.confirmed-profile.v2']){for(const getStorage of [()=>localStorage,()=>sessionStorage]){try{getStorage().removeItem(key);}catch{/* No inaccessible keys are used. */}}}}
 export async function createThumbnail(image:string):Promise<string>{const img=new Image();img.src=image;await img.decode();const canvas=document.createElement('canvas');canvas.width=160;canvas.height=Math.round(160*img.height/img.width);if(canvas.height>220){canvas.height=220;canvas.width=Math.round(220*img.width/img.height);}canvas.getContext('2d')?.drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/jpeg',.55);}
 export function downloadBlob(blob:Blob,name:string){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(url),30000);}
 export function reminderCalendar(now=new Date()){
