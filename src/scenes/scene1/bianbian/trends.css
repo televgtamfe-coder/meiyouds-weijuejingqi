@@ -75,3 +75,30 @@
 .bs-risk-observation{display:flex;flex-direction:column;gap:2px;padding:7px 8px;border-radius:8px;background:rgba(255,255,255,.7);font-size:12px;line-height:18px;min-width:0}
 .bs-risk-observation strong{font-weight:600;font-size:13px}
 .bs-risk-observation-unknown strong{color:#777;font-weight:400}
+
+/* V19: conclusion first, brand accents for hierarchy, risk hues for status only. */
+.br-summary.bs-observation-v19{background:transparent!important;padding:0!important;border:0;border-radius:0;color:#323232;margin:0 0 12px}
+.bs-observation-v19 .bs-observation-result{margin:0 0 10px;padding:14px;background:var(--observation-background);border-radius:12px;border:1px solid color-mix(in srgb,var(--observation-color) 12%,transparent)}
+.bs-observation-v19 h3{display:flex;align-items:center;gap:7px;font-size:16px;font-weight:600;line-height:24px;margin:0 0 9px;color:#323232}
+.bs-observation-v19 h3:before{content:'';width:4px;height:16px;border-radius:3px;background:#ff4d88;flex-shrink:0}
+.bs-observation-v19 .bs-observation-result h3:before{background:var(--observation-color)}
+.bs-observation-v19 .bs-observation-result p{color:#555;font-size:14px;line-height:24px;font-weight:400;margin:0}
+.bs-observation-v19 .bs-observation-result strong{font-weight:600;color:var(--observation-color)}
+.bs-important-indicators{padding:14px;background:#fff;border-radius:12px}
+.bs-observation-v19 .bs-observation-facts{gap:8px;margin:0}
+.bs-observation-v19 .bs-observation-facts>div{padding:10px 12px;border:0;border-radius:8px;background:linear-gradient(120deg,#fff7fa,#f8f8fa)}
+.bs-observation-v19 .bs-observation-fact{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;line-height:22px;font-size:14px}
+.bs-observation-v19 .bs-observation-fact>span{font-size:14px;font-weight:600;color:#323232;flex-shrink:0}
+.bs-observation-v19 .bs-observation-fact strong{font-size:13px;line-height:20px;padding:2px 7px;background:#ffe9f1;color:#aa365f;border-radius:5px;text-align:right;font-weight:600;max-width:76%}
+.bs-observation-v19 .bs-observation-description{margin:7px 0 0;font-size:13px;line-height:22px;color:#666}
+.bs-observation-v19 .bs-observation-description>span{color:#444;font-weight:500}
+.bs-observation-v19 .bs-risk-observations{margin-top:10px;padding-top:10px;border-color:#f0edf0}
+.bs-observation-v19 .bs-risk-observations h4{font-size:14px;font-weight:600;line-height:22px;color:#323232;margin-bottom:8px}
+.bs-observation-v19 .bs-risk-observation{background:#f7f8fa;color:#666;padding:7px 8px}
+.bs-observation-v19 .bs-risk-observation strong{font-weight:500;color:#555}
+.bs-observation-v19 .bs-risk-observation-present{background:#edf5fc}
+.bs-observation-v19 .bs-risk-observation-present strong{font-weight:600;color:#276caa}
+.bs-observation-v19 .bs-risk-observation-unknown strong{color:#888;font-weight:400}
+.br-report-paper>.br-report-section>h3,.bs-joint-unified>.br-section-title h2{font-size:16px;font-weight:600;color:#323232}
+.bs-reference .br-summary-details p{font-weight:400;color:#666}
+@media(max-width:359px){.bs-important-indicators,.bs-observation-v19 .bs-observation-result{padding:12px}.bs-observation-v19 .bs-observation-facts>div{padding:9px 10px}}

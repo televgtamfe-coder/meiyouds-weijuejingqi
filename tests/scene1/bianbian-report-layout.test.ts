@@ -41,3 +41,10 @@ it('风险观察只使用当前照片的明确事实，不把缺失、疑似或�
  r.report.facts=[{label:'可见混合物',value:'未见血丝。',detail:'可见血丝。',comparison:''}];
  expect(riskObservations(r)[0].state).toBe('unknown');
 });
+
+it('完整示例的结论与三个风险指标一致，导出先结论再指标',()=>{
+ const r=makeRecord(demoReport,'',true);
+ expect(riskObservations(r).map(x=>x.value)).toEqual(['未见明显','未见明显','未见明显']);
+ expect(observationConclusion(r)).toContain('柔软糊状');expect(observationConclusion(r)).toContain('未见明显血丝、奶瓣或灰白色区域');
+ const body=reportSections(r)[0].body;expect(body.indexOf('观察结论')).toBeLessThan(body.indexOf('重要指标解读'));
+});
