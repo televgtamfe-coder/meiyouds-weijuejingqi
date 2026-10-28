@@ -1,4 +1,4 @@
-import {reportContext,appearanceConclusion} from './reportSummary';
+import {reportContext,appearanceConclusion,observationConclusion} from './reportSummary';
 import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {dayRisk,dayShort,stoolColors,trendRisks,trendRiskLabels} from './trendData';
@@ -11,11 +11,10 @@ export function reportSections(record:SavedReport) {
  const factText=(f:typeof color)=>f?[f.value,f.detail,f.comparison].filter(Boolean).join('\n'):'本次未返回该项描述。';
  const others=r.facts.filter(f=>!['颜色','性状'].includes(f.label));
  return [
- {title:'观察总结',body:appearanceConclusion(record).map(f=>`${f.label}：${f.value}`).join('\n')+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
+ {title:'观察总结',body:appearanceConclusion(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n观察结论：'+observationConclusion(record)+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
  ...(record.trendSnapshot?[{title:'近 7 天便便规律',body:record.trendSnapshot.days.map(d=>`${d.date} · ${d.stools.length}次 · ${trendRisks[dayRisk(d)].label}（模拟记录）`).join('\n')}]:[]),
- {title:'结合喂养与睡眠',body:reportContext(record).map(x=>`${x.label}：${x.value}${x.change?'，'+x.change:''}${x.mock?'（同日模拟记录）':''}`).join('\n')},
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
- ...(record.jointAnalysis?[{title:'成长联合分析 · 模拟记录',body:'同日变化提醒：便便、奶量与睡眠。仅用于模拟演示。'},{title:'这些变化可能有关联',body:record.jointAnalysis.relationships.join('\n\n')},{title:'联合分析的边界',body:record.jointAnalysis.limitations.join('\n')+'\n'+record.jointAnalysis.alert}]:record.trendSnapshot?[{title:'成长联合分析',body:'联合分析尚未生成，可返回报告查看。'}]:[]),
+ {title:'联合成长分析',body:[...reportContext(record).map(x=>`${x.label}：${x.value}${x.change?'，'+x.change:''}${x.mock?'（示例数据）':''}`),...(record.jointAnalysis?['这些变化可能有关联：',...record.jointAnalysis.relationships,record.jointAnalysis.alert]:record.trendSnapshot?['联合分析尚未生成，可返回报告查看。']:[])].filter(Boolean).join('\n\n')},
  {title:'行动建议',body:importantActions(record).map((a,i)=>`${i+1}. ${a.title}\n${a.action}`).join('\n\n')||'本次未返回可用行动点。'},
  {title:'参考解读',body:['完整分析依据',r.summary,r.detail,r.cause,...r.evidence,...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
  {title:'育儿参考资料',body:'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${x.url}`).join('\n\n')},
@@ -28,7 +27,7 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  if(!ctx)throw new Error('当前浏览器无法生成长图，请复制报告文字。');
  const font="'PingFang SC','Microsoft YaHei',sans-serif";
  function lines(text:string,size:number,max=inner-64){ctx!.font=`400 ${size}px ${font}`;const out:string[]=[];for(const paragraph of text.split('\n')){let line='';for(const ch of paragraph){if(ctx!.measureText(line+ch).width>max&&line){out.push(line);line=ch;}else line+=ch;}out.push(line);}return out;}
- const sections=reportSections(record).map(s=>({...s,week:s.title==='近 7 天便便规律',comparison:s.title==='成长联合分析 · 模拟记录'&&!!record.trendSnapshot,lines:lines(s.title==='育儿参考资料'?'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${new URL(x.url).hostname}`).join('\n\n')+'\n\n完整资料链接可在报告页面查看。':s.body,25)}));
+ const sections=reportSections(record).map(s=>({...s,week:s.title==='近 7 天便便规律',comparison:s.title==='联合成长分析'&&!!record.trendSnapshot&&!!record.jointAnalysis,lines:lines(s.title==='育儿参考资料'?'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${new URL(x.url).hostname}`).join('\n\n')+'\n\n完整资料链接可在报告页面查看。':s.body,25)}));
  const chartHeight=record.trendSnapshot?590:0;
  const height=300+sections.reduce((sum,s)=>sum+(s.week?chartHeight:106+s.lines.length*40+(s.comparison?520:0)),0)+180;
  if(height>30000)throw new Error('报告内容较长，请使用复制文字保存完整内容。');

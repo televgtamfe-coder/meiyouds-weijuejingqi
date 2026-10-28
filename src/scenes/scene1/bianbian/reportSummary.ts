@@ -1,6 +1,10 @@
 import {SavedReport} from './records';
 import {feedingOptions,complementaryOptions} from './babyProfile';
-export function appearanceConclusion(record:SavedReport){return ['颜色','性状'].map(label=>({label,value:record.report.facts.find(f=>f.label===label)?.value||'暂无描述'}));}
+// Keep complete source sentences so a shortened display never drops half a qualification.
+export function firstObservationSentence(value:string){return value.trim().match(/^[^。！？\n]+[。！？]?/)?.[0]||'';}
+export function appearanceConclusion(record:SavedReport){return ['颜色','性状'].map(label=>{const fact=record.report.facts.find(f=>f.label===label);return {label,value:fact?.value||'暂无描述',description:firstObservationSentence(fact?.detail||fact?.comparison||'')};});}
+export function observationConclusion(record:SavedReport){return firstObservationSentence(record.report.summary)||'本次信息不足，请补充清晰照片与宝宝情况。';}
+
 export function reportContext(record:SavedReport){
  const p=record.profileSnapshot;
  const date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(record.createdAt));
