@@ -5,7 +5,7 @@ import { ChangeEvent,FormEvent,useEffect,useRef,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StatusBar } from '../components/StatusBar';
 import { AnalysisForm,analyze,emptyForm,prepareImage } from './analysis';
-import { BabyProfile,loadBabyProfile,saveBabyProfile } from './babyProfile';
+import { BabyProfile,loadBabyProfile,saveBabyProfile,withMockFormula } from './babyProfile';
 import { BabyProfileWizard } from './BabyProfileWizard';
 import { BianbianHome,BianbianHistory } from './BianbianHome';
 import { BianbianDetails } from './BianbianDetails';
@@ -46,7 +46,7 @@ export function BianbianPage(){
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;controller.current?.abort();jointController.current?.abort();};},[]);
  useEffect(()=>{contentRef.current?.toggleAttribute('inert',!!panel||loading||camera);},[panel,loading,camera]);
  useEffect(()=>{if((error||question)&&view==='details')document.querySelector('.br-feedback')?.scrollIntoView?.({block:'center',behavior:'smooth'});},[error,question,view]);
- function confirmProfile(next:BabyProfile){const firstSetup=entryStage==='profile';jointController.current?.abort();jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});setProfile(next);saveBabyProfile(next);setConfirmed(true);setWizard(false);setForm(prev=>({...prev,...next}));saveEntryStage('ready');setEntryStage('ready');if(firstSetup){newAnalysis.current=true;setView('home');setCamera(true);}}
+ function confirmProfile(next:BabyProfile){next=withMockFormula(next);const firstSetup=entryStage==='profile';jointController.current?.abort();jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});setProfile(next);saveBabyProfile(next);setConfirmed(true);setWizard(false);setForm(prev=>({...prev,...next}));saveEntryStage('ready');setEntryStage('ready');if(firstSetup){newAnalysis.current=true;setView('home');setCamera(true);}}
  function closeProfile(){if(entryStage==='ready'&&confirmed)setWizard(false);else navigate('/scene1-parenting');}
  function activateEntry(){saveEntryStage('profile');setEntryStage('profile');setPanel(null);setWizardStep(loadBabyProfile().needsBasicInfo?0:1);setWizardQuick(false);setWizardFormula(false);setWizard(true);}
  function openPhoto(){newAnalysis.current=view!=='details';setCamera(true);}

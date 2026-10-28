@@ -12,7 +12,7 @@ it('保存完整独立快照，修改当前资料与表单不改写历史，新�
  const r=makeRecord(report,'',false,{profile,trendSnapshot:trend,form});
  report.detail='后来结果';profile.formula='后来品牌';trend.days[6].loggedMilkMl=999;form.notes='后来备注';
  expect(saveRecord(r)).toBe(true);sessionStorage.clear();
- const saved=loadRecords()[0];expect(saved.report.detail).toBe(demoReport.detail);expect(saved.profileSnapshot?.formula).toBe('');expect(saved.formSnapshot?.notes).toBe('当时备注');expect(saved.trendSnapshot?.days[6].loggedMilkMl).toBe(780);
+ const saved=loadRecords()[0];expect(saved.report.detail).toBe(demoReport.detail);expect(saved.profileSnapshot?.formula).toBe(mockBabyProfile.formula);expect(saved.formSnapshot?.notes).toBe('当时备注');expect(saved.trendSnapshot?.days[6].loggedMilkMl).toBe(780);
  expect(saved.createdAt).toBe(r.createdAt);expect(saved.report).toEqual(r.report);
 });
 it('迁移旧会话报告，不修改内容、时间或补造背景',()=>{
@@ -29,7 +29,7 @@ it('三条示例均包含完整报告、输入、七天和联合分析，日期�
 it('重新进入和修改宝宝资料不重新生成历史示例，清除本地数据才重建',()=>{
  const first=loadMockHistory(mockBabyProfile,trends());
  const second=loadMockHistory({...mockBabyProfile,formula:'新品牌'},createMockTrends(new Date('2026-11-01T12:00:00Z')));
- expect(second).toEqual(first);first[0].profileSnapshot!.formula='内存修改';expect(loadMockHistory(mockBabyProfile,trends())[0].profileSnapshot?.formula).toBe('');
+ expect(second).toEqual(first);first[0].profileSnapshot!.formula='内存修改';expect(loadMockHistory(mockBabyProfile,trends())[0].profileSnapshot?.formula).toBe(mockBabyProfile.formula);
  clearBianbianData();expect(loadMockHistory({...mockBabyProfile,formula:'新品牌'},trends())[0].profileSnapshot?.formula).toBe('新品牌');
 });
 it('风险状态固定映射但不猜测缺失结果或互相冲突的数量',()=>{
