@@ -15,7 +15,7 @@ describe('联合趋势与精简布局',()=>{
  it('首页删除分项折叠区，保留七天规律与六项月度指标',()=>{
   const view=render(<TrendDashboard data={createMockTrends()} onAnalyze={()=>{}}/>);
   expect(view.container.querySelectorAll('.bt-growth-card,.bt-mini-card')).toHaveLength(0);
-  expect(screen.getByRole('region',{name:'月度变化对比'})).toBeVisible();
+  expect(screen.getByRole('region',{name:'月度联合成长分析'})).toBeVisible();
   expect(screen.getByRole('button',{name:'智能联合分析'})).toBeVisible();
  });
  it('月度对比使用相同天数且缺测不补数',()=>{
