@@ -4,7 +4,7 @@ export const profileKey = 'meiyou.bianbian.confirmed-profile.v4';
 export const deliveryOptions=[['vaginal','自然分娩'],['cesarean','剖宫产']] as const;
 export const feedingOptions = [['pure_breast', '纯母乳喂养'], ['pure_formula', '纯配方奶喂养'], ['mixed', '混合喂养']];
 export const complementaryOptions = [['none', '未添加辅食'], ['just_started', '刚开始添加辅食'], ['established', '已添加辅食']];
-export const allergyOptions = [['none','无已知过敏'],['milk','牛奶及乳制品'],['nuts','花生及坚果'],['gluten','麸质'],['unsure','不确定']];
+export const allergyOptions = [['none','无已知过敏'],['milk','牛奶及乳制品'],['nuts','花生及坚果'],['gluten','小麦等谷物蛋白（麸质）'],['unsure','不确定']];
 export const mockFormula='皇家美素佳尔3段';
 export const mockBabyProfile: BabyProfile = { nickname:'小柚子', deliveryMode:'vaginal', birthDate:'2026-06-27', feeding:'mixed', complementary:'none', formula:mockFormula, allergies:['none'] };
 export function withMockFormula(profile:BabyProfile):BabyProfile{return {...profile,formula:profile.formula.trim()||(['mixed','pure_formula'].includes(profile.feeding)?mockFormula:'')};}

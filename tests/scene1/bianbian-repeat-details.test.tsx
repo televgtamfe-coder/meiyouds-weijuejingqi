@@ -36,7 +36,7 @@ it('非首次仅展示症状和备注；首次仍可填写排便情况和次数'
  expect(screen.getByText('伴随症状')).toBeVisible();expect(screen.getByRole('button',{name:'发热',exact:true})).toBeVisible();expect(screen.getByRole('textbox')).toBeVisible();
 });
 it('过敏标签明确说明所选过敏原与未知状态',()=>{
- expect(allergyTag({...mockBabyProfile,allergies:['gluten']})).toBe('麸质过敏');
+ expect(allergyTag({...mockBabyProfile,allergies:['gluten']})).toBe('小麦等谷物蛋白（麸质）过敏');
  expect(allergyTag({...mockBabyProfile,allergies:['milk','nuts']})).toBe('牛奶及乳制品、花生及坚果过敏');
  expect(allergyTag({...mockBabyProfile,allergies:['none']})).toBe('无已知过敏');
  expect(allergyTag({...mockBabyProfile,allergies:['unsure']})).toBe('过敏情况不确定');
