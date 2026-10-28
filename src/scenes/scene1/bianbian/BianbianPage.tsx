@@ -1,3 +1,4 @@
+import {bowelSnapshot,loadPreviousBowel,savePreviousBowel,reusePreviousBowel} from './previousBowel';
 import {EntryPreview,CameraDock} from './EntryPreview';
 import {readEntryStage,saveEntryStage} from './entryFlow';
 import {loadMockHistory} from './mockHistory';
@@ -35,6 +36,11 @@ export function BianbianPage(){
  const [demoRecords]=useState(()=>loadMockHistory(initial.profile,trends));
  const freshForm=(baby:BabyProfile):AnalysisForm=>({...emptyForm,...mockDetailDefaults(trends),...baby,consent:true,profileSource:'mock_confirmed',trendContext:trends});
  const [form,setForm]=useState<AnalysisForm>(()=>freshForm(initial.profile));
+ const [previousBowel,setPreviousBowel]=useState(()=>loadPreviousBowel(loadRecords()));
+ const [repeatDetails,setRepeatDetails]=useState(false);
+ function rememberBowel(next:AnalysisForm){const value=bowelSnapshot(next);if(value){setPreviousBowel(value);savePreviousBowel(value);}}
+ function changeDetails(next:AnalysisForm){setForm(next);rememberBowel(next);}
+ function resetBowel(){setPreviousBowel(null);savePreviousBowel(null);setRepeatDetails(false);}
  const [camera,setCamera]=useState(false),[saving,setSaving]=useState(false);
  const jointController=useRef<AbortController|null>(null),jointCache=useRef<{key:string;value:JointAnalysis}|null>(null);
  const [jointState,setJointState]=useState({key:'',loading:false,error:''}),[joint,setJoint]=useState<JointAnalysis|null>(null);
@@ -51,7 +57,7 @@ export function BianbianPage(){
  function activateEntry(){saveEntryStage('profile');setEntryStage('profile');setPanel(null);setWizardStep(loadBabyProfile().needsBasicInfo?0:1);setWizardQuick(false);setWizardFormula(false);setWizard(true);}
  function openPhoto(){newAnalysis.current=view!=='details';setCamera(true);}
  async function upload(event:ChangeEvent<HTMLInputElement>){const file=event.target.files?.[0];event.target.value='';if(file)await receivePhoto(file);}
- async function receivePhoto(file:File){setCamera(false);const version=++uploadVersion.current;setPreparing(true);setError('');try{const prepared=await prepareImage(file);if(alive.current&&version===uploadVersion.current){setImage(prepared);setDraftRecordId('');if(newAnalysis.current)setForm(freshForm(profile));setView('details');setQuestion('');}}catch(e){if(alive.current&&version===uploadVersion.current)setError(e instanceof Error?e.message:'照片读取失败，请重试。');}finally{if(alive.current&&version===uploadVersion.current)setPreparing(false);}}
+ async function receivePhoto(file:File){setCamera(false);const version=++uploadVersion.current;setPreparing(true);setError('');try{const prepared=await prepareImage(file);if(alive.current&&version===uploadVersion.current){setImage(prepared);setDraftRecordId('');if(newAnalysis.current){const next=reusePreviousBowel(freshForm(profile),previousBowel);setRepeatDetails(!!previousBowel);setForm(next);rememberBowel(next);}setView('details');setQuestion('');}}catch(e){if(alive.current&&version===uploadVersion.current)setError(e instanceof Error?e.message:'照片读取失败，请重试。');}finally{if(alive.current&&version===uploadVersion.current)setPreparing(false);}}
  function showRecord(next:SavedReport,from:View){setRecord(next);setReportBack(from);setNotice('');setView('report');}
  function editReport(){if(image&&(record?.demo||record?.id===draftRecordId)){setView('details');setError('');setQuestion('');}else openPhoto();}
  async function submit(event?:FormEvent){event?.preventDefault();if(controller.current||preparing)return;if(!confirmed){setWizard(true);return;}if(!image)return setError('请先添加一张清晰的便便照片。');if(!form.bowelPattern)return setError('请选择最近的排便情况。');if(!form.consent)return setError('请先阅读并勾选照片与资料使用说明。');
@@ -65,7 +71,7 @@ export function BianbianPage(){
   finally{window.clearTimeout(timeout);if(controller.current===request)controller.current=null;if(alive.current)setLoading(false);}
  }
 
- function resetEntry(){saveEntryStage('preview');setEntryStage('preview');setWizard(false);setCamera(false);setPanel(null);setView('home');setError('');setNotice('');}
+ function resetEntry(){resetBowel();saveEntryStage('preview');setEntryStage('preview');setWizard(false);setCamera(false);setPanel(null);setView('home');setError('');setNotice('');}
  function closePanel(){setPanel(null);}
  function cancelJoint(){jointController.current?.abort();}
  function attachJoint(target:SavedReport,value:JointAnalysis){if(target.jointAnalysis)return;const updated=JSON.parse(JSON.stringify({...target,jointAnalysis:value})) as SavedReport;saveRecord(updated);setRecords(prev=>prev.map(r=>r.id===target.id?updated:r));setRecord(prev=>prev?.id===target.id?updated:prev);}
@@ -82,7 +88,7 @@ export function BianbianPage(){
  }
  async function saveReport(){if(!record||saving)return;setSaving(true);setNotice('');try{const blob=await reportImage(record);if(!alive.current)return;const name=(record.babyName||'宝宝').replace(/[\/:*?"<>|]/g,'');downloadBlob(blob,`${name}_${record.createdAt.slice(0,10)}_便便分析报告.png`);setNotice('报告长图已生成，请在浏览器下载记录中查看。');}catch(e){setNotice(e instanceof Error?e.message:'报告保存失败，请重试。');}finally{if(alive.current)setSaving(false);}}
  function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView(reportBack==='report'?'home':reportBack);else if(view==='home')navigate('/scene1-parenting');else setView('home');}
- function clear(){setEntryStage('preview');jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(false);setView('home');}
+ function clear(){resetBowel();setEntryStage('preview');jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(false);setView('home');}
  const displayedRecords=[...records,...demoRecords];
  const title={home:'便便智能分析',details:'补充信息',report:'便便分析报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
  return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'}`} data-testid="bianbian-page">
@@ -91,7 +97,7 @@ export function BianbianPage(){
     <PageHeader title={title} onBack={back} onAction={view==='report'?saveReport:undefined} onReset={view==='home'?resetEntry:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
     {view==='home'&&<BianbianHome profile={profile} records={demoRecords} onEdit={editProfile} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} trends={trends}/>}
-    {view==='details'&&<BianbianDetails image={image} form={form} onChange={setForm} onSubmit={submit} onPhoto={openPhoto} error={error} question={question} busy={preparing}/>}
+    {view==='details'&&<BianbianDetails image={image} form={form} repeat={repeatDetails} onChange={changeDetails} onSubmit={submit} onPhoto={openPhoto} error={error} question={question} busy={preparing}/>}
     {view==='report'&&record&&<BianbianReport record={record} onShare={()=>setPanel('share')} onDoctor={()=>setPanel('doctor')} saving={saving} jointLoading={jointState.loading&&jointState.key===jointKey(record.profileSnapshot||profile,record.trendSnapshot||trends)} jointError={jointState.key===jointKey(record.profileSnapshot||profile,record.trendSnapshot||trends)?jointState.error:''} onJoint={()=>void startJoint(record)} onCancelJoint={cancelJoint} onEdit={editReport} notice={notice}/>}
     {view==='history'&&<BianbianHistory records={displayedRecords} onRecord={r=>showRecord(r,'history')} onPhoto={openPhoto}/>}
     {view==='trends'&&<TrendsPage data={trends} analysis={joint} loading={jointState.loading} error={jointState.error} onRetry={()=>void startJoint()} onCancel={cancelJoint}/>}

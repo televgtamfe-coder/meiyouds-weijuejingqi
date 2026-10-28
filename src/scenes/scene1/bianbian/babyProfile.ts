@@ -38,3 +38,5 @@ export function babyAge(birthDate:string,now=new Date()) {
 }
 export const profileSummary=(p:BabyProfile)=>[feedingOptions.find(([v])=>v===p.feeding)?.[1],complementaryOptions.find(([v])=>v===p.complementary)?.[1]].join(' · ');
 export const allergySummary=(p:BabyProfile)=>p.allergies.map(v=>allergyOptions.find(([key])=>key===v)?.[1]).filter(Boolean).join('、');
+
+export const allergyTag=(p:BabyProfile)=>p.allergies.includes('none')?'无已知过敏':p.allergies.includes('unsure')?'过敏情况不确定':allergySummary(p)?`${allergySummary(p)}过敏`:'未填写过敏情况';
