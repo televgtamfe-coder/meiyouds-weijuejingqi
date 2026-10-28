@@ -1,3 +1,4 @@
+import {dayShort,shanghaiDate,dayRisk} from './trendData';
 import {SavedReport} from './records';
 import {feedingOptions,complementaryOptions} from './babyProfile';
 // Keep complete source sentences so a shortened display never drops half a qualification.
@@ -42,4 +43,21 @@ export function riskObservations(record:SavedReport){
   const state=states.size===1?[...states][0]:'unknown';
   return {label:item.label,state,value:state==='absent'?'未见明显':state==='present'?'可见':'未明确'};
  });
+}
+
+// Brief factual cross-reference to the same dated records shown in the charts.
+export function observationTrendConclusion(record:SavedReport){
+ const date=shanghaiDate(new Date(record.createdAt));
+ const days=(record.trendSnapshot?.days||[]).filter(d=>d.date<=date).sort((a,b)=>a.date.localeCompare(b.date)).slice(-7);
+ if(days.length<3)return '';
+ const counts=days.map(d=>d.stools.length),frequency=new Map<number,number>();
+ counts.forEach(n=>frequency.set(n,(frequency.get(n)||0)+1));
+ const mode=[...frequency].sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0];
+ const range=Math.min(...counts)===Math.max(...counts)?`每天 ${counts[0]} 次`:mode[1]>days.length/2?`多为每天 ${mode[0]} 次`:`每天 ${Math.min(...counts)} 至 ${Math.max(...counts)} 次`;
+ const routine=`近 ${days.length} 天${range}`;
+ const changes=days.slice(1).map((d,i)=>({day:d,stool:d.stools.length-counts[i],milk:d.loggedMilkMl-days[i].loggedMilkMl,sleep:Math.round((d.sleepHours-days[i].sleepHours)*10)/10,consecutive:Date.parse(d.date)-Date.parse(days[i].date)===86400000})).filter(d=>d.consecutive&&d.stool!==0&&d.milk!==0&&d.sleep!==0).sort((a,b)=>Number(['watch','high'].includes(dayRisk(b.day)))-Number(['watch','high'].includes(dayRisk(a.day)))||Math.abs(b.stool)-Math.abs(a.stool)||b.day.date.localeCompare(a.day.date));
+ const focus=changes[0];
+ if(!focus)return `${routine}，暂未见排便、奶量和睡眠同日共同变化。`;
+ const relation=(focus.milk>0)===(focus.sleep>0)?`奶量与睡眠同步${focus.milk>0?'增加':'减少'}`:`奶量${focus.milk>0?'增加':'减少'}、睡眠${focus.sleep>0?'增加':'减少'}`;
+ return `${routine}；${dayShort(focus.day.date)} 排便${focus.stool>0?'增多':'减少'}时，${relation}，值得共同关注。`;
 }

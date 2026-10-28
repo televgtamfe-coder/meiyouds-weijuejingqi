@@ -7,7 +7,7 @@ export type SavedReport={id:string;createdAt:string;report:Report;thumbnail:stri
 export const recordsKey='meiyou.bianbian.records.v3';
 export const reminderKey='meiyou.bianbian.reminder.v3';
 export const reminderSeenKey='meiyou.bianbian.reminder-seen.v3';
-export const riskLabels={green:'健康',yellow:'需要关注',orange:'建议就医',red:'建议就医',unknown:'需要关注'};
+export const riskLabels={green:'低风险',yellow:'需要关注',orange:'建议就医',red:'建议就医',unknown:'需要关注'};
 export function makeRecord(report:Report,thumbnail='',demo=false,context?:{profile:BabyProfile;trendSnapshot:TrendSet;jointAnalysis?:JointAnalysis}):SavedReport {return {id:crypto.randomUUID(),createdAt:new Date().toISOString(),report,thumbnail,demo,...(context?JSON.parse(JSON.stringify({babyName:context.profile.nickname,profileSnapshot:context.profile,trendSnapshot:context.trendSnapshot,jointAnalysis:context.jointAnalysis})):{} )};}
 export function recordTimestamp(value:string){const parts=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value));const v=(key:string)=>parts.find(p=>p.type===key)?.value||'';return `${v('year')}年${v('month')}月${v('day')}日${v('hour')}:${v('minute')}:${v('second')}`;}
 function validRecord(v:unknown):v is SavedReport {

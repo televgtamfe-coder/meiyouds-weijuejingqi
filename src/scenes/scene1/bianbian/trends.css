@@ -102,3 +102,7 @@
 .br-report-paper>.br-report-section>h3,.bs-joint-unified>.br-section-title h2{font-size:16px;font-weight:600;color:#323232}
 .bs-reference .br-summary-details p{font-weight:400;color:#666}
 @media(max-width:359px){.bs-important-indicators,.bs-observation-v19 .bs-observation-result{padding:12px}.bs-observation-v19 .bs-observation-facts>div{padding:9px 10px}}
+
+/* A short chart-backed takeaway, following the current photo conclusion. */
+.bs-observation-v19 .bs-observation-result .bs-overview-trends{margin-top:7px;padding-top:7px;border-top:1px solid color-mix(in srgb,var(--observation-color) 12%,transparent);font-size:13px;line-height:22px}
+.bs-observation-v19 .bs-overview-trends strong{color:#444;font-weight:600}

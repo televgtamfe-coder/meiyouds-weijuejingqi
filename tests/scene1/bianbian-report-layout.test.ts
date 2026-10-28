@@ -1,6 +1,7 @@
+import {cleanReportCopy} from '../../src/scenes/scene1/bianbian/presentationCopy';
 import {it,expect} from 'vitest';
 import {reportSections} from '../../src/scenes/scene1/bianbian/reportExport';
-import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations} from '../../src/scenes/scene1/bianbian/reportSummary';
+import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion} from '../../src/scenes/scene1/bianbian/reportSummary';
 import {makeRecord} from '../../src/scenes/scene1/bianbian/records';
 import {demoReport} from '../../src/scenes/scene1/bianbian/analysis';
 import {mockBabyProfile} from '../../src/scenes/scene1/bianbian/babyProfile';
@@ -47,4 +48,17 @@ it('完整示例的结论与三个风险指标一致，导出先结论再指标'
  expect(riskObservations(r).map(x=>x.value)).toEqual(['未见明显','未见明显','未见明显']);
  expect(observationConclusion(r)).toContain('柔软糊状');expect(observationConclusion(r)).toContain('未见明显血丝、奶瓣或灰白色区域');
  const body=reportSections(r)[0].body;expect(body.indexOf('观察结论')).toBeLessThan(body.indexOf('重要指标解读'));
+});
+
+it('顶部概括排便规律与同日关联，不把奶量减少写成增加或解释成因果',()=>{
+ const data=createMockTrends(new Date('2026-10-28T04:00:00Z'));const r=makeRecord(demoReport,'',true,{profile:mockBabyProfile,trendSnapshot:data});r.createdAt='2026-10-28T04:00:00Z';
+ const text=observationTrendConclusion(r);expect(text).toContain('多为每天 2 次');expect(text).toContain('10/26 排便增多');expect(text).toContain('奶量与睡眠同步减少');expect(text).not.toMatch(/导致|因为/);expect(text.length).toBeLessThan(100);
+ r.createdAt='2026-10-23T04:00:00Z';expect(observationTrendConclusion(r)).toBe('');
+ r.trendSnapshot=undefined;expect(observationTrendConclusion(r)).toBe('');
+});
+
+it('去掉关联解释套话但保留数据和临床否定描述',()=>{
+ expect(cleanReportCopy('今天奶量减少，可能有关联，不能认定因果。')).toBe('今天奶量减少。');
+ expect(cleanReportCopy('共同变化不代表因果。今天睡眠减少 1 小时。')).toBe('今天睡眠减少 1 小时。');
+ expect(cleanReportCopy('未见明显血丝，不能排除其他情况。')).toBe('未见明显血丝，不能排除其他情况。');
 });

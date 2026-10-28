@@ -16,7 +16,7 @@ export function BabyProfileSheet({ profile, first, onConfirm, onClose }: { profi
   return <BottomSheet title={first ? '首次分析，请确认宝宝基本信息' : '修改宝宝基本信息'} onClose={onClose} className="bb-profile-sheet">
     <div className="bb-sheet-handle" />
     <button className="bb-sheet-close" type="button" aria-label={first ? '取消首次确认' : '取消修改'} onClick={onClose}>×</button>
-    <div className="bb-profile-heading"><img src={babyAvatar} alt=""/><span className="bb-mock-tag">示例档案</span><h2>{first ? <>首次分析，请确认<br/>宝宝基本信息</> : '修改宝宝基本信息'}</h2><p>已带入宝宝资料，你可以确认或直接修改</p></div>
+    <div className="bb-profile-heading"><img src={babyAvatar} alt=""/><h2>{first ? <>首次分析，请确认<br/>宝宝基本信息</> : '修改宝宝基本信息'}</h2><p>已带入宝宝资料，你可以确认或直接修改</p></div>
     <form onSubmit={submit} className="bb-profile-form">
       <div className="bb-profile-fields">
         <label className="bb-profile-row"><span>宝宝昵称</span><input aria-label="宝宝昵称" maxLength={12} required value={draft.nickname} onChange={e => setDraft({ ...draft, nickname: e.target.value })}/></label>

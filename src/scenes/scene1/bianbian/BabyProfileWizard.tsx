@@ -10,7 +10,7 @@ export function BabyProfileWizard({profile,first,onConfirm,onClose,initialStep=0
  function submit(e:FormEvent) {e.preventDefault();setError('');if(step===0&&(!draft.nickname.trim()||!validBirthDate(draft.birthDate)))return setError('请填写宝宝昵称，并检查出生日期。');if(!singleStep&&step<2){setStep(step+1);return;}if(!draft.allergies.length)return setError('请选择过敏情况；不了解时可选择“不确定”。');onConfirm({...draft,nickname:draft.nickname.trim(),formula:draft.formula.trim()});}
  return <form className={`br-wizard ${singleStep?'br-wizard-quick':''}`} onSubmit={submit}>
   <button className="br-wizard-close" type="button" onClick={onClose} aria-label={first?'返回育儿':'取消修改'}><Icon name={first?'back':'close'}/></button>
-  <div className="br-wizard-heading"><h1>{singleStep?(formulaOnly?'修改奶粉品牌':step===1?'修改喂养方式':'修改过敏原'):'宝宝基本信息'}</h1><p>{first?(firstStep===1?'基础资料已带入，请确认喂养与过敏情况':'首次分析，请确认宝宝的基本情况'):'宝宝情况有变化时，可随时修改'}</p>{!singleStep&&<span className="br-example-label">已带入示例资料，可直接调整</span>}</div>
+  <div className="br-wizard-heading"><h1>{singleStep?(formulaOnly?'修改奶粉品牌':step===1?'修改喂养方式':'修改过敏原'):'宝宝基本信息'}</h1><p>{first?(firstStep===1?'基础资料已带入，请确认喂养与过敏情况':'首次分析，请确认宝宝的基本情况'):'宝宝情况有变化时，可随时修改'}</p></div>
   <section className="br-wizard-card">
    <header><button type="button" aria-label="上一步" onClick={()=>!singleStep&&step>firstStep?setStep(step-1):onClose()}><Icon name="back"/></button><h2>{singleStep?(formulaOnly?'奶粉品牌':step===1?'喂养方式':'过敏情况'):['01 基本信息','02 喂养方式','03 过敏情况'][step]}</h2><span/></header>
    <div className="br-wizard-content" key={step}>

@@ -1,3 +1,4 @@
+import {displayCopy} from './presentationCopy';
 import {useEffect,useRef,useState} from 'react';
 import {MonthComparison,dayShort} from './trendData';
 import {monthMetrics,deltaLabel} from './visualTrends';
@@ -7,7 +8,8 @@ import {analyzeMonth,MonthReading,monthDays,monthFocus,monthDayObservation} from
 const icons:IconName[]=['file','info','milk','moon','birthday','user'];
 const readings=new Map<string,MonthReading>();
 export function MonthlyTrendComparison({data}:{data:MonthComparison}){
- const key=JSON.stringify(data),[selected,setSelected]=useState(()=>monthFocus(data)),[reading,setReading]=useState<MonthReading|null>(()=>readings.get(key)||null),[loading,setLoading]=useState(false),[error,setError]=useState(''),[phase,setPhase]=useState(0),controller=useRef<AbortController|null>(null);
+ const key=JSON.stringify(data),[selected,setSelected]=useState(()=>monthFocus(data)),[rawReading,setReading]=useState<MonthReading|null>(()=>readings.get(key)||null),[loading,setLoading]=useState(false),[error,setError]=useState(''),[phase,setPhase]=useState(0),controller=useRef<AbortController|null>(null);
+ const reading=displayCopy(rawReading);
  const {current}=monthDays(data);
  useEffect(()=>{setSelected(monthFocus(data));setReading(readings.get(key)||null);setLoading(false);setError('');return()=>{controller.current?.abort();controller.current=null;};},[key]);
  useEffect(()=>{if(!loading)return;setPhase(0);const timer=window.setInterval(()=>setPhase(p=>Math.min(p+1,3)),6000);return()=>window.clearInterval(timer);},[loading]);
@@ -16,7 +18,7 @@ export function MonthlyTrendComparison({data}:{data:MonthComparison}){
   catch(e){if(controller.current===request)setError(request.signal.aborted?(timedOut?'等待较久，请稍后重试。':'已停止解读，月度图表已保留。'):e instanceof Error?e.message:'月度解读暂未完成，请重试。');}
   finally{window.clearTimeout(timer);if(controller.current===request){controller.current=null;setLoading(false);}}
  }
- return <section className="bv-month bm-joint-month" aria-label="月度联合成长分析"><div className="br-section-title"><h2>月度联合成长分析</h2><span className="bt-mock">模拟记录</span></div><p className="bv-month-period">{data.current.label} 对照 {data.previous.label} · 同为前 {data.comparisonDays} 天</p>
+ return <section className="bv-month bm-joint-month" aria-label="月度联合成长分析"><div className="br-section-title"><h2>月度联合成长分析</h2></div><p className="bv-month-period">{data.current.label} 对照 {data.previous.label} · 同为前 {data.comparisonDays} 天</p>
  <MonthRelationChart data={data} selected={selected} onSelect={setSelected} linkedDates={reading?.connections.map(c=>c.date)}/>
  <section className="bm-month-day"><label><span>这一天，发生了什么</span><select aria-label="查看月度关联日期" value={selected} onChange={e=>setSelected(Number(e.target.value))}>{current.map((d,i)=><option key={d.date} value={i}>{dayShort(d.date)}</option>)}</select></label><p>{monthDayObservation(data,selected)}</p></section>
  <section className="bm-month-reading" aria-live="polite"><h3><Icon name="spark"/>月度联合解读</h3>{reading&&<><p className="bm-month-takeaway">{reading.summary}</p>{reading.connections.map(c=><div className="bm-month-connection" key={c.date+c.note}><button type="button" onClick={()=>setSelected(current.findIndex(d=>d.date===c.date))} aria-label={`在图中查看${dayShort(c.date)}关联`}>{dayShort(c.date)}<Icon name="next"/></button><p>{c.note}</p></div>)}<p className="bm-month-limit">{reading.limitations.join('；')}</p></>}
