@@ -148,3 +148,16 @@
 .bc-progress-track>span{display:block;height:100%;background:#ff4d88;border-radius:inherit;transition:width .8s linear}
 @media(prefers-reduced-motion:reduce){.bc-progress-track>span{transition:none}}
 .br-app .br-loading-card h2{font-weight:600}
+
+/* V27: feeding and sleep share rows even when a formula brand wraps. */
+.bs-joint-context{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:12px;row-gap:3px;align-items:start}
+.bs-joint-context .bs-context-line{display:contents}
+.bs-joint-context .bs-context-line:first-child>*{grid-column:1}
+.bs-joint-context .bs-context-line:last-child>*{grid-column:2}
+.bs-joint-context .bs-context-label{grid-row:1}
+.bs-joint-context .bs-context-value{grid-row:2}
+.bs-joint-context .bs-key-change{grid-row:3}
+.bs-joint-context .bs-context-line>*{margin:0!important;min-width:0;overflow-wrap:anywhere;font-size:12px;line-height:20px}
+.bs-joint-context .bs-context-line>.bs-context-label{color:#999;font-weight:400}
+.bs-joint-context .bs-context-line>.bs-context-value{font-weight:500;color:#323232}
+.bs-joint-context .bs-context-line>.bs-key-change{font-weight:600;color:#bd3565}

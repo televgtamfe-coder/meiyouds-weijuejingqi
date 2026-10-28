@@ -3,7 +3,7 @@ import {focusDay,relationTracks,highlightedDays} from './visualTrends';
 export function TrendComparisonChart({data}:{data:TrendSet}){
  const selected=focusDay(data),tracks=relationTracks(data),highlighted=highlightedDays(data);
  const x=(i:number)=>44+i*42;
- return <section className="bc-comparison bv-relations" aria-label="七天同日变化对照"><div className="bc-comparison-heading"><h3>7 天变化对照</h3></div>
+ return <section className="bc-comparison bv-relations" aria-label="七天同日变化对照">
   <svg className="bc-comparison-chart" viewBox="0 0 320 334" role="img" aria-label="七天便便、奶量、睡眠三行对照图；每行使用自己的单位和刻度，共用日期列">
    {highlighted.map(i=><rect key={data.days[i].date} data-highlight-date={data.days[i].date} x={x(i)-17} y="2" width="34" height="306" rx="8" fill={i===selected?'#ffe8bd':'#fff4df'}/>)}
    <rect x={x(selected)-17} y="2" width="34" height="306" rx="8" fill="none" stroke="#d8aa65" strokeWidth="1" strokeDasharray="3 3"/>
