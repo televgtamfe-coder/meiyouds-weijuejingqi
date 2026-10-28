@@ -2,7 +2,7 @@
 .br-app{background:linear-gradient(165deg,#fff3f7 0%,#fffafd 28%,#f2f2f5 75%);color:var(--my-text-primary);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
 .br-app .statusbar{background:transparent;flex-shrink:0}.br-main{display:flex;flex-direction:column;flex:1;min-height:0}.br-icon{display:inline-block;width:24px;height:24px;flex-shrink:0;vertical-align:middle}
 .br-app button,.br-app a,.br-app input,.br-app textarea{touch-action:manipulation}.br-app button{font:inherit;cursor:pointer}.br-app button:disabled{opacity:.5;cursor:default}
-.br-app h1,.br-app h2,.br-app h3,.br-app h4,.br-app strong{font-weight:500;letter-spacing:0}.br-app button{color:inherit}
+.br-app h1,.br-app h2,.br-app h3,.br-app h4,.br-app strong{font-weight:600;letter-spacing:0}.br-app button{color:inherit}
 .br-nav{display:grid;grid-template-columns:64px 1fr 64px;align-items:center;min-height:48px;padding:0 12px;flex-shrink:0}
 .br-nav h1{font-size:17px;text-align:center;line-height:24px}.br-nav button{min-height:44px;min-width:44px;border:0;background:none;color:var(--my-brand-red);display:flex;align-items:center;gap:0;font-size:13px}.br-nav button:last-child{justify-content:flex-end}.br-nav button .br-icon{width:20px;height:20px}.br-nav-spacer{width:64px}
 .br-scroll{min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px;scrollbar-width:thin;scrollbar-color:#e8dfe4 transparent}

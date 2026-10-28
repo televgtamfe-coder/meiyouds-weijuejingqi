@@ -13,7 +13,7 @@ export function reportSections(record:SavedReport) {
  const factText=(f:typeof color)=>f?[f.value,f.detail,f.comparison].filter(Boolean).join('\n'):'本次未返回该项描述。';
  const others=r.facts.filter(f=>!['颜色','性状'].includes(f.label));
  return [
- {title:'观察总结',body:'观察结论：'+overviewConclusion(record)+'\n\n重要指标解读\n'+indicatorDetails(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n风险观察：'+riskObservations(record).map(x=>`${x.label}：${x.value}`).join('；')+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
+ {title:'本次分析结论',body:overviewConclusion(record)+'\n\n重要指标解读\n'+indicatorDetails(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n风险观察：'+riskObservations(record).map(x=>`${x.label}：${x.value}`).join('；')+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
  ...(record.trendSnapshot?[{title:'近 7 天便便规律',body:record.trendSnapshot.days.map(d=>`${d.date} · ${d.stools.length}次 · ${trendRisks[dayRisk(d)].label}`).join('\n')}]:[]),
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
  {title:'联合成长分析',body:[...reportContext(record).map(x=>`${x.label}：${x.value}${x.change?'，'+x.change:''}`),...(record.jointAnalysis?['同日变化重点：',...record.jointAnalysis.relationships,record.jointAnalysis.alert]:record.trendSnapshot?['联合分析尚未生成，可返回报告查看。']:[])].filter(Boolean).join('\n\n')},
@@ -22,7 +22,7 @@ export function reportSections(record:SavedReport) {
  {title:'育儿参考资料',body:'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${x.url}`).join('\n\n')},
  ];
 }
-export function reportText(record:SavedReport){return ['美柚 · 宝宝便便分析',`${recordTimestamp(record.createdAt)}`,riskLabels[record.report.risk],...reportSections(record).map(s=>`${s.title}\n${s.body}`),'如宝宝出现不适，请及时咨询医生。'].join('\n\n');}
+export function reportText(record:SavedReport){return ['便便分析报告',`${recordTimestamp(record.createdAt)}`,riskLabels[record.report.risk],...reportSections(record).map(s=>`${s.title}\n${s.body}`),'如宝宝出现不适，请及时咨询医生。'].join('\n\n');}
 export async function reportImage(record:SavedReport):Promise<Blob>{
  await document.fonts?.ready;
  const width=900,pad=48,inner=width-pad*2,canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
@@ -35,7 +35,7 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  if(height>30000)throw new Error('报告内容较长，请使用复制文字保存完整内容。');
  canvas.width=width;canvas.height=height;ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
  const text=(s:string,x:number,y:number,size:number,color='#323232',weight=400)=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(s,x,y);};
- text('美柚 · 宝宝便便分析',pad,72,36,'#323232',500);
+ text('便便分析报告',pad,72,36,'#323232',500);
  text(recordTimestamp(record.createdAt),pad,118,23,'#999');
  const riskColor=riskPresentation[record.report.risk].color;
  text(riskLabels[record.report.risk],pad,168,26,riskColor,500);
@@ -58,7 +58,7 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
   if(s.comparison&&record.trendSnapshot)drawComparison(ctx,record.trendSnapshot,pad+32,y+100+s.lines.length*40,inner-64);
   y+=h+24;
  }
- text('育儿观察报告',pad,y+30,23,'#999');
+ text('便便分析报告',pad,y+30,23,'#999');
  text('如宝宝出现不适，请及时咨询医生。',pad,y+68,23,'#999');
  text('美柚育儿 · 便便分析',pad,y+118,23,'#ff4d88');
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('长图生成失败，请重试。')),'image/png'));

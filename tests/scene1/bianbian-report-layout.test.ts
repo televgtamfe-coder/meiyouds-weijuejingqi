@@ -8,7 +8,7 @@ import {mockBabyProfile} from '../../src/scenes/scene1/bianbian/babyProfile';
 import {createMockTrends} from '../../src/scenes/scene1/bianbian/trendData';
 it('保存内容先精简总结再七天规律，完整依据仅在末尾参考解读',()=>{
  const r=makeRecord(demoReport,'',true,{profile:mockBabyProfile,trendSnapshot:createMockTrends()});const titles=reportSections(r).map(x=>x.title);
- expect(titles.slice(0,3)).toEqual(['观察总结','近 7 天便便规律','联合成长分析']);
+ expect(titles.slice(0,3)).toEqual(['本次分析结论','近 7 天便便规律','联合成长分析']);
  expect(reportSections(r)[0].body).not.toContain(demoReport.detail);expect(reportSections(r).find(s=>s.title==='参考解读')?.body).toContain(demoReport.detail);expect(titles).not.toContain('颜色与性状情况');
  expect(titles.indexOf('行动建议')).toBeLessThan(titles.indexOf('参考解读'));expect(titles.at(-1)).toBe('育儿参考资料');
 });
@@ -25,7 +25,7 @@ it('喂养睡眠差值根据同日与前一日记录生成，不把减少写成�
 it('总结保留颜色性状描述和完整句结论，喂养睡眠只归入一个联合模块',()=>{
  const r=makeRecord(demoReport,'',true,{profile:mockBabyProfile,trendSnapshot:createMockTrends()});
  expect(appearanceConclusion(r).every(f=>f.description.length>0)).toBe(true);expect(observationConclusion(r)).toBe(demoReport.summary);
- const sections=reportSections(r);expect(sections.filter(x=>x.title==='联合成长分析')).toHaveLength(1);expect(sections.some(x=>x.title==='结合喂养与睡眠')).toBe(false);expect(sections[0].body).toContain('观察结论：');
+ const sections=reportSections(r);expect(sections.filter(x=>x.title==='联合成长分析')).toHaveLength(1);expect(sections.some(x=>x.title==='结合喂养与睡眠')).toBe(false);expect(sections[0].title).toBe('本次分析结论');
 });
 
 it('重复结论只展示一次，完整依据保留新的信息及否定表述',()=>{
@@ -47,7 +47,7 @@ it('完整示例的结论与三个风险指标一致，导出先结论再指标'
  const r=makeRecord(demoReport,'',true);
  expect(riskObservations(r).map(x=>x.value)).toEqual(['未见明显','未见明显','未见明显']);
  expect(observationConclusion(r)).toContain('柔软糊状');expect(observationConclusion(r)).toContain('未见明显血丝、奶瓣或灰白色区域');
- const body=reportSections(r)[0].body;expect(body.indexOf('观察结论')).toBeLessThan(body.indexOf('重要指标解读'));
+ const body=reportSections(r)[0].body;expect(body.indexOf(observationConclusion(r))).toBeLessThan(body.indexOf('重要指标解读'));
 });
 
 it('顶部概括排便规律与同日关联，不把奶量减少写成增加或解释成因果',()=>{

@@ -126,3 +126,7 @@
 .bs-observation-v19 .bs-risk-observation-present{background:transparent}
 .bs-observation-v19 .bs-risk-observation-present strong{color:#276caa;font-weight:600}
 @media(max-width:359px){.bs-observation-v19 .bs-observation-facts{gap:6px}.bs-important-indicators{padding:10px}.bs-observation-v19 .bs-observation-facts>div{padding:9px}}
+
+/* V22: consistent semibold page and section headings; body copy stays regular. */
+.br-app .br-nav h1,.br-app .br-section-title h2,.br-app .bt-chart-heading h2,.br-app .bs-observation-v19 h3,.br-app .br-report-section>h3,.br-app .bc-connections h3,.br-app .bm-month-reading>h3,.br-app .bc-comparison-heading h3,.br-app .bm-member-nav h2,.br-app .bm-v7-benefits>h3,.br-app .bm-v7-benefit h4{font-weight:600}
+.br-app .br-chart-heading p,.br-app .bs-observation-description,.br-app .bs-reference p,.br-app .bt-chart-heading p{font-weight:400}
