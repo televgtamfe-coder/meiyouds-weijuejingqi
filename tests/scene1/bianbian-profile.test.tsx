@@ -31,6 +31,7 @@ describe('三步资料与参考版导航', () => {
   expect(screen.getByRole('dialog',{name:'拍摄便便照片'})).toBeVisible();
   await user.click(screen.getByRole('button',{name:'关闭相机'}));
   expect(screen.getByRole('heading',{name:/历史报告/})).toBeVisible();
+  expect(screen.queryByText('联合智能分析')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'查看报告示例'})).not.toBeInTheDocument();expect(screen.queryByRole('heading',{name:'智能提醒'})).not.toBeInTheDocument();
   first.unmount();sessionStorage.clear();renderPage();expect(screen.queryByLabelText('宝宝昵称')).not.toBeInTheDocument();
  });
  it('修改取消不覆盖档案，拍照入口直接进入取景框并保留相册', async () => {
@@ -38,7 +39,8 @@ describe('三步资料与参考版导航', () => {
   await user.click(screen.getByRole('button',{name:'修改宝宝资料'}));
   await user.clear(screen.getByLabelText('宝宝昵称'));await user.type(screen.getByLabelText('宝宝昵称'),'不保存');
   await user.click(screen.getByRole('button',{name:'取消修改'}));
-  expect(screen.getByText('小柚子')).toBeVisible();
+  expect(screen.queryByText('小柚子')).not.toBeInTheDocument();
+  await user.click(screen.getByRole('button',{name:'修改宝宝资料'}));expect(screen.getByLabelText('宝宝昵称')).toHaveValue('小柚子');await user.click(screen.getByRole('button',{name:'取消修改'}));
   await user.click(screen.getByRole('button',{name:'拍照分析',exact:true}));
   expect(screen.getByRole('dialog',{name:'拍摄便便照片'})).toBeVisible();
   expect(screen.getByRole('button',{name:'拍摄照片',exact:true})).toBeVisible();

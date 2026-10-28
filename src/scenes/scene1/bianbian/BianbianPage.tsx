@@ -4,7 +4,7 @@ import {mockHistory} from './mockHistory';
 import { ChangeEvent,FormEvent,useEffect,useRef,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StatusBar } from '../components/StatusBar';
-import { AnalysisForm,analyze,demoReport,emptyForm,prepareImage } from './analysis';
+import { AnalysisForm,analyze,emptyForm,prepareImage } from './analysis';
 import { BabyProfile,loadBabyProfile,saveBabyProfile } from './babyProfile';
 import { BabyProfileWizard } from './BabyProfileWizard';
 import { BianbianHome,BianbianHistory } from './BianbianHome';
@@ -78,7 +78,6 @@ export function BianbianPage(){
   catch(e){if(alive.current&&jointController.current===request)setJointState({key,loading:false,error:request.signal.aborted?(timedOut?'等待时间较长，请稍后重试。':'已停止联合分析，记录已保留。'):e instanceof Error?e.message:'联合分析暂不可用，请重试。'});}
   finally{window.clearTimeout(timer);if(jointController.current===request)jointController.current=null;}
  }
- function openJoint(){setView('trends');void startJoint();}
  async function saveReport(){if(!record||saving)return;setSaving(true);setNotice('');try{const blob=await reportImage(record);if(!alive.current)return;const name=(record.babyName||'宝宝').replace(/[\/:*?"<>|]/g,'');downloadBlob(blob,`${name}_${record.createdAt.slice(0,10)}_成长观察报告.png`);setNotice('报告长图已生成，请在浏览器下载记录中查看。');}catch(e){setNotice(e instanceof Error?e.message:'报告保存失败，请重试。');}finally{if(alive.current)setSaving(false);}}
  function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView(reportBack==='report'?'home':reportBack);else if(view==='home')navigate('/scene1-parenting');else setView('home');}
  function clear(){setEntryStage('preview');jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(false);setView('home');}
@@ -89,7 +88,7 @@ export function BianbianPage(){
    {entryStage==='preview'?<EntryPreview onBack={()=>navigate('/scene1-parenting')} onActivate={()=>setPanel('member-first')}/>:wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={entryStage==='profile'||!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
     <PageHeader title={title} onBack={back} onAction={view==='report'?saveReport:undefined} onReset={view==='home'?resetEntry:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
-    {view==='home'&&<BianbianHome profile={profile} records={mockHistory(profile,trends)} onEdit={editProfile} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} onExample={()=>showRecord(makeRecord(demoReport,'',true,{profile,trendSnapshot:trends,jointAnalysis:joint||undefined}),'home')} trends={trends} onJoint={openJoint} analyzing={jointState.loading} hasAnalysis={!!joint}/>}
+    {view==='home'&&<BianbianHome profile={profile} records={mockHistory(profile,trends)} onEdit={editProfile} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} trends={trends}/>}
     {view==='details'&&<BianbianDetails image={image} form={form} onChange={setForm} onSubmit={submit} onPhoto={openPhoto} error={error} question={question} busy={preparing}/>}
     {view==='report'&&record&&<BianbianReport record={record} onShare={()=>setPanel('share')} onDoctor={()=>setPanel('doctor')} saving={saving} jointLoading={jointState.loading&&jointState.key===jointKey(record.profileSnapshot||profile,record.trendSnapshot||trends)} jointError={jointState.key===jointKey(record.profileSnapshot||profile,record.trendSnapshot||trends)?jointState.error:''} onJoint={()=>void startJoint(record)} onCancelJoint={cancelJoint} onEdit={editReport} notice={notice}/>}
     {view==='history'&&<BianbianHistory records={displayedRecords} onRecord={r=>showRecord(r,'history')} onPhoto={openPhoto}/>}

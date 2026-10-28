@@ -1,4 +1,3 @@
-import {RoutineReminders} from './RoutineReminders';
 import {MonthlyTrendComparison} from './MonthlyTrendComparison';
 import {useState} from 'react';
 import {TrendSet,dayRisk,dayShort,stoolColors,trendRisks,trendRiskLabels} from './trendData';
@@ -22,8 +21,8 @@ export function StoolWeekChart({data,compact=false}:{data:TrendSet;compact?:bool
 
  </section>;
 }
-export function TrendDashboard({data,onAnalyze,analyzing=false,hasAnalysis=false}:{data:TrendSet;onAnalyze:()=>void;analyzing?:boolean;hasAnalysis?:boolean}){
+export function TrendDashboard({data}:{data:TrendSet}){
 
- return <div className="bt-dashboard"><div className="br-section-title bt-dashboard-title"><h2>宝宝成长趋势</h2><span className="bt-mock">模拟记录</span></div><StoolWeekChart data={data}/><RoutineReminders data={data}/>{data.months&&<MonthlyTrendComparison data={data.months}/>}<section className="bt-joint-entry"><div className="bt-joint-entry-heading"><span><Icon name="spark"/></span><div><h3>联合智能分析</h3><p>对照近七天便便、奶量与睡眠的同日变化</p></div></div><button type="button" className="br-primary" onClick={onAnalyze} disabled={analyzing}>{analyzing?'正在联合分析…':hasAnalysis?'查看联合分析':'智能联合分析'}</button></section>
+ return <div className="bt-dashboard"><div className="br-section-title bt-dashboard-title"><h2>宝宝成长趋势</h2><span className="bt-mock">模拟记录</span></div><StoolWeekChart data={data}/>{data.months&&<MonthlyTrendComparison data={data.months}/>}
  </div>;
 }

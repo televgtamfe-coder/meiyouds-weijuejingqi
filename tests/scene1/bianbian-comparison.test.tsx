@@ -13,10 +13,10 @@ describe('联合趋势与精简布局',()=>{
   expect(series.find(s=>s.key==='feeding')?.changes[4]).toBe(-9);
  });
  it('首页删除分项折叠区，保留七天规律与六项月度指标',()=>{
-  const view=render(<TrendDashboard data={createMockTrends()} onAnalyze={()=>{}}/>);
+  const view=render(<TrendDashboard data={createMockTrends()}/>);
   expect(view.container.querySelectorAll('.bt-growth-card,.bt-mini-card')).toHaveLength(0);
   expect(screen.getByRole('region',{name:'月度联合成长分析'})).toBeVisible();
-  expect(screen.getByRole('button',{name:'智能联合分析'})).toBeVisible();
+  expect(screen.queryByRole('button',{name:'智能联合分析'})).not.toBeInTheDocument();
  });
  it('月度对比使用相同天数且缺测不补数',()=>{
   const data=createMockTrends(new Date('2026-10-27T10:00:00Z')),months=data.months!;

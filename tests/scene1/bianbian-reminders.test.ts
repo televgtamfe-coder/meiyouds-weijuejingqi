@@ -27,3 +27,5 @@ it('共同变化标记覆盖所有日期，单项变化或首日不误标',()=>{
  d.days[4].stools[0].risk='watch';expect(highlightedDays(d)).toEqual([1,2,4]);
  d.days[0].stools[0].risk='high';expect(highlightedDays(d)).toEqual([0,1,2,4]);
 });
+
+it('今日密报优先展示有历史依据的晚间时段，没有依据不固定输出18点',()=>{const d=data();expect(routineWindow(d,now,18)).toMatchObject({start:18,end:21,status:'upcoming'});d.days.forEach(x=>x.stools=x.stools.filter(s=>Number(s.time.slice(0,2))<18));expect(routineWindow(d,now,18)?.start).not.toBe(18);});
