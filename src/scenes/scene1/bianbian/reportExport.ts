@@ -17,7 +17,7 @@ export function reportSections(record:SavedReport) {
  ...(record.trendSnapshot?[{title:'近 7 天便便规律',body:record.trendSnapshot.days.map(d=>`${d.date} · ${d.stools.length}次 · ${trendRisks[dayRisk(d)].label}`).join('\n')}]:[]),
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
  {title:'行动建议',body:importantActions(record).map((a,i)=>`${i+1}. ${a.title}\n${a.action}`).join('\n\n')||'本次未返回可用行动点。'},
- {title:'参考解读',body:['完整分析依据',...referenceParagraphs(record),...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
+ {title:'深度分析',body:['完整分析依据',...referenceParagraphs(record),...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
  {title:'育儿参考资料',body:'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${x.url}`).join('\n\n')},
  ];
 }

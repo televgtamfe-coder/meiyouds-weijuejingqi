@@ -12,6 +12,9 @@ it('付费前共享正文与实际报告在相同数据下结构、内容完全�
  const actual=render(<BianbianReport record={record} onShare={()=>{}} onDoctor={()=>{}} onEdit={()=>{}} jointLoading={false} jointError="" onJoint={()=>{}} onCancelJoint={()=>{}} saving={false}/>);
  expect(actual.container.querySelector('.br-report-paper')!.outerHTML).toBe(expected);
  expect(actual.container.querySelectorAll('.bs-overview-trends,.bs-joint-unified,.bt-report-joint')).toHaveLength(0);
+ expect(actual.container.querySelector('.bs-observation-result')!.textContent).not.toMatch(/近\s*7\s*天|多为每天|同步减少/);
+ expect(actual.container.querySelector('.bs-reference h3')!.textContent).toBe('深度分析');
+ expect(actual.container.querySelector('.bs-reference details')).toHaveAttribute('open');
  expect(actual.container.querySelector('.bs-observation-result')!.textContent).toContain('未见明显血丝、奶瓣、灰白色');
 });
 it('示例可隐藏时间，指标仅显示有无，详细状态仍保留',()=>{

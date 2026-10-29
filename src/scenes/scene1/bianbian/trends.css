@@ -150,6 +150,23 @@
 @media(prefers-reduced-motion:reduce){.bc-progress-track>span{transition:none}}
 .br-app .br-loading-card h2{font-weight:600}
 
+/* Compact vertical photo-analysis waiting dialog. */
+.br-loading-mask .br-loading-card{width:100%;max-width:280px;padding:24px 24px 22px;border-radius:16px}
+.br-loading-card .br-loading-symbol{float:none;position:relative;width:48px;height:48px;margin:0 auto 12px;border-radius:50%;background:#fff0f6}
+.br-loading-card .br-loading-symbol:after{content:'';position:absolute;inset:-4px;border:2px solid #ffe0eb;border-top-color:#ff4d88;border-radius:50%;animation:br-analysis-spin 1.2s linear infinite}
+.br-loading-card .br-loading-symbol .bb-kit-icon svg{width:26px;height:26px}
+.br-app .br-loading-card h2{text-align:center;font-size:16px;line-height:24px;margin:0}
+.br-loading-card .bc-waiting{margin-top:18px}
+.br-loading-card .bc-waiting-steps{display:flex;flex-direction:column;align-items:stretch;gap:0;text-align:left}
+.br-loading-card .bc-waiting-steps span{position:relative;display:flex;align-items:center;gap:10px;flex:none;border:0;padding:7px 12px;font-size:13px;line-height:20px;color:#999;border-radius:8px}
+.br-loading-card .bc-waiting-steps span:before{content:'';width:7px;height:7px;flex:none;border-radius:50%;background:#ddd}
+.br-loading-card .bc-waiting-steps span.active{background:#fff0f6;color:#bd3565;font-weight:600}
+.br-loading-card .bc-waiting-steps span.active:before{background:#ff4d88;box-shadow:0 0 0 3px #ffdfeb}
+.br-loading-card .bc-waiting>p{font-size:12px;line-height:20px;min-height:40px;margin:12px 0 0;text-align:center;color:#666}
+.br-loading-card .bc-waiting-progress{margin-top:14px}
+@keyframes br-analysis-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.br-loading-card .br-loading-symbol:after{animation:none}}
+
 /* V27: feeding and sleep share rows even when a formula brand wraps. */
 .bs-joint-context{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:12px;row-gap:3px;align-items:start}
 .bs-joint-context .bs-context-line{display:contents}
@@ -162,3 +179,6 @@
 .bs-joint-context .bs-context-line>.bs-context-label{color:#999;font-weight:400}
 .bs-joint-context .bs-context-line>.bs-context-value{font-weight:500;color:#323232}
 .bs-joint-context .bs-context-line>.bs-key-change{font-weight:600;color:#bd3565}
+
+/* Keep deep analysis and the overview on the same reading scale. */
+.bs-reference .br-summary-details>summary,.bs-reference .br-summary-details p{font-size:13px;line-height:23px}

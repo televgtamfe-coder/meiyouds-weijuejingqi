@@ -77,5 +77,5 @@ export function observationContextIntro(record:SavedReport){
 }
 export function overviewConclusion(record:SavedReport){
  const seen=new Set<string>();
- return [observationContextIntro(record),riskObservationConclusion(record),riskPresentation[record.report.risk].doctor&&!observationContextIntro(record).includes('建议就医')?'建议就医。':'',observationTrendConclusion(record)].filter(Boolean).map(text=>/[。！？]$/.test(text)?text:text+'。').filter(text=>{const key=text.replace(/\s+/g,'');if(seen.has(key))return false;seen.add(key);return true;}).join('');
+ return [observationContextIntro(record),riskObservationConclusion(record),riskPresentation[record.report.risk].doctor&&!observationContextIntro(record).includes('建议就医')?'建议就医。':''].filter(Boolean).map(text=>/[。！？]$/.test(text)?text:text+'。').filter(text=>{const key=text.replace(/\s+/g,'');if(seen.has(key))return false;seen.add(key);return true;}).join('');
 }
