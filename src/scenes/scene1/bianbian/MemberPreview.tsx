@@ -3,7 +3,7 @@ import {BottomSheet} from './BottomSheet';
 import {Icon,IconName} from './ui';
 const benefits:{icon:IconName;title:string;body:string;tag:string}[]=[
  {icon:'gallery',title:'便便智能分析',body:'拍照或上传图片，查看颜色、性状、风险观察和重点行动建议。',tag:'低风险 · 需要关注 · 建议就医'},
- {icon:'file',title:'便便规律性解读',body:'最近30天内记录超过7天后，查看近期记录的时间、次数与风险等级。',tag:'时间分布 · 次数变化'},
+ {icon:'file',title:'便便规律性解读',body:'最近30天内记录满7天后，查看近期记录的时间、次数与风险等级。',tag:'时间分布 · 次数变化'},
  {icon:'restore',title:'完整历史报告',body:'保留分析当时的结论、资料和趋势，修改当前资料也不影响旧报告。',tag:'当前浏览器保留最近 20 条'},
  {icon:'share',title:'报告保存与分享',body:'保存完整报告长图，分享给家人；需要就医时整理报告分享给医生。',tag:'长图保存 · 家人分享 · 医生分享'},
 ];

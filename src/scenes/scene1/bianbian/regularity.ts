@@ -18,7 +18,7 @@ export function rememberRegularity(records:SavedReport[],now=new Date()){
  const rows=windowEvents(records,now);try{localStorage.setItem(regularityKey,JSON.stringify(rows));sessionStorage.removeItem(regularityKey);}catch{try{sessionStorage.setItem(regularityKey,JSON.stringify(rows));}catch{}}
 }
 export function regularityTrend(records:SavedReport[],now=new Date()):TrendSet|undefined{
- const events=windowEvents(records,now);if(new Set(events.map(x=>x.date)).size<=7)return;
+ const events=windowEvents(records,now);if(new Set(events.map(x=>x.date)).size<7)return;
  const end=new Date(`${shanghaiDate(now)}T12:00:00+08:00`);
  return {source:'records',note:'近期已保存的照片分析记录',days:Array.from({length:7},(_,i)=>{const date=shanghaiDate(new Date(end.getTime()-(6-i)*86400000));return {date,stools:events.filter(x=>x.date===date).map(({time,color,risk})=>({time,color,risk})),heightCm:null,weightKg:null,loggedMilkMl:0,feedingCount:0,sleepHours:0,nightWakings:0};})};
 }

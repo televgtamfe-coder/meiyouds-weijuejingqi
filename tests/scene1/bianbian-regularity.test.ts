@@ -7,11 +7,11 @@ import {reportSections} from '../../src/scenes/scene1/bianbian/reportExport';
 const now=new Date('2026-10-29T12:00:00+08:00');
 function row(day:number,id=String(day)):SavedReport{return {id,createdAt:new Date(now.getTime()-day*86400000).toISOString(),report:demoReport,thumbnail:'',demo:false};}
 beforeEach(()=>{localStorage.clear();sessionStorage.clear();});
-it('30天按上海自然日去重，七天不出现，八天出现，示例与未来不算',()=>{
- const seven=Array.from({length:7},(_,i)=>row(i));
- expect(regularityTrend([...seven,row(0,'duplicate'),row(30),row(-1),{...row(7),demo:true}],now)).toBeUndefined();
+it('30天按上海自然日去重，六天不出现，七天出现，示例与未来不算',()=>{
+ const seven=Array.from({length:6},(_,i)=>row(i));
+ expect(regularityTrend([...seven,row(0,'duplicate'),row(30),row(-1),{...row(6),demo:true}],now)).toBeUndefined();
  const chart=regularityTrend([...seven,row(29)],now)!;
- expect(chart.source).toBe('records');expect(chart.days).toHaveLength(7);expect(chart.days.reduce((sum,x)=>sum+x.stools.length,0)).toBe(7);
+ expect(chart.source).toBe('records');expect(chart.days).toHaveLength(7);expect(chart.days.reduce((sum,x)=>sum+x.stools.length,0)).toBe(6);
 });
 it('规律记录独立于最近20份完整报告，清空后也清除统计',()=>{
  rememberRegularity(Array.from({length:8},(_,i)=>row(i)),now);
