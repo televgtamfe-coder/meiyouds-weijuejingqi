@@ -18,10 +18,10 @@ export function BianbianReport({record,onShare,onDoctor,onEdit,notice,jointLoadi
 
 }
 
-export function ReportContent({record,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
+export function ReportContent({record,conclusionText,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;conclusionText?:string;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
  record=displayCopy(record);
  const r=record.report;
- const conclusion=overviewConclusion(record);
+ const conclusion=conclusionText??overviewConclusion(record);
  return (  <article className="br-report-paper">
    {showTimestamp&&<div className="br-report-meta bs-report-meta"><time dateTime={record.createdAt}>{recordTimestamp(record.createdAt)}</time></div>}
    {['red','orange'].includes(r.risk)&&<p className="bt-priority-alert" role="alert">{r.risk==='red'?'请优先联系医生，不要等待进一步分析。':'请优先咨询医生，结合宝宝实际状态评估。'}</p>}
