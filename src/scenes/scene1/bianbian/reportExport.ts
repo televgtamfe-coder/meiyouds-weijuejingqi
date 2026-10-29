@@ -14,7 +14,7 @@ export function reportSections(record:SavedReport) {
  const factText=(f:typeof color)=>f?[f.value,f.detail,f.comparison].filter(Boolean).join('\n'):'本次未返回该项描述。';
  const others=r.facts.filter(f=>!['颜色','性状'].includes(f.label));
  return [
- {title:'本次分析结论',body:overviewConclusion(record)+'\n\n重要指标解读\n'+indicatorDetails(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n风险观察：'+[...riskObservations(record).filter(x=>x.state!=='unknown').map(x=>`${x.label}：${x.value}`),missingRiskMessage(r)].filter(Boolean).join('；')+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
+ {title:'本次分析结论',body:overviewConclusion(record)+'\n\n重要指标解读\n'+indicatorDetails(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n'+[...riskObservations(record).filter(x=>x.state!=='unknown').map(x=>`${x.label}：${x.state==='absent'?'无':'有'}`),missingRiskMessage(r)].filter(Boolean).join('；')+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
  ...(record.trendSnapshot?[{title:'近 7 天便便规律',body:record.trendSnapshot.days.map(d=>`${d.date} · ${d.stools.length}次 · ${trendRisks[dayRisk(d)].label}`).join('\n')}]:[]),
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
  {title:'联合喂养睡眠分析',body:[...reportContext(record).map(x=>`${x.label}：${x.value}${x.change?'，'+x.change:''}`),...(record.jointAnalysis?['同日变化重点：',...record.jointAnalysis.relationships,record.jointAnalysis.alert]:record.trendSnapshot?['联合分析尚未生成，可返回报告查看。']:[])].filter(Boolean).join('\n\n')},

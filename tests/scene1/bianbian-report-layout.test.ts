@@ -36,7 +36,7 @@ it('重复结论只展示一次，完整依据保留新的信息及否定表述'
 it('风险观察只使用当前照片的明确事实，不把缺失、疑似或建议当成阴性',()=>{
  const r=makeRecord({...demoReport,facts:[{label:'可见混合物',value:'未见明显血丝或灰白色区域，可见少量奶瓣。',detail:'',comparison:''}]},'',true);
  expect(riskObservations(r).map(x=>x.state)).toEqual(['absent','present','absent']);
- expect(reportSections(r)[0].body).toContain('奶瓣：疑似少量');
+ expect(reportSections(r)[0].body).toContain('奶瓣：有');
  r.report.facts=[{label:'可见混合物',value:'无法排除血丝，疑似奶瓣。',detail:'若出现灰白色需注意。',comparison:'未见血丝'}];
  expect(riskObservations(r).every(x=>x.state==='unknown')).toBe(true);
  r.report.facts=[{label:'可见混合物',value:'未见血丝。',detail:'可见血丝。',comparison:''}];
