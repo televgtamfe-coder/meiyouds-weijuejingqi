@@ -12,7 +12,7 @@
   const fmt=(value,digits=1)=>value===null||value===undefined?'待补充':Number(value).toFixed(digits).replace(/\.0$/,'');
   const signed=value=>{const s=String(value);return Number(value)>0?'+'+s:s;};
   const statusOf=s=>s.report_status==='research_only'?'研究试算 · 非正式评估':s.report_status==='stale'?'记录已更新，报告待更新':s.report_status==='collecting'?'正在积累记录':labels[s.evaluation?.reason_codes?.[0]]||'暂不能评估';
-  function error(message){el('algorithm-error').hidden=false;text('algorithm-error-text',message);}
+  function error(message){if(!state){text('home-record-state','加载未完成，请点击上方重试');text('home-report-state','等待计算环境就绪');text('daily-complete','加载未完成，请重试');}el('algorithm-error').hidden=false;text('algorithm-error-text',message);}
   function clearError(){el('algorithm-error').hidden=true;}
   async function request(url,body){
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),120000);

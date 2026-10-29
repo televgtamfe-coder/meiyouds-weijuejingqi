@@ -5,16 +5,21 @@
   const base=new URL('.',document.currentScript.src);
   const key='demo5-research-session-v1:'+base.pathname;
   let ready,queue=Promise.resolve(),storageAvailable=true;
+  function bounded(promise,signal){return new Promise((resolve,reject)=>{const abort=()=>reject(new DOMException('计算环境加载超时，请点击重试','AbortError'));if(signal?.aborted)return abort();signal?.addEventListener('abort',abort,{once:true});Promise.resolve(promise).then(resolve,reject).finally(()=>signal?.removeEventListener('abort',abort));});}
   const notice=message=>{const el=document.getElementById('runtime-status');if(el)el.textContent=message;};
   function loadScript(url){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=url;s.onload=resolve;s.onerror=()=>reject(new Error('计算环境加载失败，请检查网络后刷新重试'));document.head.append(s);});}
   async function init(){
-    await loadScript('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js');
-    const py=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/'});
-    const manifestResponse=await nativeFetch(new URL('python/manifest.json',base));
+    const signal=AbortSignal.timeout(45000);
+    const runtimeURL=new URL('vendor/pyodide/',base).href;
+    notice('正在加载计算环境，首次需下载约14 MB，最长等待45秒…');
+    await bounded(loadScript(runtimeURL+'pyodide.js'),signal);
+    const py=await bounded(loadPyodide({indexURL:runtimeURL}),signal);
+    notice('计算环境已加载，正在准备算法和记录…');
+    const manifestResponse=await nativeFetch(new URL('python/manifest.json',base),{signal});
     if(!manifestResponse.ok)throw new Error('计算文件清单加载失败');
     const files=await manifestResponse.json();
     await Promise.all(files.map(async file=>{
-      const response=await nativeFetch(new URL('python/'+file,base));
+      const response=await nativeFetch(new URL('python/'+file,base),{signal});
       if(!response.ok)throw new Error('计算文件加载失败：'+file);
       const path='/home/pyodide/'+file;py.FS.mkdirTree(path.slice(0,path.lastIndexOf('/')));
       py.FS.writeFile(path,await response.text(),{encoding:'utf8'});
@@ -31,8 +36,8 @@
     const url=new URL(typeof input==='string'?input:input.url,location.href);
     if(url.origin!==location.origin||!url.pathname.startsWith('/api/'))return nativeFetch(input,options);
     const operation=queue.then(async()=>{
-      if(!ready)ready=init().catch(e=>{ready=null;notice(e.message);throw e;});
-      const py=await ready;
+      if(!ready)ready=init().catch(e=>{ready=null;notice(e.name==='AbortError'?'加载超时，请点击重试；已保存记录不会清除':e.message);throw e;});
+      const py=await bounded(ready,options.signal);
       if(options.signal?.aborted)throw new DOMException('请求超时，请重试','AbortError');
       const d=new Date(),today=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       py.globals.set('_demo5_args',JSON.stringify([url.pathname,options.method||'GET',options.body||'',url.searchParams.get('date')||'',today]));
