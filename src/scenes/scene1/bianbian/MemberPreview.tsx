@@ -4,7 +4,7 @@ import {Icon,IconName} from './ui';
 const benefits:{icon:IconName;title:string;body:string;tag:string}[]=[
  {icon:'gallery',title:'便便智能分析',body:'拍照或上传图片，查看颜色、性状、风险观察和重点行动建议。',tag:'低风险 · 需要关注 · 建议就医'},
  {icon:'file',title:'近 7 天便便规律',body:'回看每天的排便时间、次数和风险等级，快速找到变化日期。',tag:'时间分布 · 次数变化'},
- {icon:'spark',title:'喂养睡眠与月度分析',body:'对照同一天的便便、奶量和睡眠；月度结合身高体重，查看关联变化。',tag:'七天关联 · 月度成长'},
+ {icon:'spark',title:'月度联合成长分析',body:'对照月度便便、奶量、睡眠及身高体重记录，查看成长变化。',tag:'月度对照 · 成长变化'},
  {icon:'restore',title:'完整历史报告',body:'保留分析当时的结论、资料和趋势，修改当前资料也不影响旧报告。',tag:'当前浏览器保留最近 20 条'},
  {icon:'bell',title:'排便预测与换尿布提醒',body:'参考历史排便规律，预测今天的排便时段，并添加换尿布提醒。',tag:'添加到日历后提醒'},
  {icon:'share',title:'报告保存与分享',body:'保存完整报告长图，分享给家人；需要就医时整理报告分享给医生。',tag:'长图保存 · 家人分享 · 医生分享'},

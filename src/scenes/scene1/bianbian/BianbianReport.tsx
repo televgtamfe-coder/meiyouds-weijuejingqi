@@ -4,7 +4,6 @@ import {reportContext,appearanceConclusion,observationConclusion,referenceParagr
 import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {StoolWeekChart} from './TrendCharts';
-import {JointAnalysisContent,JointStatus} from './TrendsPage';
 import { SavedReport,recordTimestamp,riskLabels } from './records';
 import { referenceSources } from './referenceSources';
 import { Icon } from './ui';
@@ -34,8 +33,6 @@ export function ReportContent({record,showTimestamp=true,jointLoading=false,join
     </div>
    </section>
    {record.trendSnapshot&&<StoolWeekChart data={record.trendSnapshot} compact/>}
-   <section className="bt-report-joint bs-joint-unified" aria-label="联合喂养睡眠分析"><div className="br-section-title"><h2>联合喂养睡眠分析</h2></div>   <div className="bs-context bs-context-short bs-joint-context">{reportContext(record).map(x=><div className="bs-context-line" key={x.label}><span className="bs-context-label">{x.label==='喂养背景'?'喂养':'睡眠'}</span><strong className="bs-context-value">{x.value}</strong><strong className="bs-key-change">{x.change}</strong></div>)}</div>
-{record.trendSnapshot&&(record.jointAnalysis?<JointAnalysisContent analysis={record.jointAnalysis} data={record.trendSnapshot}/>:<JointStatus loading={jointLoading} error={jointError} onRetry={onJoint} onCancel={onCancelJoint}/>)}</section>
    {r.question&&<section className="br-report-section"><h3>可补充的信息</h3><p>{r.question}</p><button className="br-text-button" type="button" onClick={onEdit}>补充信息<Icon name="next"/></button></section>}
    <section className="br-report-section bv-actions"><h3>行动建议</h3>{importantActions(record).map((a,i)=><div className="bt-plan" key={i}><span>{i+1}</span><div><h4>{a.title}</h4><p>{a.action}</p></div></div>)}</section>
    <section className="br-report-section bs-reference"><h3>参考解读</h3><details className="br-summary-details" open><summary><span>完整分析依据</span><Icon name="next"/></summary>{referenceParagraphs(record).map((text,i)=><p key={i}>{text}</p>)}{r.facts.filter(f=>!['颜色','性状'].includes(f.label)).map(f=><p key={f.label}><strong>{f.label}：</strong>{[f.value,f.detail,f.comparison].filter(Boolean).join('；')}</p>)}</details></section>

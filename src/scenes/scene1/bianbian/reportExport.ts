@@ -4,7 +4,6 @@ import {reportContext,appearanceConclusion,observationConclusion,referenceParagr
 import {riskPresentation} from './riskPresentation';
 import {importantActions} from './importantActions';
 import {dayRisk,dayShort,stoolColors,trendRisks,trendRiskLabels} from './trendData';
-import {drawComparison} from './drawComparison';
 import { SavedReport,riskLabels,recordTimestamp } from './records';
 import { referenceSources } from './referenceSources';
 export function reportSections(record:SavedReport) {
@@ -17,7 +16,6 @@ export function reportSections(record:SavedReport) {
  {title:'本次分析结论',body:overviewConclusion(record)+'\n\n重要指标解读\n'+indicatorDetails(record).map(f=>`${f.label}：${f.value}${f.description?'\n'+f.description:''}`).join('\n\n')+'\n\n'+[...riskObservations(record).filter(x=>x.state!=='unknown').map(x=>`${x.label}：${x.state==='absent'?'无':'有'}`),missingRiskMessage(r)].filter(Boolean).join('；')+(r.risk==='red'?'\n请优先联系医生，不要等待再次拍照或 AI 分析。':'')},
  ...(record.trendSnapshot?[{title:'近 7 天便便规律',body:record.trendSnapshot.days.map(d=>`${d.date} · ${d.stools.length}次 · ${trendRisks[dayRisk(d)].label}`).join('\n')}]:[]),
  ...(r.question?[{title:'可补充的信息',body:r.question}]:[]),
- {title:'联合喂养睡眠分析',body:[...reportContext(record).map(x=>`${x.label}：${x.value}${x.change?'，'+x.change:''}`),...(record.jointAnalysis?['同日变化重点：',...record.jointAnalysis.relationships,record.jointAnalysis.alert]:record.trendSnapshot?['联合分析尚未生成，可返回报告查看。']:[])].filter(Boolean).join('\n\n')},
  {title:'行动建议',body:importantActions(record).map((a,i)=>`${i+1}. ${a.title}\n${a.action}`).join('\n\n')||'本次未返回可用行动点。'},
  {title:'参考解读',body:['完整分析依据',...referenceParagraphs(record),...others.map(f=>`${f.label}：${factText(f)}`)].filter(Boolean).join('\n')||'本次未返回进一步解读。'},
  {title:'育儿参考资料',body:'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${x.url}`).join('\n\n')},
@@ -30,9 +28,9 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
  if(!ctx)throw new Error('当前浏览器无法生成长图，请复制报告文字。');
  const font="'PingFang SC','Microsoft YaHei',sans-serif";
  function lines(text:string,size:number,max=inner-64){ctx!.font=`400 ${size}px ${font}`;const out:string[]=[];for(const paragraph of text.split('\n')){let line='';for(const ch of paragraph){if(ctx!.measureText(line+ch).width>max&&line){out.push(line);line=ch;}else line+=ch;}out.push(line);}return out;}
- const sections=reportSections(record).map(s=>({...s,week:s.title==='近 7 天便便规律',comparison:s.title==='联合喂养睡眠分析'&&!!record.trendSnapshot&&!!record.jointAnalysis,lines:lines(s.title==='育儿参考资料'?'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${new URL(x.url).hostname}`).join('\n\n')+'\n\n完整资料链接可在报告页面查看。':s.body,25)}));
+ const sections=reportSections(record).map(s=>({...s,week:s.title==='近 7 天便便规律',lines:lines(s.title==='育儿参考资料'?'育儿科普资料\n'+referenceSources.map(x=>`${x.title}\n${new URL(x.url).hostname}`).join('\n\n')+'\n\n完整资料链接可在报告页面查看。':s.body,25)}));
  const chartHeight=record.trendSnapshot?590:0;
- const height=300+sections.reduce((sum,s)=>sum+(s.week?chartHeight:106+s.lines.length*40+(s.comparison?450:0)),0)+180;
+ const height=300+sections.reduce((sum,s)=>sum+(s.week?chartHeight:106+s.lines.length*40),0)+180;
  if(height>30000)throw new Error('报告内容较长，请使用复制文字保存完整内容。');
  canvas.width=width;canvas.height=height;ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
  const text=(s:string,x:number,y:number,size:number,color='#323232',weight=400)=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(s,x,y);};
@@ -52,11 +50,10 @@ export async function reportImage(record:SavedReport):Promise<Blob>{
 
  for(const [index,s]of sections.entries()){
   if(s.week){drawWeek();continue;}
-  const h=86+s.lines.length*40+(s.comparison?450:0);ctx.fillStyle=index===0?riskPresentation[record.report.risk].background:'#f7f7f9';
+  const h=86+s.lines.length*40;ctx.fillStyle=index===0?riskPresentation[record.report.risk].background:'#f7f7f9';
   ctx.beginPath();ctx.roundRect(pad,y,inner,h,24);ctx.fill();
   text(s.title,pad+32,y+49,28,index===0?riskColor:'#323232',500);
   s.lines.forEach((line,i)=>text(line,pad+32,y+92+i*40,25,'#555'));
-  if(s.comparison&&record.trendSnapshot)drawComparison(ctx,record.trendSnapshot,pad+32,y+100+s.lines.length*40,inner-64);
   y+=h+24;
  }
  text('便便分析报告',pad,y+30,23,'#999');
