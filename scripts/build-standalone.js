@@ -53,3 +53,6 @@ fs.writeFileSync(path.join(DOCS, 'scene3.html'), buildRedirectPage('#/record', '
 fs.writeFileSync(path.join(DOCS, 'record.html'), buildRedirectPage('#/record', '记录详情骨架'));
 
 console.log(`Built app copied from ${DIST} to ${DOCS} at ${builtAt}`);
+
+// Keep the independent Python-in-browser algorithm demo in Pages output.
+fs.cpSync(path.join(DIST, 'demo5'), path.join(DOCS, 'demo5'), { recursive: true });

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>围绝经期阶段时间轴预览</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --my-brand: #ff4d88;
+  --my-brand-deep: #ec2f75;
+  --my-brand-soft: rgba(255, 77, 136, 0.08);
+  --my-bg: #f2f2f5;
+  --my-surface: #ffffff;
+  --my-text: #323232;
+  --my-sub: #666666;
+  --my-tertiary: #999999;
+  --my-line: rgba(0, 0, 0, 0.08);
+  --my-purple: #8a70d6;
+  --my-purple-soft: #f2edff;
+  --my-mint: #9fd8d1;
+  --my-lime: #c8ef61;
+  --my-radius: 12px;
+  --my-shadow: 0 2px 10px rgba(50, 50, 50, 0.06);
+}
+html, body { min-height: 100%; }
+body {
+  background: #e8e8ec;
+  color: var(--my-text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0;
+}
+.screen {
+  width: min(100%, 430px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px 12px;
+  background: var(--my-bg);
+}
+.timeline-card {
+  overflow: hidden;
+  border-radius: var(--my-radius);
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+}
+.card-head {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--my-line);
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+.info {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--my-tertiary);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  font-size: 13px;
+  font-weight: 600;
+}
+.card-body { padding: 14px 14px 16px; }
+.intro {
+  color: var(--my-text);
+  font-size: 14px;
+  line-height: 1.58;
+}
+.stage-pill {
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin: 14px 0 11px 92px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--my-purple-soft);
+  color: var(--my-purple);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.stage-pill::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 2px;
+  background: inherit;
+}
+.timeline-track {
+  position: relative;
+  height: 26px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr 1.1fr 0.9fr;
+  gap: 3px;
+  align-items: center;
+}
+.segment {
+  height: 18px;
+  border-radius: 10px;
+  background: #f1f1f4;
+}
+.segment.late-repro { background: linear-gradient(90deg, rgba(159, 216, 209, 0.9), rgba(159, 216, 209, 0.25)); }
+.segment.early-peri { background: linear-gradient(90deg, rgba(138, 112, 214, 0.28), rgba(138, 112, 214, 0.82)); }
+.segment.late-peri { background: linear-gradient(90deg, rgba(138, 112, 214, 0.82), rgba(255, 77, 136, 0.2)); }
+.segment.post { background: linear-gradient(90deg, rgba(200, 239, 97, 0.28), rgba(200, 239, 97, 0.78)); }
+.stage-labels {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr 1.1fr 0.9fr;
+  gap: 3px;
+  margin-top: 8px;
+  color: var(--my-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+.stage-labels strong {
+  color: var(--my-text);
+  font-weight: 500;
+}
+.menopause-mark {
+  position: relative;
+  margin-top: 11px;
+  padding-left: 61%;
+  color: var(--my-brand);
+  font-size: 11px;
+}
+.menopause-mark::before {
+  content: "";
+  position: absolute;
+  left: 60%;
+  top: -37px;
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(180deg, rgba(255, 77, 136, 0), rgba(255, 77, 136, 0.5));
+}
+.stage-detail {
+  margin-top: 14px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: #fff7fa;
+}
+.detail-title {
+  color: var(--my-brand-deep);
+  font-size: 14px;
+  font-weight: 500;
+}
+.detail-copy {
+  margin-top: 5px;
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 1.55;
+}
+</style>
+</head>
+<body><div style="position:relative;z-index:9999;background:#fff0f5;color:#963051;padding:16px;font:14px/1.6 sans-serif">原demo静态参考，未接入算法。页面中的示例数字和建议未经本次验收。<a href="meiyou-menopause-home.html">返回算法联调首页</a></div>
+<main class="screen">
+  <section class="timeline-card" aria-label="围绝经期阶段时间轴">
+    <div class="card-head">
+      <h1 class="card-title">围绝经期阶段时间轴</h1>
+      <span class="info" aria-hidden="true">i</span>
+    </div>
+    <div class="card-body">
+      <p class="intro">你可能会先感觉到周期长度、睡眠、情绪或潮热出现变化。这个时间轴用于帮助你理解身体所处阶段，不作为诊断结论。</p>
+
+      <div class="stage-pill">当前推测：围绝经早期</div>
+      <div class="timeline-track" aria-hidden="true">
+        <div class="segment late-repro"></div>
+        <div class="segment early-peri"></div>
+        <div class="segment late-peri"></div>
+        <div class="segment post"></div>
+      </div>
+      <div class="stage-labels">
+        <span>生育晚期</span>
+        <strong>围绝经早期</strong>
+        <span>围绝经晚期</span>
+        <span>绝经后早期</span>
+      </div>
+      <div class="menopause-mark">绝经点</div>
+
+      <div class="stage-detail">
+        <div class="detail-title">这一阶段可以重点观察</div>
+        <p class="detail-copy">周期是否变长或变短、是否出现无排卵信号、睡眠和情绪是否波动，以及潮热是否开始出现。</p>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

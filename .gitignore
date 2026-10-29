@@ -5,3 +5,7 @@ dist/
 .tmp/
 .github/workflows/pages.yml
 .vercel
+
+# Python research demo build caches
+__pycache__/
+*.pyc

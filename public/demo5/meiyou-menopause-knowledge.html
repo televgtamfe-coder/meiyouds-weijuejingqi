@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>身体换季了：一篇看懂围绝经期</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --my-brand: #ff4d88;
+  --my-brand-deep: #ec2f75;
+  --my-brand-soft: rgba(255, 77, 136, 0.08);
+  --my-bg: #f2f2f5;
+  --my-surface: #ffffff;
+  --my-text: #323232;
+  --my-sub: #666666;
+  --my-tertiary: #999999;
+  --my-line: rgba(0, 0, 0, 0.08);
+  --my-link: #4f7cae;
+  --my-radius-md: 12px;
+  --my-shadow: 0 2px 10px rgba(50, 50, 50, 0.06);
+}
+html, body { min-height: 100%; }
+body {
+  background: #e8e8ec;
+  color: var(--my-text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0;
+}
+button { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.screen {
+  width: min(100%, 430px);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--my-bg);
+}
+.scroll {
+  min-height: 100vh;
+  padding-bottom: 28px;
+  background: linear-gradient(180deg, #fff0f5 0, #f8edf4 150px, var(--my-bg) 300px);
+}
+.status {
+  position: relative;
+  height: 58px;
+  padding: 22px 22px 0;
+}
+.time {
+  color: #070708;
+  font-size: 19px;
+  font-weight: 600;
+}
+.phone-icons {
+  position: absolute;
+  right: 17px;
+  top: 25px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #111;
+}
+.bars { display: grid; grid-template-columns: repeat(4, 4px); align-items: end; gap: 3px; height: 17px; }
+.bars i { display: block; width: 4px; border-radius: 2px; background: #202124; }
+.bars i:nth-child(1) { height: 5px; }
+.bars i:nth-child(2) { height: 8px; }
+.bars i:nth-child(3) { height: 12px; }
+.bars i:nth-child(4) { height: 16px; }
+.wifi { position: relative; width: 22px; height: 16px; }
+.wifi::before { content: ""; position: absolute; inset: 0; border: 4px solid #111; border-color: #111 transparent transparent transparent; border-radius: 50% 50% 0 0; }
+.wifi::after { content: ""; position: absolute; left: 8px; bottom: 1px; width: 7px; height: 7px; border-radius: 50%; background: #111; }
+.battery { position: relative; width: 28px; height: 15px; border: 1.7px solid #9b9ba1; border-radius: 5px; }
+.battery::before { content: ""; position: absolute; inset: 3px 8px 3px 3px; border-radius: 2px; background: #64d878; }
+.battery::after { content: ""; position: absolute; top: 4px; right: -4px; width: 2px; height: 6px; border-radius: 0 2px 2px 0; background: #9b9ba1; }
+.nav {
+  height: 48px;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  padding: 0 12px;
+}
+.back {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: #303136;
+}
+.back svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.nav-title {
+  color: var(--my-text);
+  font-size: 17px;
+  font-weight: 500;
+  text-align: center;
+}
+.content { padding: 10px 12px 0; }
+.article-card {
+  padding: 18px 16px 20px;
+  border-radius: var(--my-radius-md);
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+}
+.kicker {
+  width: max-content;
+  max-width: 100%;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--my-brand-soft);
+  color: var(--my-brand-deep);
+  font-size: 12px;
+  font-weight: 500;
+}
+h1 {
+  margin-top: 10px;
+  color: var(--my-text);
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.lead {
+  margin-top: 10px;
+  color: var(--my-sub);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.summary {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff7fa;
+  color: var(--my-sub);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.section {
+  margin-top: 18px;
+}
+.section h2 {
+  color: var(--my-text);
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 500;
+}
+.section p {
+  margin-top: 8px;
+  color: var(--my-sub);
+  font-size: 14px;
+  line-height: 1.72;
+}
+.check-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.check-list li {
+  list-style: none;
+  position: relative;
+  padding-left: 18px;
+  color: var(--my-sub);
+  font-size: 14px;
+  line-height: 1.62;
+}
+.check-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--my-brand);
+}
+.note {
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #eef6fb;
+  color: var(--my-link);
+  font-size: 13px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body><div style="position:relative;z-index:9999;background:#fff0f5;color:#963051;padding:16px;font:14px/1.6 sans-serif">原demo静态参考，未接入算法。页面中的示例数字和建议未经本次验收。<a href="meiyou-menopause-home.html">返回算法联调首页</a></div>
+<main class="screen">
+  <div class="scroll">
+    <section class="status" aria-hidden="true">
+      <div class="time">15:11</div>
+      <div class="phone-icons">
+        <div class="bars"><i></i><i></i><i></i><i></i></div>
+        <div class="wifi"></div>
+        <div class="battery"></div>
+      </div>
+    </section>
+
+    <header class="nav">
+      <button class="back" type="button" id="back" aria-label="返回">
+        <svg viewBox="0 0 24 24"><path d="M15 18 9 12l6-6"></path></svg>
+      </button>
+      <div class="nav-title">知识内容</div>
+      <span aria-hidden="true"></span>
+    </header>
+
+    <div class="content">
+      <article class="article-card">
+        <div class="kicker">围绝经期基础知识</div>
+        <h1>身体换季了：一篇看懂围绝经期</h1>
+        <p class="lead">围绝经期不是身体突然“变差”，更像一次内在节律的换季。你可能会发现月经、睡眠、情绪、皮肤、体温和亲密感受都在变，这些变化值得被看见，也可以被温柔管理。</p>
+
+        <div class="summary">先记住一句话：围绝经期是从卵巢功能开始波动，到绝经后逐渐稳定的一段过渡期。它不是一个精确日期，而是一段需要持续观察的身体旅程。</div>
+
+        <section class="section">
+          <h2>什么是围绝经期？</h2>
+          <p>围绝经期通常指女性从月经开始变得不稳定，到最后一次月经前后的过渡阶段。医学上一般把连续 12 个月没有月经作为“绝经”的判断标志；在这之前，周期可能忽长忽短，经量可能变多或变少，也可能偶尔跳过一个周期。</p>
+        </section>
+
+        <section class="section">
+          <h2>为什么身体会有这么多变化？</h2>
+          <p>核心原因是卵巢激素分泌开始波动，尤其是雌激素和孕酮不再像过去那样稳定。这种波动可能影响大脑、血管、泌尿生殖道、睡眠节律和情绪调节，所以你感受到的变化常常不是单点发生，而是一串身体信号连在一起。</p>
+        </section>
+
+        <section class="section">
+          <h2>常见信号有哪些？</h2>
+          <ul class="check-list">
+            <li>月经周期变短、变长、漏来，或经量变化。</li>
+            <li>潮热、出汗、心悸，尤其在夜间更明显。</li>
+            <li>睡眠变浅、早醒，醒来后恢复感下降。</li>
+            <li>情绪更敏感，容易烦躁、低落或焦虑。</li>
+            <li>阴道干涩、尿频、同房不适或反复泌尿不适。</li>
+            <li>乳房胀痛、关节酸痛、体重和代谢变化。</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>你可以从哪些记录开始？</h2>
+          <p>不用一开始就记录很多。先从每天 1 分钟开始：今天睡得怎么样、有没有潮热、情绪如何、分泌物是否变化、有没有尿频或疼痛。连续几周后，你会更容易看见身体和生活之间的关联。</p>
+        </section>
+
+        <section class="section">
+          <h2>什么时候需要及时咨询医生？</h2>
+          <p>如果出现经量明显增多、出血时间过长、同房后出血、绝经后再次出血，或伴随明显疼痛、发热、血尿、单侧乳房硬块等情况，建议及时就医。记录可以帮助你更清楚地描述变化，但不能替代专业诊断。</p>
+        </section>
+
+        <div class="note">美柚姐姐的小提醒：你不需要一次弄懂所有变化。先从诚实记录开始，身体会慢慢把线索交给你。</div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<script>
+document.getElementById("back").addEventListener("click", () => {
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  window.location.href = "./meiyou-sister-chat.html?entry=morning-plan";
+});
+</script>
+</body>
+</html>

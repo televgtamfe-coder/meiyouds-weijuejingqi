@@ -1,0 +1,3352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>美柚姐姐</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+:root {
+  --my-brand: #ff4d88;
+  --my-brand-deep: #ec2f75;
+  --my-brand-soft: rgba(255, 77, 136, 0.08);
+  --my-bg: #f2f2f5;
+  --my-surface: #ffffff;
+  --my-text: #323232;
+  --my-sub: #666666;
+  --my-tertiary: #999999;
+  --my-line: rgba(0, 0, 0, 0.08);
+  --my-link: #4f7cae;
+  --my-success: #fb7eae;
+  --my-radius-sm: 8px;
+  --my-radius-md: 12px;
+  --my-shadow: 0 2px 10px rgba(50, 50, 50, 0.06);
+}
+html, body { min-height: 100%; }
+body {
+  background: #e8e8ec;
+  color: var(--my-text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0;
+}
+button, input { border: 0; background: none; color: inherit; font: inherit; }
+button { cursor: pointer; }
+.screen {
+  position: relative;
+  width: min(100%, 430px);
+  min-height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--my-bg);
+}
+.scroll {
+  min-height: 100vh;
+  padding-bottom: 152px;
+  background: linear-gradient(180deg, #fff0f5 0, #f8edf4 178px, var(--my-bg) 320px);
+}
+.scroll.compact-bottom {
+  padding-bottom: 24px;
+}
+.status {
+  position: relative;
+  height: 58px;
+  padding: 22px 22px 0;
+}
+.time {
+  color: #070708;
+  font-size: 19px;
+  font-weight: 600;
+}
+.phone-icons {
+  position: absolute;
+  right: 17px;
+  top: 25px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #111;
+}
+.bars { display: grid; grid-template-columns: repeat(4, 4px); align-items: end; gap: 3px; height: 17px; }
+.bars i { display: block; width: 4px; border-radius: 2px; background: #202124; }
+.bars i:nth-child(1) { height: 5px; }
+.bars i:nth-child(2) { height: 8px; }
+.bars i:nth-child(3) { height: 12px; }
+.bars i:nth-child(4) { height: 16px; }
+.wifi { position: relative; width: 22px; height: 16px; }
+.wifi::before { content: ""; position: absolute; inset: 0; border: 4px solid #111; border-color: #111 transparent transparent transparent; border-radius: 50% 50% 0 0; }
+.wifi::after { content: ""; position: absolute; left: 8px; bottom: 1px; width: 7px; height: 7px; border-radius: 50%; background: #111; }
+.battery { position: relative; width: 28px; height: 15px; border: 1.7px solid #9b9ba1; border-radius: 5px; }
+.battery::before { content: ""; position: absolute; inset: 3px 8px 3px 3px; border-radius: 2px; background: #fb7eae; }
+.battery::after { content: ""; position: absolute; top: 4px; right: -4px; width: 2px; height: 6px; border-radius: 0 2px 2px 0; background: #9b9ba1; }
+.nav {
+  height: 48px;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  padding: 0 12px;
+}
+.back, .menu {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: #303136;
+}
+.back svg, .menu svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.nav-title {
+  color: var(--my-text);
+  font-size: 17px;
+  font-weight: 500;
+  text-align: center;
+}
+.content { padding: 10px 12px 0; }
+.assistant-card {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
+  align-items: center;
+  min-height: 96px;
+  padding: 14px 16px;
+  border-radius: var(--my-radius-md);
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+}
+.avatar-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffe8f1, #fff);
+}
+.avatar-wrap img {
+  width: 58px;
+  height: 74px;
+  object-fit: cover;
+  object-position: 50% 8%;
+  display: block;
+}
+.assistant-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 500;
+}
+.assistant-tag {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--my-link);
+  background: #eef6fb;
+  font-size: 12px;
+  font-weight: 400;
+}
+.assistant-desc {
+  margin-top: 4px;
+  color: var(--my-tertiary);
+  font-size: 13px;
+  line-height: 19px;
+}
+.chat-card {
+  margin-top: 10px;
+  padding: 14px 16px 16px;
+  border-radius: var(--my-radius-md);
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+}
+.bubble-row {
+  display: block;
+}
+.bubble {
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: #fff7fa;
+  color: var(--my-text);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.sleep-check-title {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+}
+.sleep-check-sub {
+  margin-top: 3px;
+  color: var(--my-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.check-group {
+  margin-top: 14px;
+}
+.check-label {
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 18px;
+}
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.choice {
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 17px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  color: var(--my-sub);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 13px;
+}
+.choice.selected {
+  color: var(--my-brand-deep);
+  background: var(--my-brand-soft);
+  border-color: rgba(255, 77, 136, 0.28);
+  font-weight: 500;
+}
+.choice.selected::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--my-brand);
+  box-shadow: inset 0 0 0 3px #fff;
+}
+.confirm-check {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 16px;
+  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--my-brand);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+.message-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.message-list:empty {
+  display: none;
+}
+.message-row {
+  display: flex;
+}
+.message-row.user {
+  justify-content: flex-end;
+}
+.message-row.assistant {
+  justify-content: flex-start;
+}
+.message-bubble {
+  max-width: 86%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: var(--my-text);
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+  white-space: pre-line;
+}
+.message-row.user .message-bubble {
+  border-top-right-radius: 4px;
+  background: var(--my-brand);
+  color: #fff;
+}
+.message-row.assistant .message-bubble {
+  border-top-left-radius: 4px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+.message-row.assistant .message-bubble.typing::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 15px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  border-radius: 2px;
+  background: var(--my-brand);
+  animation: typingCursor 0.82s steps(1) infinite;
+}
+@keyframes typingCursor {
+  0%, 48% { opacity: 1; }
+  49%, 100% { opacity: 0; }
+}
+.message-bubble.plan-message {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  background: #fff;
+  white-space: normal;
+}
+.timeline-card {
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: var(--my-radius-md);
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+}
+.timeline-card[hidden] { display: none; }
+.date-tabs {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 2px 2px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.date-tabs::-webkit-scrollbar {
+  display: none;
+}
+.date-tabs[hidden] {
+  display: none;
+}
+.date-tab {
+  flex: 0 0 auto;
+  min-width: 124px;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 19px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--my-sub);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 10px rgba(50, 50, 50, 0.04);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.date-tab.active {
+  background: var(--my-brand);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(255, 77, 136, 0.2);
+}
+.vitality-hero {
+  margin-top: 10px;
+  padding: 18px 16px 14px;
+  overflow: hidden;
+  border-radius: var(--my-radius-md);
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+  text-align: center;
+}
+.vitality-hero[hidden] { display: none; }
+.vitality-orb {
+  --bubble-scale: 1;
+  --bubble-mid-scale: 1.015;
+  position: relative;
+  width: 184px;
+  height: 174px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  animation: vitalityBubbleFloat 4.8s ease-in-out infinite;
+}
+.vitality-orb::before,
+.vitality-orb::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.vitality-orb::before {
+  inset: 1px 3px 4px 0;
+  border: 6px solid #ff5b93;
+  border-radius: 48% 52% 45% 55% / 54% 46% 54% 46%;
+  box-shadow: 0 8px 18px rgba(255, 77, 136, 0.16), inset 0 0 0 2px rgba(255, 255, 255, 0.64);
+  transform: rotate(-5deg);
+  animation: vitalityHaloPulse 3.6s ease-in-out infinite;
+}
+.vitality-orb::after {
+  inset: 14px 12px 12px 15px;
+  border: 1px solid rgba(255, 77, 136, 0.28);
+  border-radius: 54% 46% 50% 50% / 47% 55% 45% 53%;
+  box-shadow: 0 0 0 6px rgba(255, 77, 136, 0.07), 0 0 0 12px rgba(255, 77, 136, 0.035);
+  transform: rotate(5deg);
+  animation: vitalityInnerPulse 3.6s ease-in-out infinite;
+}
+.vitality-orb-core {
+  position: relative;
+  z-index: 1;
+  width: 136px;
+  height: 128px;
+  padding-top: 38px;
+  border-radius: 48% 52% 44% 56% / 56% 45% 55% 44%;
+  background: radial-gradient(circle at 44% 32%, #fff 0 10%, #fff8fb 48%, #ffedf4 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 77, 136, 0.12);
+}
+.vitality-orb-core::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 23px;
+  width: 46px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+  filter: blur(2px);
+  transform: rotate(-18deg);
+}
+.vitality-score {
+  display: block;
+  color: var(--my-text);
+  font-size: 48px;
+  line-height: 0.92;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.vitality-score-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  margin-top: 12px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 77, 136, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--my-brand-deep);
+  font-size: 12px;
+  font-weight: 500;
+}
+.vitality-dot {
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  background: #ff7eaa;
+  box-shadow: 0 0 0 4px rgba(255, 126, 170, 0.12);
+}
+.vitality-dot.one { top: 37px; right: 25px; width: 7px; height: 7px; animation: vitalitySparkOne 3.9s ease-in-out infinite; }
+.vitality-dot.two { bottom: 37px; left: 28px; width: 5px; height: 5px; opacity: 0.72; animation: vitalitySparkTwo 4.3s ease-in-out infinite; }
+.vitality-dot.three { right: 43px; bottom: 24px; width: 4px; height: 4px; opacity: 0.55; animation: vitalitySparkThree 3.5s ease-in-out infinite; }
+@keyframes vitalityBubbleFloat {
+  0%, 100% { transform: translateY(0) scale(var(--bubble-scale)); }
+  50% { transform: translateY(-4px) scale(var(--bubble-mid-scale)); }
+}
+@keyframes vitalityHaloPulse {
+  0%, 100% { opacity: 0.82; transform: rotate(-5deg) scale(0.985); box-shadow: 0 7px 14px rgba(255, 77, 136, 0.12), inset 0 0 0 2px rgba(255, 255, 255, 0.64); }
+  50% { opacity: 1; transform: rotate(-4deg) scale(1.035); box-shadow: 0 13px 30px rgba(255, 77, 136, 0.3), 0 0 0 8px rgba(255, 77, 136, 0.07), inset 0 0 0 2px rgba(255, 255, 255, 0.78); }
+}
+@keyframes vitalityInnerPulse {
+  0%, 100% { opacity: 0.72; transform: rotate(5deg) scale(0.99); }
+  50% { opacity: 1; transform: rotate(6deg) scale(1.02); }
+}
+@keyframes vitalitySparkOne {
+  0%, 100% { transform: translate(0, 0) scale(0.9); opacity: 0.65; }
+  50% { transform: translate(4px, -5px) scale(1.2); opacity: 1; }
+}
+@keyframes vitalitySparkTwo {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(-3px, 4px) scale(1.18); opacity: 0.9; }
+}
+@keyframes vitalitySparkThree {
+  0%, 100% { transform: translate(0, 0) scale(0.9); opacity: 0.42; }
+  50% { transform: translate(2px, -3px) scale(1.15); opacity: 0.82; }
+}
+.vitality-summary {
+  margin-top: 15px;
+  color: var(--my-text);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+.vitality-summary strong { color: var(--my-brand-deep); font-weight: 600; }
+.vitality-update { margin-top: 5px; color: var(--my-tertiary); font-size: 12px; line-height: 18px; }
+.vitality-pillars { margin-top: 10px; padding: 16px; border-radius: 12px; background: var(--my-surface); box-shadow: var(--my-shadow); }
+.vitality-pillars[hidden] { display: none; }
+.vitality-pillars-title { color: var(--my-tertiary); font-size: 13px; line-height: 18px; font-weight: 500; }
+.vitality-pillar { margin-top: 16px; }
+.vitality-pillar-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--my-text); font-size: 15px; line-height: 21px; }
+.vitality-pillar-name { display: inline-flex; align-items: center; gap: 8px; }
+.vitality-pillar-icon { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: var(--my-brand-soft); color: var(--my-brand-deep); font-size: 12px; font-weight: 600; }
+.vitality-pillar-score { color: var(--my-brand-deep); font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vitality-pillar-bar { height: 8px; margin-top: 9px; overflow: hidden; border-radius: 99px; background: #f1edf0; }
+.vitality-pillar-bar::after { content: ""; display: block; width: var(--pillar-score); height: 100%; border-radius: inherit; background: var(--my-brand); }
+.vitality-trend { margin-top: 10px; padding: 16px; border-radius: 12px; background: var(--my-surface); box-shadow: var(--my-shadow); }
+.vitality-trend[hidden] { display: none; }
+.vitality-trend-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.vitality-trend-title { display: flex; align-items: center; gap: 8px; color: var(--my-text); font-size: 17px; line-height: 24px; font-weight: 600; }
+.vitality-trend-title svg { width: 21px; height: 21px; color: var(--my-brand-deep); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.vitality-trend-range { margin-top: 3px; color: var(--my-tertiary); font-size: 12px; line-height: 18px; }
+.vitality-trend-change { flex: 0 0 auto; padding-top: 2px; color: var(--my-brand-deep); font-size: 13px; line-height: 20px; font-weight: 500; white-space: nowrap; }
+.vitality-trend-score-row { display: flex; align-items: baseline; gap: 6px; margin-top: 14px; }
+.vitality-trend-score { color: var(--my-text); font-size: 34px; line-height: 40px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vitality-trend-score small { margin-left: 2px; color: var(--my-sub); font-size: 14px; font-weight: 500; }
+.vitality-trend-score-row span { color: var(--my-tertiary); font-size: 12px; line-height: 18px; }
+.vitality-trend-chart { display: block; width: 100%; height: 144px; margin-top: 6px; overflow: visible; }
+.vitality-trend-chart text { fill: #a6a6ad; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; font-size: 10px; }
+.vitality-trend-grid { stroke: #ededf0; stroke-width: 1; stroke-dasharray: 3 4; }
+.vitality-trend-area { fill: rgba(255, 77, 136, 0.12); }
+.vitality-trend-line { fill: none; stroke: var(--my-brand); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.vitality-trend-point { fill: #fff; stroke: var(--my-brand); stroke-width: 3; }
+.vitality-trend-point.latest { fill: var(--my-brand); stroke: #fff; }
+.vitality-trend-note { margin-top: 3px; color: var(--my-sub); font-size: 12px; line-height: 18px; }
+.ability-stage-summary { margin-top: 10px; padding: 4px 14px; border-radius: 12px; background: var(--my-surface); box-shadow: var(--my-shadow); color: var(--my-sub); font-size: 14px; }
+.ability-stage-summary[hidden] { display: none; }
+.ability-stage-row { min-height: 42px; display: flex; align-items: center; border-top: 1px solid var(--my-line); }
+.ability-stage-row:first-child { border-top: 0; }
+.ability-stage-link { width: 100%; justify-content: flex-start; text-align: left; }
+.ability-stage-summary strong { margin-left: 3px; color: var(--my-text); font-weight: 600; }
+.ability-stage-arrow { margin-left: auto; color: var(--my-tertiary); font-size: 24px; line-height: 1; }
+.ability-forecast-age { margin-left: 3px; color: var(--my-brand-deep); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ability-recalculate { min-height: 26px; margin-left: 8px; padding: 0 10px; border-radius: 13px; background: var(--my-brand-soft); color: var(--my-brand-deep); font-size: 12px; font-weight: 600; }
+.ability-module-title { display: flex; align-items: center; gap: 8px; margin: 18px 2px 9px; color: var(--my-text); font-size: 16px; line-height: 24px; font-weight: 600; }
+.ability-module-title::after { content: ""; flex: 1; height: 1px; margin-left: 4px; background: var(--my-line); }
+.ability-module-icon { position: relative; width: 24px; height: 24px; flex: 0 0 24px; display: grid; place-items: center; color: #7b7880; }
+.ability-module-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+.ability-module-icon.age::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--my-brand-deep); box-shadow: 8px -6px 0 -2px #ff8fba, 9px 7px 0 -3px #ffc0d5; }
+.ability-module-icon.vitality { color: var(--my-brand-deep); }
+.body-age-panel { margin-top: 10px; padding: 24px 16px 18px; border-radius: 12px; background: var(--my-surface); box-shadow: var(--my-shadow); text-align: center; }
+.body-age-panel[hidden] { display: none; }
+.body-age-kicker { color: var(--my-tertiary); font-size: 13px; line-height: 18px; }
+.body-age-number { margin-top: 7px; color: var(--my-text); font-size: 56px; line-height: 62px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.body-age-number small { margin-left: 3px; font-size: 20px; font-weight: 500; }
+.body-age-delta { display: inline-flex; align-items: center; min-height: 28px; margin-top: 8px; padding: 0 10px; border-radius: 14px; background: var(--my-brand-soft); color: var(--my-brand-deep); font-size: 13px; font-weight: 500; }
+.body-age-copy { margin: 16px 8px 0; color: var(--my-sub); font-size: 14px; line-height: 21px; text-align: left; }
+.body-age-metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--my-line); }
+.body-age-metric { min-width: 0; padding: 0 5px; border-left: 1px solid var(--my-line); color: var(--my-tertiary); font-size: 12px; line-height: 18px; }
+.body-age-metric:first-child { border-left: 0; }
+.body-age-metric b { display: block; margin-top: 2px; color: var(--my-text); font-size: 13px; font-weight: 500; }
+.body-age-trend { margin-top: 10px; padding: 16px; border-radius: 12px; background: var(--my-surface); box-shadow: var(--my-shadow); }
+.body-age-trend[hidden] { display: none; }
+.body-age-trend-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.body-age-trend-title { display: flex; align-items: center; gap: 8px; color: var(--my-text); font-size: 17px; font-weight: 600; }
+.body-age-trend-icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; background: #eaf8f3; color: var(--my-success); }
+.body-age-trend-icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.body-age-trend-arrow { color: var(--my-tertiary); font-size: 24px; line-height: 1; }
+.body-age-trend-average { margin-top: 16px; color: var(--my-tertiary); font-size: 12px; line-height: 18px; }
+.body-age-trend-average strong { display: block; margin-top: 2px; color: var(--my-text); font-size: 33px; line-height: 40px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.body-age-trend-average strong small { margin-left: 3px; font-size: 15px; font-weight: 500; }
+.body-age-trend-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; color: var(--my-tertiary); font-size: 12px; }
+.body-age-legend { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+.body-age-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.body-age-legend i { width: 8px; height: 8px; border-radius: 2px; background: #c7c7cd; }
+.body-age-legend i.body { background: var(--my-success); }
+.body-age-chart { width: 100%; height: 156px; margin-top: 8px; display: block; overflow: visible; }
+.body-age-chart text { fill: #a6a6ad; font-size: 10px; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+.body-age-chart .chart-grid { stroke: #e9e9ed; stroke-width: 1; stroke-dasharray: 3 4; }
+.body-age-chart .actual-line { fill: none; stroke: #c4c4ca; stroke-width: 2; stroke-dasharray: 4 4; }
+.body-age-chart .age-area { fill: rgba(0, 204, 153, 0.14); }
+.body-age-chart .age-line { fill: none; stroke: var(--my-success); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.body-age-chart .age-point { fill: var(--my-success); stroke: #fff; stroke-width: 2; }
+.body-age-chart .actual-point { fill: #fff; stroke: #c4c4ca; stroke-width: 3; }
+.body-age-support { margin-top: 10px; }
+.body-age-support[hidden] { display: none; }
+.body-age-support .confidence-card { margin-top: 0; background: var(--my-surface); border-color: var(--my-line); box-shadow: var(--my-shadow); }
+.body-age-support .impact-factors { margin-top: 10px; }
+.confidence-card {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff7fa;
+  border: 1px solid rgba(255, 77, 136, 0.1);
+  text-align: left;
+}
+.confidence-mark {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #e986ad;
+  border-radius: 9px 12px 9px 12px;
+  position: relative;
+  transform: rotate(8deg);
+}
+.confidence-mark::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff8fba;
+}
+.confidence-title { color: var(--my-text); font-size: 15px; line-height: 21px; font-weight: 600; }
+.confidence-copy { margin-top: 2px; color: var(--my-tertiary); font-size: 12px; line-height: 17px; }
+.impact-factors {
+  margin-top: 10px;
+  padding: 4px 0 2px;
+  background: var(--my-surface);
+  box-shadow: none;
+}
+.impact-factors[hidden] { display: none; }
+.impact-title { margin: 0 16px 14px; color: var(--my-text); font-size: 20px; line-height: 28px; font-weight: 600; }
+.impact-group + .impact-group { margin-top: 4px; }
+.impact-group-title { margin: 0; padding: 12px 16px 6px; color: var(--my-tertiary); font-size: 13px; line-height: 18px; font-weight: 500; }
+.impact-row { border-top: 1px solid rgba(0, 0, 0, 0.06); background: var(--my-surface); }
+.impact-group .impact-row:first-of-type { border-top: 0; border-radius: 0; }
+.impact-group .impact-row:last-of-type { border-radius: 0; }
+.impact-group .impact-row:only-of-type { border-radius: 0; }
+.impact-toggle {
+  width: 100%;
+  min-height: 70px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto 24px;
+  grid-template-rows: 1fr;
+  gap: 10px;
+  align-content: center;
+  align-items: center;
+  padding: 13px 16px;
+  text-align: left;
+}
+.impact-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff0f5;
+  color: #fb7eae;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 600;
+}
+.impact-name { min-width: 0; color: var(--my-text); font-size: 18px; line-height: 25px; font-weight: 600; }
+.impact-toggle > .impact-delta { display: block; }
+.impact-delta { font-size: 17px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.impact-delta.gain { color: #fb7eae; }
+.impact-delta.loss { color: #dd8b4c; }
+.impact-arrow {
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
+  border-top: 2px solid #c7c7cb;
+  border-left: 2px solid #c7c7cb;
+  transform: rotate(45deg);
+  transition: transform 180ms ease;
+}
+.impact-row.open .impact-arrow { transform: rotate(225deg); margin-top: -5px; }
+.impact-toggle > .impact-scale { display: none; }
+.impact-rail { position: relative; display: block; width: 100%; height: 8px; border-radius: 99px; background: #f5e9ee; }
+.impact-rail::before { content: ""; position: absolute; left: var(--good-start, 35%); top: 0; width: var(--good-width, 30%); height: 8px; border-radius: 99px; background: #ffc4d8; }
+.impact-pill { position: absolute; left: var(--metric-position, 50%); top: 50%; transform: translate(-50%, -50%); min-width: 46px; height: 25px; padding: 0 7px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; background: #fb7eae; color: #fff; font-size: 13px; line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.impact-range-labels { display: flex; justify-content: space-between; margin-top: 7px; color: var(--my-tertiary); font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums; }
+.impact-detail {
+  display: none;
+  margin: 0 16px;
+  padding: 2px 0 22px;
+  color: var(--my-sub);
+  font-size: 15px;
+  line-height: 22px;
+}
+.impact-row.open .impact-detail { display: block; }
+.impact-metrics { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; margin: 7px 0 18px; }
+.impact-metric-label { color: var(--my-tertiary); font-size: 13px; line-height: 19px; }
+.impact-metric-value { margin-top: 3px; color: var(--my-text); font-size: 25px; line-height: 31px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.impact-metric-value small { margin-left: 2px; font-size: 15px; font-weight: 500; }
+.impact-score-change { text-align: right; }
+.impact-score-change .impact-metric-value { color: #fb7eae; }
+.impact-score-change.loss .impact-metric-value { color: #dd8b4c; }
+.impact-scale-detail { position: relative; margin: 0 0 19px; padding-top: 17px; }
+.impact-score-marker { position: absolute; top: 0; left: var(--baseline-position, 50%); width: 0; height: 0; transform: translateX(-50%); border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #333; }
+.impact-score-marker.recent { top: auto; bottom: -17px; left: var(--recent-position, -20%); border-top: 0; border-bottom: 10px solid #b4b4b7; }
+.impact-score-marker.recent[hidden] { display: none; }
+.impact-gradient-bar { display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; height: 42px; padding: 0 10px; background: linear-gradient(90deg, #ffc06d 0%, #f4bd8a 34%, #ffb8d0 64%, #fb7eae 100%); color: #fff; font-size: 15px; line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+.impact-gradient-bar span:nth-child(2) { text-align: center; }
+.impact-gradient-bar span:last-child { text-align: right; }
+.impact-insight { margin: 0; padding-top: 1px; color: #747477; font-size: 15px; line-height: 22px; }
+.impact-insight strong { color: var(--my-text); font-weight: 600; }
+.timeline-body { padding: 13px 14px 15px; }
+.timeline-pill {
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 11px 95px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #f2edff;
+  color: #8a70d6;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.timeline-pill::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 2px;
+  background: inherit;
+}
+.timeline-track {
+  height: 26px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr 1.1fr 0.9fr;
+  gap: 3px;
+  align-items: center;
+}
+.timeline-segment {
+  height: 18px;
+  border-radius: 10px;
+  background: #f1f1f4;
+}
+.timeline-segment.repro { background: linear-gradient(90deg, rgba(255, 196, 216, 0.9), rgba(255, 196, 216, 0.25)); }
+.timeline-segment.early { background: linear-gradient(90deg, rgba(138, 112, 214, 0.28), rgba(138, 112, 214, 0.82)); }
+.timeline-segment.late { background: linear-gradient(90deg, rgba(138, 112, 214, 0.82), rgba(255, 77, 136, 0.2)); }
+.timeline-segment.post { background: linear-gradient(90deg, rgba(255, 196, 216, 0.28), rgba(255, 126, 174, 0.78)); }
+.timeline-labels {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr 1.1fr 0.9fr;
+  gap: 3px;
+  margin-top: 8px;
+  color: var(--my-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+.timeline-labels strong {
+  color: var(--my-text);
+  font-weight: 500;
+}
+.timeline-menopause {
+  position: relative;
+  margin-top: 11px;
+  padding-left: 61%;
+  color: var(--my-brand);
+  font-size: 11px;
+}
+.timeline-menopause::before {
+  content: "";
+  position: absolute;
+  left: 60%;
+  top: -37px;
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(180deg, rgba(255, 77, 136, 0), rgba(255, 77, 136, 0.5));
+}
+.timeline-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff7fa;
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.message-bubble.symptom-message {
+  width: 100%;
+  max-width: 100%;
+  padding: 14px;
+  background: #fff;
+}
+.symptom-title {
+  color: var(--my-text);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+}
+.symptom-sub {
+  margin-top: 4px;
+  color: var(--my-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.symptom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+.symptom-option {
+  min-height: 40px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff7fa;
+  color: var(--my-brand-deep);
+  border: 1px solid rgba(255, 77, 136, 0.18);
+  font-size: 14px;
+  font-weight: 500;
+}
+.symptom-option:disabled {
+  opacity: 0.58;
+  cursor: default;
+}
+.ovulation-group {
+  margin-top: 14px;
+}
+.ovulation-label {
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 18px;
+}
+.kmi-card {
+  display: grid;
+  gap: 10px;
+}
+.kmi-badge {
+  width: max-content;
+  padding: 4px 9px;
+  border-radius: 12px;
+  background: #eef6fb;
+  color: var(--my-link);
+  font-size: 12px;
+  line-height: 16px;
+}
+.kmi-title {
+  color: var(--my-text);
+  font-size: 16px;
+  line-height: 23px;
+  font-weight: 500;
+}
+.kmi-copy {
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 20px;
+}
+.kmi-points {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff7fa;
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 19px;
+}
+.kmi-points span::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: 1px;
+  background: var(--my-brand);
+}
+.kmi-start {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 21px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--my-brand);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+.kmi-start:disabled {
+  opacity: 0.58;
+}
+.kmi-assessment {
+  display: grid;
+  gap: 12px;
+}
+.kmi-progress {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(255, 77, 136, 0.1);
+}
+.kmi-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--my-brand);
+  transition: width 0.2s ease;
+}
+.kmi-step {
+  color: var(--my-tertiary);
+  font-size: 12px;
+  line-height: 17px;
+}
+.kmi-question-title {
+  color: var(--my-text);
+  font-size: 16px;
+  line-height: 23px;
+  font-weight: 500;
+}
+.kmi-question-desc {
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 19px;
+}
+.kmi-options {
+  display: grid;
+  gap: 8px;
+}
+.kmi-option {
+  min-height: 42px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fff;
+  color: var(--my-sub);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: left;
+  font-size: 13px;
+  line-height: 19px;
+}
+.kmi-option::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.18);
+  background: #fff;
+}
+.kmi-option.selected {
+  color: var(--my-brand-deep);
+  background: var(--my-brand-soft);
+  border-color: rgba(255, 77, 136, 0.28);
+  font-weight: 500;
+}
+.kmi-option.selected::before {
+  background: var(--my-brand);
+  box-shadow: inset 0 0 0 3px #fff;
+}
+.kmi-controls {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 10px;
+}
+.kmi-control {
+  min-height: 40px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+.kmi-control.secondary {
+  background: #f6f6f8;
+  color: var(--my-sub);
+}
+.kmi-control.primary {
+  background: var(--my-brand);
+  color: #fff;
+}
+.kmi-control:disabled {
+  opacity: 0.42;
+}
+.kmi-result {
+  display: grid;
+  gap: 10px;
+}
+.kmi-score-card {
+  padding: 14px 12px;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: #fff7fa;
+  border: 1px solid rgba(255, 77, 136, 0.12);
+}
+.kmi-score-copy {
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 20px;
+}
+.kmi-score-value {
+  min-width: 74px;
+  text-align: center;
+  color: var(--my-brand-deep);
+}
+.kmi-score-value strong {
+  display: block;
+  font-size: 30px;
+  line-height: 34px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.kmi-result-list {
+  display: grid;
+  gap: 7px;
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 20px;
+}
+.kmi-result-list span {
+  padding-left: 14px;
+  position: relative;
+}
+.kmi-result-list span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--my-brand);
+}
+.ovulation-choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.ovulation-option {
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 17px;
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  color: var(--my-sub);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 13px;
+}
+.ovulation-option.selected {
+  color: var(--my-brand-deep);
+  background: var(--my-brand-soft);
+  border-color: rgba(255, 77, 136, 0.28);
+  font-weight: 500;
+}
+.confirm-ovulation {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 16px;
+  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--my-brand);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+.energy-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.energy-copy {
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 18px;
+}
+.energy-score {
+  position: relative;
+  min-width: 74px;
+  height: 50px;
+  border-radius: 12px;
+  background: var(--my-brand-soft);
+  color: var(--my-brand-deep);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  transform-origin: center;
+}
+.energy-score strong {
+  margin-left: 3px;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.daily-update {
+  padding: 10px 10px 11px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff7fa 0%, #ffffff 100%);
+  border: 1px solid rgba(255, 77, 136, 0.1);
+}
+.daily-section-title {
+  margin: 0 0 6px 2px;
+  color: var(--my-text);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+}
+.daily-update-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 78px;
+  gap: 8px;
+  align-items: center;
+}
+.daily-update-main.no-inline-score { grid-template-columns: minmax(0, 1fr); }
+.daily-interpretation {
+  min-width: 0;
+  padding: 0;
+}
+.daily-day-title {
+  color: var(--my-text);
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 500;
+}
+.daily-copy {
+  margin-top: 4px;
+  color: var(--my-sub);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.daily-focus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.daily-chip {
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  background: #f3edff;
+  color: #8a70d6;
+  font-size: 12px;
+}
+.daily-update .energy-score {
+  position: relative;
+  min-width: 0;
+  min-height: 76px;
+  height: 76px;
+  padding: 24px 6px 4px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.energy-info-button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--my-brand-deep);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(255, 77, 136, 0.14);
+}
+.energy-info-button svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.energy-score-label {
+  font-size: 12px;
+  line-height: 17px;
+  font-weight: 500;
+}
+.daily-update .energy-score strong {
+  margin-top: 4px;
+  font-size: 28px;
+}
+.energy-state-strip {
+  width: 100%;
+  min-height: 32px;
+  margin-top: 8px;
+  padding: 6px 9px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 77, 136, 0.1);
+}
+.energy-state {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--my-text);
+  font-size: 12px;
+  line-height: 18px;
+}
+.energy-state-dot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--my-brand);
+}
+.energy-state-text {
+  min-width: 0;
+}
+.energy-scale {
+  display: none;
+  gap: 6px;
+  margin-top: 8px;
+}
+.daily-update.energy-open .energy-scale {
+  display: grid;
+}
+.energy-scale-row {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 8px;
+  align-items: center;
+  min-height: 30px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: var(--my-sub);
+  font-size: 12px;
+  line-height: 18px;
+}
+.energy-scale-range {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.energy-scale-row.active {
+  color: var(--my-text);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 77, 136, 0.1);
+}
+.energy-scale-row.active .energy-scale-range {
+  color: var(--my-brand-deep);
+}
+.energy-tone-great .energy-state-dot,
+.energy-scale-row.energy-tone-great.active .energy-scale-range {
+  color: var(--my-success);
+}
+.energy-scale-row.energy-tone-wave.active .energy-scale-range {
+  color: #ff7b42;
+}
+.energy-scale-row.energy-tone-signal.active .energy-scale-range {
+  color: #ff9500;
+}
+.energy-scale-row.energy-tone-rest.active .energy-scale-range {
+  color: #c78396;
+}
+.energy-tone-great .energy-state-dot {
+  background: var(--my-success);
+}
+.energy-tone-wave .energy-state-dot {
+  background: #ff9a62;
+}
+.energy-tone-signal .energy-state-dot {
+  background: #ffb23f;
+}
+.energy-tone-rest .energy-state-dot {
+  background: #c78396;
+}
+.energy-score.energy-pulse {
+  animation: energyPulse 0.68s ease;
+}
+.energy-score.energy-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  background: radial-gradient(circle, rgba(255, 77, 136, 0.2) 0 18%, transparent 42%);
+  animation: energyGlow 0.68s ease;
+  pointer-events: none;
+}
+.energy-score.energy-pulse strong {
+  animation: energyScorePop 0.68s ease;
+}
+@keyframes energyPulse {
+  0% { transform: scale(1); background: var(--my-brand-soft); }
+  38% { transform: scale(1.1); background: rgba(255, 77, 136, 0.18); }
+  68% { transform: scale(0.98); background: rgba(255, 77, 136, 0.12); }
+  100% { transform: scale(1); background: var(--my-brand-soft); }
+}
+@keyframes energyScorePop {
+  0% { transform: scale(1); }
+  38% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+@keyframes energyGlow {
+  0% { opacity: 0; transform: scale(0.72); }
+  38% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.28); }
+}
+.plan-title {
+  margin-top: 12px;
+  color: var(--my-text);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+}
+.plan-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.plan-item-wrap {
+  display: grid;
+  gap: 4px;
+}
+.plan-item {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 8px;
+  align-items: start;
+  color: var(--my-text);
+  font-size: 14px;
+  line-height: 21px;
+  cursor: pointer;
+}
+.plan-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: var(--my-brand);
+}
+.plan-text {
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
+}
+.plan-checkbox:checked + .plan-text {
+  color: var(--my-tertiary);
+  text-decoration: line-through;
+  text-decoration-color: rgba(153, 153, 153, 0.5);
+}
+.knowledge-link {
+  width: max-content;
+  max-width: calc(100% - 30px);
+  margin-left: 30px;
+  color: var(--my-link);
+  font-size: 13px;
+  line-height: 19px;
+  text-decoration: none;
+}
+.knowledge-link::after {
+  content: ">";
+  margin-left: 3px;
+}
+.plan-tip {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #eef6fb;
+  color: var(--my-link);
+  font-size: 13px;
+  line-height: 20px;
+}
+.entry-bar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(68px + env(safe-area-inset-bottom));
+  z-index: 19;
+  width: min(100%, 430px);
+  transform: translateX(-50%);
+  padding: 0 12px 10px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.entry-bar::-webkit-scrollbar {
+  display: none;
+}
+.entry-chip {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 19px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--my-text);
+  box-shadow: 0 2px 10px rgba(50, 50, 50, 0.05);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.entry-chip svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.entry-chip.primary-entry {
+  color: var(--my-brand-deep);
+  background: #fff7fa;
+}
+.input-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 20;
+  width: min(100%, 430px);
+  transform: translateX(-50%);
+  padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  background: rgba(242, 242, 245, 0.96);
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+.chat-input {
+  min-height: 48px;
+  border-radius: 24px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 34px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px 7px 14px;
+}
+.voice, .send {
+  width: 34px;
+  height: 34px;
+  border-radius: 17px;
+  display: grid;
+  place-items: center;
+}
+.voice { color: var(--my-text); }
+.send {
+  background: var(--my-brand);
+  color: #fff;
+}
+.voice svg, .send svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.chat-input input {
+  min-width: 0;
+  outline: none;
+  color: var(--my-text);
+  font-size: 15px;
+}
+.chat-input input::placeholder { color: var(--my-tertiary); }
+.toast {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 60;
+  min-width: 118px;
+  max-width: min(300px, calc(100% - 48px));
+  min-height: 44px;
+  transform: translate(-50%, -50%) scale(0.96);
+  border: 1px solid rgba(255, 77, 136, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 247, 250, 0.96);
+  color: var(--my-brand-deep);
+  padding: 10px 18px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 10px 26px rgba(255, 77, 136, 0.18), 0 2px 8px rgba(50, 50, 50, 0.06);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.toast.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+@media (max-width: 370px) {
+  .assistant-card { grid-template-columns: 54px 1fr; padding: 13px 14px; }
+  .avatar-wrap { width: 54px; height: 54px; }
+  .avatar-wrap img { width: 54px; height: 70px; }
+  .bubble { font-size: 14px; }
+  .vitality-hero { padding-inline: 12px; }
+  .vitality-orb { --bubble-scale: 0.92; --bubble-mid-scale: 0.934; margin-top: -5px; margin-bottom: -6px; }
+  .vitality-summary { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vitality-orb,
+  .vitality-orb::before,
+  .vitality-orb::after,
+  .vitality-dot { animation: none; }
+}
+</style>
+</head>
+<body><div style="position:relative;z-index:9999;background:#fff0f5;color:#963051;padding:16px;font:14px/1.6 sans-serif">原demo静态参考，未接入算法。页面中的示例数字和建议未经本次验收。<a href="meiyou-menopause-home.html">返回算法联调首页</a></div>
+<main class="screen">
+  <div class="scroll" id="page-scroll">
+    <section class="status" aria-hidden="true">
+      <div class="time">15:11</div>
+      <div class="phone-icons">
+        <div class="bars"><i></i><i></i><i></i><i></i></div>
+        <div class="wifi"></div>
+        <div class="battery"></div>
+      </div>
+    </section>
+
+    <header class="nav">
+      <button class="back" type="button" id="back-home" aria-label="返回首页">
+        <svg viewBox="0 0 24 24"><path d="M15 18 9 12l6-6"></path></svg>
+      </button>
+      <div class="nav-title" id="page-title">美柚姐姐</div>
+    </header>
+
+    <div class="content">
+      <section class="assistant-card" id="assistant-intro" aria-label="美柚姐姐介绍">
+        <div class="avatar-wrap"><img src="./meiyou-sister-avatar.png" alt="美柚姐姐"></div>
+        <div>
+          <div class="assistant-name">美柚姐姐 <span class="assistant-tag">健康助手</span></div>
+          <p class="assistant-desc">帮你记录身体感受、缓解焦虑，陪伴你一步步找回身体和生活的掌控感。</p>
+        </div>
+      </section>
+
+      <nav class="date-tabs" id="date-tabs" aria-label="今日密报日期导航" hidden>
+        <button class="date-tab" type="button" data-date="yesterday">周五（8月21日）</button>
+        <button class="date-tab active" type="button" data-date="today" aria-current="date">今天（8月22日）</button>
+        <button class="date-tab" type="button" data-date="tomorrow">周日（8月23日）</button>
+      </nav>
+
+      <section class="ability-stage-summary" id="ability-stage-summary" aria-label="阶段与预测信息" hidden>
+        <button class="ability-stage-row ability-stage-link" id="ability-stage-guide" type="button">当前阶段：<strong>围绝经早期</strong><span class="ability-stage-arrow" aria-hidden="true">›</span></button>
+        <div class="ability-stage-row">预测绝经年龄：<strong class="ability-forecast-age" id="ability-forecast-age">--岁</strong><button class="ability-recalculate" id="ability-recalculate" type="button">马上计算</button></div>
+      </section>
+
+      <h2 class="ability-module-title"><span class="ability-module-icon vitality" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m13 2.5-8 11h6l-1 8 8-11h-6l1-8Z"></path></svg></span>身体活力</h2>
+      <section class="vitality-hero" id="vitality-hero" aria-label="身体活力值" hidden>
+        <div class="vitality-orb">
+          <span class="vitality-dot one"></span>
+          <span class="vitality-dot two"></span>
+          <span class="vitality-dot three"></span>
+          <div class="vitality-orb-core">
+            <strong class="vitality-score" id="vitality-score">70</strong>
+            <span class="vitality-score-label">身体活力值</span>
+          </div>
+        </div>
+        <p class="vitality-summary"><strong>状态正在回暖</strong></p>
+        <p class="vitality-update">今天的身体节奏比较稳定，继续把休息和轻运动留在日程里。</p>
+        <div class="confidence-card" aria-label="48%置信度">
+          <span class="confidence-mark" aria-hidden="true"></span>
+          <div>
+            <div class="confidence-title">48% 置信度</div>
+            <div class="confidence-copy">当前记录仍在积累，继续记录后会更准确</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="vitality-pillars" id="vitality-pillars" aria-label="今日活力构成" hidden>
+        <h2 class="vitality-pillars-title">今日活力构成</h2>
+        <div class="vitality-pillar"><div class="vitality-pillar-head"><span class="vitality-pillar-name"><span class="vitality-pillar-icon" aria-hidden="true">眠</span>睡眠恢复</span><strong class="vitality-pillar-score">81</strong></div><div class="vitality-pillar-bar" style="--pillar-score:81%"></div></div>
+        <div class="vitality-pillar"><div class="vitality-pillar-head"><span class="vitality-pillar-name"><span class="vitality-pillar-icon" aria-hidden="true">身</span>身体状态</span><strong class="vitality-pillar-score">76</strong></div><div class="vitality-pillar-bar" style="--pillar-score:76%"></div></div>
+        <div class="vitality-pillar"><div class="vitality-pillar-head"><span class="vitality-pillar-name"><span class="vitality-pillar-icon" aria-hidden="true">情</span>情绪平衡</span><strong class="vitality-pillar-score">80</strong></div><div class="vitality-pillar-bar" style="--pillar-score:80%"></div></div>
+        <div class="vitality-pillar"><div class="vitality-pillar-head"><span class="vitality-pillar-name"><span class="vitality-pillar-icon" aria-hidden="true">信</span>症状管理</span><strong class="vitality-pillar-score">72</strong></div><div class="vitality-pillar-bar" style="--pillar-score:72%"></div></div>
+      </section>
+
+      <section class="vitality-trend" id="vitality-trend" aria-label="周活力趋势" hidden>
+        <div class="vitality-trend-head"><div><h2 class="vitality-trend-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17.5 9 12l3.5 3.5L20 7"></path><path d="M15.5 7H20v4.5"></path></svg>周活力趋势</h2><p class="vitality-trend-range">近 7 日身体活力值</p></div><span class="vitality-trend-change">较上周 +4</span></div>
+        <div class="vitality-trend-score-row"><strong class="vitality-trend-score"><b id="vitality-trend-score">70</b><small>分</small></strong><span>今日活力</span></div>
+        <svg class="vitality-trend-chart" viewBox="0 0 360 144" role="img" aria-label="近七日身体活力值由66分稳定上升至70分"><line class="vitality-trend-grid" x1="18" y1="20" x2="348" y2="20"></line><line class="vitality-trend-grid" x1="18" y1="66" x2="348" y2="66"></line><line class="vitality-trend-grid" x1="18" y1="112" x2="348" y2="112"></line><path class="vitality-trend-area" d="M24 93 L78 80 L132 87 L186 67 L240 74 L294 55 L342 61 L342 112 L24 112 Z"></path><path class="vitality-trend-line" d="M24 93 L78 80 L132 87 L186 67 L240 74 L294 55 L342 61"></path><circle class="vitality-trend-point" cx="24" cy="93" r="3.5"></circle><circle class="vitality-trend-point" cx="78" cy="80" r="3.5"></circle><circle class="vitality-trend-point" cx="132" cy="87" r="3.5"></circle><circle class="vitality-trend-point" cx="186" cy="67" r="3.5"></circle><circle class="vitality-trend-point" cx="240" cy="74" r="3.5"></circle><circle class="vitality-trend-point" cx="294" cy="55" r="3.5"></circle><circle class="vitality-trend-point latest" cx="342" cy="61" r="5"></circle><text x="0" y="23">90</text><text x="0" y="69">70</text><text x="0" y="115">50</text><text x="16" y="136">周一</text><text x="69" y="136">周二</text><text x="123" y="136">周三</text><text x="177" y="136">周四</text><text x="231" y="136">周五</text><text x="285" y="136">周六</text><text x="330" y="136">今天</text><text id="vitality-trend-latest" x="322" y="49" fill="#ff4d88">70</text></svg>
+        <p class="vitality-trend-note">活力会随睡眠、情绪和身体信号的记录持续更新。</p>
+      </section>
+
+      <section class="impact-factors" id="impact-factors" aria-label="影响因素" hidden>
+        <h2 class="impact-title">影响因素</h2>
+        <section class="impact-group" aria-labelledby="impact-group-menstrual">
+          <h3 class="impact-group-title" id="impact-group-menstrual">月经健康</h3>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon cycle">经</span><span class="impact-name">经期健康度</span><span class="impact-delta gain">活力值 +4</span><span class="impact-scale"><span class="impact-rail" style="--good-start:80%;--good-width:10%;--metric-position:85%;"><b class="impact-pill">85分</b></span><span class="impact-range-labels"><span>0分</span><span>100分</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>本周期已完成 4 次出血与周期记录。</strong>若出现经量突然明显增加、经期延长或经间出血，建议尽快进行妇科评估。</div>
+        </div>
+        </section>
+        <section class="impact-group" aria-labelledby="impact-group-emotion">
+          <h3 class="impact-group-title" id="impact-group-emotion">情绪健康</h3>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon mood">情</span><span class="impact-name">情绪评分</span><span class="impact-delta gain">活力值 +2</span><span class="impact-scale"><span class="impact-rail" style="--good-start:65%;--good-width:30%;--metric-position:80%;"><b class="impact-pill">4分</b></span><span class="impact-range-labels"><span>1分</span><span>5分</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>今天的情绪舒适度为 4 分。</strong>围绝经期的情绪变化常会和睡眠、潮热、压力互相影响，连续记录会比单次感受更有参考价值。</div>
+        </div>
+        </section>
+        <section class="impact-group" aria-labelledby="impact-group-foundation">
+          <h3 class="impact-group-title" id="impact-group-foundation">身体基础</h3>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon fat">脂</span><span class="impact-name">体脂率</span><span class="impact-delta loss">活力值 -2</span><span class="impact-scale"><span class="impact-rail" style="--good-start:28%;--good-width:37%;--metric-position:58%;"><b class="impact-pill">28.6%</b></span><span class="impact-range-labels"><span>20%</span><span>35%</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>体脂率有轻微波动。</strong>围绝经期更容易发生脂肪分布变化，优先保证蛋白质和规律力量训练，不需要追求快速下降。</div>
+        </div>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon waist">腰</span><span class="impact-name">腰围与内脏脂肪</span><span class="impact-delta loss">活力值 -1</span><span class="impact-scale"><span class="impact-rail" style="--good-start:18%;--good-width:42%;--metric-position:52%;"><b class="impact-pill">78cm</b></span><span class="impact-range-labels"><span>65cm</span><span>90cm</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>腰围建议每月在同一时间测量。</strong>围绝经期更容易出现向心性脂肪堆积，关注长期趋势即可，不必被单次数字影响。</div>
+        </div>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon muscle">肌</span><span class="impact-name">肌肉量</span><span class="impact-delta gain">活力值 +3</span><span class="impact-scale"><span class="impact-rail" style="--good-start:42%;--good-width:35%;--metric-position:62%;"><b class="impact-pill">39.5kg</b></span><span class="impact-range-labels"><span>32kg</span><span>43kg</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>肌肉量目前维持得不错。</strong>围绝经期的肌肉量下降更值得长期关注，每周 2 次抗阻训练比突击运动更有效。</div>
+        </div>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon bone">骨</span><span class="impact-name">骨密度风险</span><span class="impact-delta loss">活力值 -2</span><span class="impact-scale"><span class="impact-rail" style="--good-start:55%;--good-width:32%;--metric-position:61%;"><b class="impact-pill">中风险</b></span><span class="impact-range-labels"><span>高风险</span><span>低风险</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>当前以骨量流失速度观察为主。</strong>保证钙、维生素 D 和负重训练；如有骨折家族史或持续疼痛，可考虑骨密度评估。</div>
+        </div>
+        </section>
+        <section class="impact-group" aria-labelledby="impact-group-sleep">
+          <h3 class="impact-group-title" id="impact-group-sleep">睡眠恢复</h3>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon sleep-score">眠</span><span class="impact-name">睡眠评分</span><span class="impact-delta gain">活力值 +3</span><span class="impact-scale"><span class="impact-rail" style="--good-start:80%;--good-width:10%;--metric-position:81%;"><b class="impact-pill">81分</b></span><span class="impact-range-labels"><span>0分</span><span>100分</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>昨晚睡眠评分为 81 分。</strong>睡眠时长、入睡情况和夜间连续性都会影响评分，连续记录更能看见恢复趋势。</div>
+        </div>
+        </section>
+        <section class="impact-group" aria-labelledby="impact-group-activity">
+          <h3 class="impact-group-title" id="impact-group-activity">日常活动与心肺</h3>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon steps">步</span><span class="impact-name">步数</span><span class="impact-delta gain">活力值 +2</span><span class="impact-scale"><span class="impact-rail" style="--good-start:55%;--good-width:30%;--metric-position:71%;"><b class="impact-pill">6,412</b></span><span class="impact-range-labels"><span>0步</span><span>8,000步</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>今天已完成轻量步行。</strong>把步数分散到全天，既能稳住代谢，也不会额外增加疲惫感。</div>
+        </div>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon strength">力</span><span class="impact-name">力量训练</span><span class="impact-delta gain">活力值 +4</span><span class="impact-scale"><span class="impact-rail" style="--good-start:50%;--good-width:34%;--metric-position:67%;"><b class="impact-pill">2次</b></span><span class="impact-range-labels"><span>0次</span><span>3次 / 周</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>本周已完成 2 次力量训练。</strong>规律抗阻训练能同时支持肌肉量、骨量和内脏脂肪管理。</div>
+        </div>
+        <div class="impact-row">
+          <button class="impact-toggle" type="button" aria-expanded="false"><span class="impact-icon heart">心</span><span class="impact-name">静息心率</span><span class="impact-delta gain">活力值 +1</span><span class="impact-scale"><span class="impact-rail" style="--good-start:30%;--good-width:40%;--metric-position:43%;"><b class="impact-pill">66bpm</b></span><span class="impact-range-labels"><span>47bpm</span><span>97bpm</span></span></span><span class="impact-arrow" aria-hidden="true"></span></button>
+          <div class="impact-detail"><strong>静息心率处于个人稳定范围。</strong>若连续多天明显升高，可结合潮热、睡眠和压力一起观察。</div>
+        </div>
+        </section>
+      </section>
+
+      <section class="timeline-card" id="ovulation-timeline" aria-label="阶段信息" hidden>
+        <div class="timeline-body">
+          <div class="timeline-pill">当前推测：围绝经早期</div>
+          <div class="timeline-track" aria-hidden="true">
+            <div class="timeline-segment repro"></div>
+            <div class="timeline-segment early"></div>
+            <div class="timeline-segment late"></div>
+            <div class="timeline-segment post"></div>
+          </div>
+          <div class="timeline-labels">
+            <span>生育晚期</span>
+            <strong>围绝经早期</strong>
+            <span>围绝经晚期</span>
+            <span>绝经后早期</span>
+          </div>
+          <div class="timeline-menopause">绝经点</div>
+          <div class="timeline-note">这一阶段可重点观察：周期是否变长或变短、是否出现无排卵信号，以及睡眠和情绪是否波动。</div>
+        </div>
+      </section>
+
+      <section class="chat-card" id="sleep-check-card" aria-label="美柚姐姐对话">
+        <div class="bubble-row">
+          <div class="bubble">
+            <div class="sleep-check-title">早上好，昨晚睡得好吗？</div>
+            <div class="sleep-check-sub">勾选下面几项，我帮你记录今天的睡眠状态。</div>
+            <div class="check-group" data-choice-group="sleep-start">
+              <div class="check-label">1. 入睡是否顺利</div>
+              <div class="choice-row">
+                <button class="choice" type="button" aria-pressed="false">顺利</button>
+                <button class="choice" type="button" aria-pressed="false">不顺利</button>
+              </div>
+            </div>
+            <div class="check-group" data-choice-group="wake-count">
+              <div class="check-label">2. 夜醒次数</div>
+              <div class="choice-row">
+                <button class="choice" type="button" aria-pressed="false">0</button>
+                <button class="choice" type="button" aria-pressed="false">1次</button>
+                <button class="choice" type="button" aria-pressed="false">2～3次</button>
+                <button class="choice" type="button" aria-pressed="false">3次以上</button>
+              </div>
+            </div>
+            <div class="check-group" data-choice-group="early-wake">
+              <div class="check-label">3. 是否早醒？</div>
+              <div class="choice-row">
+                <button class="choice" type="button" aria-pressed="false">是</button>
+                <button class="choice" type="button" aria-pressed="false">否</button>
+              </div>
+            </div>
+            <div class="check-group" data-choice-group="wake-feeling">
+              <div class="check-label">4. 睡醒感受</div>
+              <div class="choice-row">
+                <button class="choice" type="button" aria-pressed="false">疲惫</button>
+                <button class="choice" type="button" aria-pressed="false">轻松</button>
+              </div>
+            </div>
+            <button class="confirm-check" type="button" id="confirm-sleep">确认并发送</button>
+          </div>
+        </div>
+      </section>
+      <div class="message-list" id="message-list" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="input-bar" id="input-bar">
+    <label class="chat-input" aria-label="输入问题">
+      <span class="voice" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg>
+      </span>
+      <input id="chat-input" type="text" value="" placeholder="有问题尽管问我...">
+      <button class="send" type="button" id="send" aria-label="发送">
+        <svg viewBox="0 0 24 24"><path d="m5 12 14-7-4 14-3-5-7-2Z"></path></svg>
+      </button>
+    </label>
+  </div>
+
+  <div class="entry-bar" id="entry-bar" aria-label="快捷入口">
+    <button class="entry-chip primary-entry" type="button" data-entry="能量清单">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect x="4" y="5" width="16" height="17" rx="3"></rect><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>
+      能量清单
+    </button>
+    <button class="entry-chip" type="button" data-entry="KMI评估">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-6"></path></svg>
+      KMI评估
+    </button>
+    <button class="entry-chip" type="button" data-entry="报告解读">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path><path d="M13 3v5h5"></path><path d="M8 13h8"></path><path d="M8 17h5"></path></svg>
+      报告解读
+    </button>
+    <button class="entry-chip" type="button" data-entry="测评中心">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l2 2 4-5"></path><path d="M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"></path></svg>
+      测评中心
+    </button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+
+<script>
+const input = document.getElementById("chat-input");
+const toast = document.getElementById("toast");
+const messageList = document.getElementById("message-list");
+const sleepCheckCard = document.getElementById("sleep-check-card");
+const pageTitle = document.getElementById("page-title");
+const assistantIntro = document.getElementById("assistant-intro");
+const dateTabs = document.getElementById("date-tabs");
+let dateButtons = Array.from(document.querySelectorAll(".date-tab"));
+const ovulationTimeline = document.getElementById("ovulation-timeline");
+const vitalityHero = document.getElementById("vitality-hero");
+const vitalityScore = document.getElementById("vitality-score");
+const vitalityPillars = document.getElementById("vitality-pillars");
+const vitalityTrend = document.getElementById("vitality-trend");
+const vitalityTrendScore = document.getElementById("vitality-trend-score");
+const vitalityTrendLatest = document.getElementById("vitality-trend-latest");
+const abilityStageSummary = document.getElementById("ability-stage-summary");
+const abilityForecastAge = document.getElementById("ability-forecast-age");
+const abilityRecalculate = document.getElementById("ability-recalculate");
+const impactFactors = document.getElementById("impact-factors");
+const pageScroll = document.getElementById("page-scroll");
+const inputBar = document.getElementById("input-bar");
+const entryBar = document.getElementById("entry-bar");
+const searchParams = new URLSearchParams(window.location.search);
+const entryMode = searchParams.get("entry");
+const entryDemo = searchParams.get("demo");
+const requestedDateKey = searchParams.get("date");
+let dateOrder = ["yesterday", "today", "tomorrow"];
+let activeDateKey = "today";
+let dateTouchStartX = null;
+let toastTimer = null;
+let kmiState = null;
+
+const defaultDateTabs = [
+  { key: "yesterday", label: "周五（8月21日）" },
+  { key: "today", label: "今天（8月22日）" },
+  { key: "tomorrow", label: "周日（8月23日）" }
+];
+
+const morningReportDays = [
+  {
+    key: "day1",
+    label: "今天（8月22日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "建立你的健康基线",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "欢迎来到围绝经期专属陪伴。这个阶段的身体像进入一段新的旅程，不必追求规律，只需诚实记录。今天先放下对\"周期\"的执念，把注意力放在\"此刻的感受\"上。",
+      items: [
+        "晨起后喝一杯温水，观察今天的精力水平（1-5分）",
+        {
+          text: "花3分钟浏览这篇内容，从未知到已知，接下来的生活更加从容",
+          linkTitle: "身体换季了：一篇看懂围绝经期",
+          href: "./meiyou-menopause-knowledge.html"
+        },
+        "晚餐增加一份深绿色蔬菜，为即将波动的激素储备营养",
+        "睡前写下今天最明显的身体感受，哪怕只是\"没什么特别\""
+      ]
+    }
+  },
+  {
+    key: "day2",
+    label: "周日（8月23日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "观察你的睡眠信号",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "围绝经期早期常见睡眠变浅、早醒，这与孕酮水平波动有关。今晚不必强迫自己早睡，重点是建立\"床=放松\"的条件反射。",
+      items: [
+        "晨起回顾一下昨晚的睡眠情况，直接告诉美柚姐姐你睡眠情况",
+        {
+          text: "花3分钟完成KMI评估，用权威量表全面觉知你的身体",
+          linkTitle: "KMI评估量表",
+          href: "./meiyou-sister-chat.html?entry=kmi-assessment"
+        },
+        "下午4点后不喝咖啡/浓茶，观察今晚入睡是否更容易",
+        "睡前1小时调暗灯光，手机屏幕开启护眼模式",
+        "如果半夜醒来，不刷手机，尝试4-7-8呼吸法（吸气4秒、屏息7秒、呼气8秒）"
+      ]
+    }
+  },
+  {
+    key: "day3",
+    label: "周一（8月24日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "读懂白带的语言",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "分泌物是雌激素的\"实时播报\"。围绝经期早期它可能变得不那么\"守时\"——有时提前出现拉丝，有时突然消失。今天开始，用观察代替判断。",
+      items: [
+        "今日如厕时留意分泌物性状：干燥/糊状/潮湿/拉丝/水样，选一项记录",
+        "穿浅色棉质内裤，便于观察分泌物颜色变化",
+        "饮水1500ml以上，阴道黏膜的健康与全身水分状态相关",
+        "如分泌物有异味或瘙痒，记录并留意是否需要就医"
+      ]
+    }
+  },
+  {
+    key: "day4",
+    label: "周二（8月25日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "情绪是激素的镜子",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "今天可能感到莫名的烦躁或低落？这不是你\"脾气变差了\"，而是雌激素和孕酮的波动在影响大脑神经递质。承认它，不评判自己。",
+      items: [
+        "今天给情绪打个分（1-5分），并标注触发事件：天气/人际/无原因",
+        "感到烦躁时，先喝一口水，等待90秒再回应他人",
+        "安排一件\"微小愉悦\"：听一首老歌、闻喜欢的香薰、摸宠物5分钟",
+        "如果情绪波动剧烈，记录持续时间和缓解方式"
+      ]
+    }
+  },
+  {
+    key: "day5",
+    label: "周三（8月26日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "体温与代谢",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "基础体温能帮你判断身体是否仍在排卵，但围绝经期体温曲线可能变得\"丘陵状\"而非清晰的\"双相型\"。今天开始连续测量，不追求完美数据，只看趋势。",
+      items: [
+        "明晨起睁眼第一件事：舌下测体温，记录在手机里",
+        "今天避免熬夜，睡眠不足会干扰体温节律",
+        "午餐加入优质蛋白（鱼/蛋/豆制品），稳定血糖与代谢",
+        "晚上回看今天体温、睡眠和精神状态，先观察趋势，不急着下结论"
+      ]
+    }
+  },
+  {
+    key: "day6",
+    label: "周四（8月27日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "乳房的悄悄话",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "围绝经期乳房胀痛可能从\"经前一周\"变成\"随时发生\"。注意胀痛的位置：靠近乳头的前部痛多与雌激素波动相关，靠近腋窝的外侧痛可能与黄体期有关。",
+      items: [
+        "洗澡时轻柔触诊乳房，记录胀痛位置和程度（1-5分）",
+        "更换无钢圈舒适内衣，减少外部压迫感",
+        "减少盐分摄入，水肿会放大乳房不适感",
+        "如触摸到明显硬块或单侧持续疼痛，记录并预约乳腺检查"
+      ]
+    }
+  },
+  {
+    key: "day7",
+    label: "周五（8月28日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "第一周回顾",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "你已经连续记录7天了。翻翻这周的记录，可能已经发现一些个人模式：比如睡眠差的日子往往伴随乳房痛，或者情绪波动总在下午加重。看见模式，就是掌控的开始。",
+      items: [
+        "回顾本周记录，圈出出现频率最高的症状",
+        "给本周整体舒适度打分（1-5分）",
+        "根据本周观察，调整下周最关心的1个健康目标",
+        "奖励自己：本周坚持记录本身就是一件值得肯定的事"
+      ]
+    }
+  },
+  {
+    key: "day8",
+    label: "周六（8月29日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "潮热的即时应对",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "如果今天感到一阵热浪从胸口涌向面部，伴随出汗和心跳加快——这是血管舒缩症状。它通常持续1-5分钟，虽然不舒服，但不会伤害身体。关键是缩短它的影响。",
+      items: [
+        "随身带一个小喷雾瓶，潮热时喷凉水在手腕和后颈",
+        "今天穿\"洋葱式\"穿搭，方便随时增减衣物",
+        "识别你的潮热触发物：辛辣食物？热饮？压力？记录一次",
+        "练习\"降温呼吸\"：用鼻子吸气4秒，噘嘴呼气6秒，重复5次"
+      ]
+    }
+  },
+  {
+    key: "day9",
+    label: "周日（8月30日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "骨骼的隐形消耗",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "从围绝经期开始，骨量流失速度悄悄加快。此时你可能完全感觉不到，但今天的饮食和运动正在为5年后的骨骼健康打基础。",
+      items: [
+        "早餐或加餐摄入钙：牛奶/酸奶/豆腐/芝麻酱，选一种",
+        "上午晒太阳15-20分钟（不涂防晒霜的脸/手臂），促进维生素D合成",
+        "做一组\"靠墙静蹲\"或\"踮脚尖\"，加载骨骼负重",
+        "检查家中钙片和维生素D的库存，记录服用情况"
+      ]
+    }
+  },
+  {
+    key: "day10",
+    label: "周一（8月31日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "心血管的温柔提醒",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "雌激素对血管有保护作用，随着水平波动，血压和血脂模式可能开始改变。今天的关注点是：你的腰围和血压是否在悄悄变化？",
+      items: [
+        "晨起空腹测量腰围（肚脐水平），记录数字",
+        "如有血压计，今天测一次静息血压并记录",
+        "烹饪用油减少1/3，用蒸煮代替一次油炸/油煎",
+        "吃一小把原味坚果（核桃/杏仁），补充不饱和脂肪酸"
+      ]
+    }
+  },
+  {
+    key: "day11",
+    label: "周二（9月1日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "盆底肌的修复时刻",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "激素变化会让盆底组织弹性下降，可能出现漏尿、阴道松弛或下坠感。盆底肌训练不是产后专属，围绝经期开始做，能显著改善未来几十年的生活质量。",
+      items: [
+        "做一组凯格尔运动：收缩盆底肌5秒→放松5秒，重复10次",
+        "咳嗽或打喷嚏前，先主动收缩盆底肌（\"预收缩\"技巧）",
+        "如有漏尿，记录发生的场景（跳跃/大笑/急尿？）",
+        "避免长时间提重物，给盆底减压"
+      ]
+    }
+  },
+  {
+    key: "day12",
+    label: "周三（9月2日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "脑雾与注意力",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "\"刚才想说什么来着？\"围绝经期的脑雾是真实存在的，与雌激素波动影响海马体和前额叶有关。今天不强迫自己\"高效\"，用外部工具给大脑减负。",
+      items: [
+        "把今天要做的事写下来，完成一项勾一项，减少大脑记忆负担",
+        "每工作45分钟，站起来活动3分钟，给大脑供氧",
+        "吃一份富含Omega-3的食物：深海鱼/亚麻籽/核桃",
+        "如果健忘频繁，记录发生场景，区分\"激素性脑雾\"和\"过劳/缺觉\""
+      ]
+    }
+  },
+  {
+    key: "day13",
+    label: "周四（9月3日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "社交能量管理",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "围绝经期可能让你从\"社交蝴蝶\"变成\"只想独处\"——这不是性格变了，而是激素波动消耗了社交能量储备。今天允许自己\"选择性社交\"。",
+      items: [
+        "评估今天的社交能量：满格/尚可/低电量，据此安排互动强度",
+        "对不想去的邀约，练习温和拒绝：\"今天需要休息，改天约\"",
+        "与一位信任的朋友聊一次围绝经期的感受，减少孤独感",
+        "睡前记录：今天哪件事消耗了最多能量？哪件事补充了能量？"
+      ]
+    }
+  },
+  {
+    key: "day14",
+    label: "周五（9月4日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "第二周回顾",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "两周过去了。对比第1天和第7天的记录，你可能已经发现：有些症状是\"背景噪音\"（一直存在），有些是\"突发警报\"（突然出现且剧烈）。前者需要长期管理，后者需要关注。",
+      items: [
+        "对比第1周和第2周，症状频率是增加/减少/持平？",
+        "找出1件\"做了之后感觉变好\"的小事（如散步/泡脚/冥想）",
+        "检查是否有连续7天未记录的项目，下周优先补起来",
+        "给自己写一句肯定的话：\"我在认真照顾自己的身体\""
+      ]
+    }
+  },
+  {
+    key: "day15",
+    label: "周六（9月5日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "铁与血的平衡",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "围绝经期月经可能变得\"汹涌\"，导致铁流失增加；也可能突然变少。无论哪种情况，铁储备都值得关注。今天的饮食重点是\"补血不燥\"。",
+      items: [
+        "午餐吃一份红肉（猪/牛/羊）或动物肝脏，搭配维生素C丰富的蔬菜",
+        "两餐之间吃一个橙子或猕猴桃，促进非血红素铁吸收",
+        "记录今日出血情况（如有）：量/颜色/血块/持续时间",
+        "如近期出血量大，观察是否有头晕、乏力等贫血信号"
+      ]
+    }
+  },
+  {
+    key: "day16",
+    label: "周日（9月6日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "肠道与激素的对话",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "肠道菌群参与雌激素代谢（肠肝循环）。围绝经期激素波动期，肠道也可能\"闹情绪\"——便秘、腹胀、腹泻交替。今天给肠道一些关爱。",
+      items: [
+        "早餐加入一份发酵食品：酸奶/泡菜/味噌汤，补充益生菌",
+        "全天摄入25-30g膳食纤维：燕麦/红薯/绿叶菜/奇亚籽",
+        "饮水2000ml，分次慢饮，避免肠道干燥",
+        "顺时针按摩腹部5分钟，促进肠道蠕动"
+      ]
+    }
+  },
+  {
+    key: "day17",
+    label: "周一（9月7日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "皮肤与黏膜的干燥信号",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "雌激素下降会让皮肤锁水能力减弱，阴道黏膜也可能变薄干燥。干燥不是\"老了\"，是激素变化的正常表现，可以主动干预。",
+      items: [
+        "洗澡后3分钟内涂抹身体乳，锁住水分",
+        "使用温和的氨基酸洁面，避免过度清洁破坏皮脂膜",
+        "如有阴道干涩，记录严重程度（1-5分），考虑使用水溶性润滑剂",
+        "增加富含植物雌激素的食物：豆浆/黑豆/亚麻籽"
+      ]
+    }
+  },
+  {
+    key: "day18",
+    label: "周二（9月8日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "力量训练的入门日",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "肌肉量是更年期女性的\"健康银行\"。从围绝经期开始规律抗阻训练，能预防骨质疏松、改善胰岛素敏感性、缓解焦虑和抑郁。",
+      items: [
+        "今天做15分钟力量训练：深蹲/俯卧撑（跪姿）/哑铃/弹力带，选2种",
+        "训练后30分钟内补充蛋白质：鸡蛋/牛奶/蛋白粉",
+        "记录训练后的感受：精力更好/更累/无感？调整下次强度",
+        "如果关节疼痛，避免跳跃动作，改为靠墙俯卧撑或坐姿抬腿"
+      ]
+    }
+  },
+  {
+    key: "day19",
+    label: "周三（9月9日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "压力与皮质醇",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "围绝经期女性对压力更敏感，因为孕酮下降减弱了GABA（镇静神经递质）的作用。同样的压力，现在可能引发更强烈的身心反应。今天主动给皮质醇\"踩刹车\"。",
+      items: [
+        "安排10分钟\"什么都不做\"的时间：发呆、看云、听白噪音",
+        "如果感到焦虑，用\"5-4-3-2-1\" grounding 技巧：说出5样看到的、4样听到的、3样摸到的、2样闻到的、1样尝到的",
+        "减少一次不必要的 multitasking，一次只做一件事",
+        "睡前写\"焦虑清单\"：把担心的事写下来，告诉自己\"明天再处理\""
+      ]
+    }
+  },
+  {
+    key: "day20",
+    label: "周四（9月10日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "性健康的温柔议题",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "性欲和性体验在围绝经期可能发生变化：干燥、疼痛、兴趣下降都很常见。这不是关系出了问题，而是身体需要新的适应方式。今天坦诚面对这个话题。",
+      items: [
+        "记录今日性欲水平（1-5分），不评判，只是观察",
+        "如有性交不适，考虑使用润滑剂，并与伴侣沟通",
+        "做一次盆底肌放松练习（反向凯格尔），缓解盆底紧张",
+        "阅读或了解围绝经期性健康的科普内容，破除羞耻感"
+      ]
+    }
+  },
+  {
+    key: "day21",
+    label: "周五（9月11日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "第三周回顾",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "21天，一个新习惯的养成周期。如果你坚持记录到现在，已经比大多数围绝经期女性更了解自己的身体了。今天的重点是：哪些干预措施真的帮到了你？",
+      items: [
+        "翻看21天记录，圈出\"做了干预后症状改善\"的日子",
+        "建立你的\"个人急救包\"：列出对你最有效的3个缓解技巧",
+        "评估本月营养摄入：钙/蛋白质/蔬菜是否达标？",
+        "预约本月或下月的体检/复诊（如有需要）"
+      ]
+    }
+  },
+  {
+    key: "day22",
+    label: "周六（9月12日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "甲状腺的邻居效应",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "围绝经期和甲状腺问题（甲减/甲亢）症状高度重叠：疲劳、体重变化、情绪波动、月经紊乱。如果症状\"对不上\"典型的围绝经期模式，别忘了排查甲状腺。",
+      items: [
+        "观察是否有甲减信号：怕冷、便秘、脱发、声音嘶哑，记录",
+        "观察是否有甲亢信号：手抖、心慌、怕热、体重下降，记录",
+        "检查体检报告中甲状腺功能（TSH/FT3/FT4）是否过期",
+        "碘摄入适中：海带紫菜每周1-2次即可，不过量"
+      ]
+    }
+  },
+  {
+    key: "day23",
+    label: "周日（9月13日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "夜间盗汗的睡眠拯救",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "夜间盗汗是潮热的夜间版本，可能让你从睡梦中惊醒，浑身湿透。它不仅影响睡眠，还会因为频繁觉醒导致第二天疲惫。今晚试试分层降温策略。",
+      items: [
+        "睡前调低室温2度，或准备一台小风扇对准床铺",
+        "床品选择吸湿排汗材质，枕边放一套备用睡衣",
+        "晚餐避免酒精和辛辣食物，两者都会触发盗汗",
+        "如夜间醒来，不强迫自己立刻入睡，做5分钟放松呼吸再躺下"
+      ]
+    }
+  },
+  {
+    key: "day24",
+    label: "周一（9月14日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "眼睛与口腔的干燥",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "干燥不仅发生在皮肤和阴道。雌激素下降也会让眼睛干涩（泪液分泌减少）、口腔干燥（唾液减少，龋齿风险增加）。这些\"小症状\"容易被忽视。",
+      items: [
+        "每用眼1小时，远眺窗外20秒，或使用人工泪液滴眼",
+        "增加咀嚼次数，刺激唾液分泌；如无唾液，小口多次饮水",
+        "使用含氟牙膏，增加口腔检查频率（干燥口腔更易蛀牙）",
+        "室内使用加湿器，维持40-60%湿度"
+      ]
+    }
+  },
+  {
+    key: "day25",
+    label: "周二（9月15日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "关节与肌肉的疼痛管理",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "\"怎么浑身酸痛？\"围绝经期的关节痛和肌肉僵硬与雌激素抗炎作用下降有关。今天用温和运动代替静养——越不动，越僵硬。",
+      items: [
+        "做10分钟关节活动操：颈部绕环、肩部绕环、髋部绕环、踝部绕环",
+        "泡一个温水澡（38-40度），加入浴盐，放松肌肉",
+        "增加抗炎食物：深海鱼、姜黄、樱桃、橄榄油",
+        "如某关节疼痛持续超过2周，记录并考虑骨科/风湿科检查"
+      ]
+    }
+  },
+  {
+    key: "day26",
+    label: "周三（9月16日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "血糖与体重的微妙关系",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "雌激素参与胰岛素敏感性调节，围绝经期可能出现\"明明吃得一样，体重却涨了\"的情况。今天关注血糖波动，而不是体重数字。",
+      items: [
+        "早餐先吃蛋白质和蔬菜，最后吃碳水，平稳餐后血糖",
+        "两餐之间不加餐，给胰岛素\"休息时间\"（如无低血糖风险）",
+        "记录今日饥饿感：是\"胃饿\"还是\"情绪饿\"？",
+        "晚餐后不再进食，夜间空腹12小时有助于代谢健康"
+      ]
+    }
+  },
+  {
+    key: "day27",
+    label: "周四（9月17日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "泌尿系统的防护墙",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "尿道和阴道黏膜同源，雌激素下降会让尿道黏膜变薄，出现尿频、尿急、尿痛或反复尿路感染。今天建立泌尿系统的日常防护习惯。",
+      items: [
+        "性生活前后排尿，冲刷尿道减少感染风险",
+        "如厕后从前向后擦拭，避免肠道细菌污染尿道",
+        "不憋尿，有尿意及时排空膀胱",
+        "如反复尿路感染，记录发作频率，咨询医生是否需局部雌激素"
+      ]
+    }
+  },
+  {
+    key: "day28",
+    label: "周五（9月18日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "家人沟通与理解",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "围绝经期的情绪波动可能影响家庭关系，而家人的不理解又会加重情绪负担。今天做一件小事，让身边的人更了解你正在经历什么。",
+      items: [
+        "向一位家人分享一条围绝经期科普内容（文章/视频）",
+        "告诉伴侣/孩子：\"我最近身体在调整，有时情绪不好不是针对你\"",
+        "请求家人在你潮热发作时递一杯凉水，而不是问\"你怎么了\"",
+        "记录今天家庭互动中，哪一刻让你感到被支持/被误解"
+      ]
+    }
+  },
+  {
+    key: "day29",
+    label: "周六（9月19日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "月度健康盘点",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "30天的记录已经形成了你的第一份围绝经期健康档案。今天的任务不是\"总结好坏\"，而是\"看见全貌\"——你的身体这个月经历了什么，它值得被认真对待。",
+      items: [
+        "统计本月各症状出现天数：潮热__天/失眠__天/情绪波动__天",
+        "找出本月最严重的1天，回顾当天发生了什么（诱因分析）",
+        "找出本月最舒服的1天，回顾当天做了什么（保护因素）",
+        "根据月度数据，决定是否需要在近期就医咨询"
+      ]
+    }
+  },
+  {
+    key: "day30",
+    label: "周日（9月20日）",
+    config: {
+      variant: "daily-update",
+      score: 60,
+      completedCount: 0,
+      dayTitle: "制定下月健康计划",
+      statusTitle: "今日身体状况解读",
+      statusCopy: "第一个月结束了。围绝经期不是一场短跑，而是一段需要持续自我关照的旅程。下一个月，你可以更有针对性地管理自己的健康。",
+      items: [
+        "选择下个月重点关注的1-2个症状（不要贪多）",
+        "设定一个可量化的行为目标：如\"每周运动3次\"或\"每天钙摄入达标\"",
+        "预约必要的体检：乳腺/妇科超声/骨密度/血脂血糖（根据年龄和症状）",
+        "给自己一个小奖励：坚持记录30天，你已经在为未来的健康投资"
+      ]
+    }
+  }
+];
+
+function cloneReportItem(item) {
+  return typeof item === "string" ? item : { ...item };
+}
+
+function mergeReportConfig(baseConfig, overrides = {}) {
+  const sourceItems = overrides.items || baseConfig.items;
+  return {
+    ...baseConfig,
+    ...overrides,
+    items: sourceItems.map(cloneReportItem)
+  };
+}
+
+const noonDayOneOverride = {
+  score: 70,
+  completedCount: 2,
+  dayTitle: "黄体期症状观察",
+  statusTitle: "今日身体状况解读",
+  statusCopy: "目前处于黄体期，经前期症状可能更明显。围绝经期阶段身体对睡眠不足、咖啡因、压力和高盐高糖饮食更敏感，今天适合把节奏调柔和一点。",
+  focus: ["经前波动", "潮热观察", "稳定情绪"],
+  items: [
+    "午餐加入足量蛋白质和深色蔬菜，避免只吃精制碳水导致下午困倦。",
+    "少量多次喝水，下午后减少咖啡、浓茶和酒精类刺激。",
+    "安排 10-15 分钟舒缓拉伸或散步，不做让身体明显疲惫的运动。",
+    "如果出现潮热、心慌或烦躁，记录出现时间、持续多久和诱因。",
+    "下午准备一份坚果、酸奶或水果，减少高糖零食带来的情绪起伏。",
+    "晚餐少盐少辣，给身体留一点轻松感，减少夜间不适。",
+    "按原方案或医嘱补充营养补剂，不因为今天不舒服临时加量。",
+    "睡前做 5 分钟呼吸放松，记录入睡感受和夜醒情况。"
+  ]
+};
+
+const ovulationDayOneOverride = {
+  score: 70,
+  completedCount: 0,
+  dayTitle: "排卵信号观察",
+  statusTitle: "今日身体状况解读",
+  statusCopy: "围绝经期阶段排卵信号可能不如过去稳定，今天可重点观察分泌物、下腹感受和体温变化；如果睡眠或情绪有波动，也先当作身体信号记录下来。",
+  focus: ["排卵信号", "体温变化", "情绪睡眠"],
+  items: [
+    "早起先喝一杯温水，白天少量多次补水，留意尿频或口干有没有变化。",
+    "早餐加入鸡蛋、豆制品或酸奶等优质蛋白，帮助卵泡期恢复体力。",
+    "午餐搭配深绿叶菜、瘦肉或豆类，给身体补充铁、钙和镁。",
+    "安排 20 分钟轻快散步、瑜伽或拉伸，强度以微微出汗、不疲惫为准。",
+    "观察分泌物是否更湿润或有拉丝感，并用一句话记录下来。",
+    "如果方便，固定时间测一次基础体温，连续记录更容易看到周期趋势。",
+    "午后给自己 5 分钟放松呼吸，留意焦虑、烦躁或注意力变化。",
+    "睡前做一组轻柔盆底放松或髋部拉伸，帮助改善夜间不适和睡眠质量。"
+  ]
+};
+
+const noonReportDays = morningReportDays.map((day, index) => ({
+  key: day.key,
+  label: day.label,
+  config: mergeReportConfig(day.config, index === 0
+    ? noonDayOneOverride
+    : {
+      score: 70,
+      completedCount: 0,
+      focus: ["症状记录", "身体觉察", "轻量行动"]
+    })
+}));
+
+const ovulationReportDays = morningReportDays.map((day, index) => ({
+  key: day.key,
+  label: day.label,
+  config: mergeReportConfig(day.config, index === 0
+    ? ovulationDayOneOverride
+    : {
+      score: 70,
+      completedCount: 0,
+      focus: ["周期观察", "排卵信号", "能量稳定"]
+    })
+}));
+
+const energyLevels = [
+  { min: 70, max: 100, range: "70-100", tone: "great", text: "状态不错，继续保持" },
+  { min: 50, max: 69, range: "50-69", tone: "wave", text: "有点小波动，今天给自己多一点耐心" },
+  { min: 30, max: 49, range: "30-49", tone: "signal", text: "身体在发出信号，优先完成2项清单即可" },
+  { min: 0, max: 29, range: "<30", tone: "rest", text: "今天以休息为主，只做1件让自己舒服的事" }
+];
+
+const kmiQuestions = [
+  { title: "潮热、出汗", desc: "最近一周有没有突然发热、出汗，或夜间盗汗？", weight: 4 },
+  { title: "感觉异常", desc: "有没有麻木、刺痛、蚁走感，或皮肤忽冷忽热？", weight: 2 },
+  { title: "失眠", desc: "有没有入睡困难、夜醒、早醒，或睡醒仍疲惫？", weight: 2 },
+  { title: "情绪易激动", desc: "有没有更容易烦躁、焦虑、想发火，或情绪起伏变大？", weight: 2 },
+  { title: "抑郁或低落", desc: "有没有提不起劲、心情低落、容易委屈或兴趣下降？", weight: 1 },
+  { title: "眩晕", desc: "有没有头晕、站起时发飘，或短暂失衡感？", weight: 1 },
+  { title: "疲乏", desc: "有没有比平时更容易累，休息后也恢复慢？", weight: 1 },
+  { title: "关节或肌肉痛", desc: "有没有肩颈、腰背、膝盖、手指等酸痛僵硬？", weight: 1 },
+  { title: "头痛", desc: "有没有头痛、头胀，或经前/睡眠差后更明显？", weight: 1 },
+  { title: "心悸", desc: "有没有心慌、心跳快，或突然觉得胸口不安？", weight: 1 },
+  { title: "皮肤蚁走感", desc: "有没有皮肤像有小虫爬、发痒、刺刺的感觉？", weight: 1 },
+  { title: "性生活或阴道不适", desc: "有没有阴道干涩、性交不适，或性欲明显变化？", weight: 2 },
+  { title: "泌尿不适", desc: "有没有尿频、尿急、尿痛，或憋尿能力变弱？", weight: 2 }
+];
+
+const kmiOptions = [
+  { score: 0, label: "没有", desc: "最近一周基本没有出现" },
+  { score: 1, label: "轻微", desc: "偶尔出现，不太影响生活" },
+  { score: 2, label: "中等", desc: "反复出现，已经有些影响睡眠或情绪" },
+  { score: 3, label: "明显", desc: "频繁或较重，需要主动处理" }
+];
+
+function getEnergyLevel(score) {
+  const normalizedScore = Math.max(0, Math.min(100, Number(score) || 0));
+  return energyLevels.find((level) => normalizedScore >= level.min && normalizedScore <= level.max) || energyLevels[energyLevels.length - 1];
+}
+
+function renderEnergyExplain(score) {
+  const currentLevel = getEnergyLevel(score);
+  const rows = energyLevels.map((level) => {
+    const active = level.tone === currentLevel.tone ? " active" : "";
+    const range = level.range.replace("<", "&lt;");
+    return `
+      <div class="energy-scale-row energy-tone-${level.tone}${active}">
+        <span class="energy-scale-range">${range}</span>
+        <span>${level.text}</span>
+      </div>
+    `;
+  }).join("");
+  return `
+    <div class="energy-state-strip energy-tone-${currentLevel.tone}">
+      <span class="energy-state">
+        <span class="energy-state-dot"></span>
+        <span class="energy-state-text">${currentLevel.text}</span>
+      </span>
+    </div>
+    <div class="energy-scale">
+      ${rows}
+    </div>
+  `;
+}
+
+function showToast(message) {
+  window.clearTimeout(toastTimer);
+  toast.textContent = message;
+  toast.classList.add("visible");
+  toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 1600);
+}
+
+function isPlanMode() {
+  return entryMode === "morning-plan" || entryMode === "noon-plan" || entryMode === "ovulation-plan";
+}
+
+function getCurrentPlanEntry() {
+  if (entryMode === "noon-symptom" || entryMode === "noon-plan") {
+    return "noon-plan";
+  }
+  if (entryMode === "ovulation-signal" || entryMode === "ovulation-plan") {
+    return "ovulation-plan";
+  }
+  return "morning-plan";
+}
+
+function getReportDaysForEntry() {
+  if (entryMode === "noon-plan" || entryMode === "noon-symptom") {
+    return noonReportDays;
+  }
+  if (entryMode === "ovulation-plan" || entryMode === "ovulation-signal") {
+    return ovulationReportDays;
+  }
+  return morningReportDays;
+}
+
+document.getElementById("back-home").addEventListener("click", () => {
+  if (entryMode === "ovulation-plan" || entryMode === "ovulation-signal") {
+    window.location.href = `./meiyou-menopause-home.html?demo=${entryDemo || "ovulation"}`;
+    return;
+  }
+  if (entryMode === "noon-plan" || entryMode === "noon-symptom") {
+    window.location.href = "./meiyou-menopause-home.html?demo=noon";
+    return;
+  }
+  window.location.href = "./meiyou-menopause-home.html";
+});
+
+document.querySelectorAll("[data-entry]").forEach((button) => {
+  button.addEventListener("click", () => {
+    if (button.dataset.entry === "能量清单") {
+      window.location.href = `./meiyou-sister-chat.html?entry=${getCurrentPlanEntry()}${entryDemo ? `&demo=${entryDemo}` : ""}`;
+      return;
+    }
+    showToast(`${button.dataset.entry}入口`);
+  });
+});
+
+dateTabs.addEventListener("click", (event) => {
+  const button = event.target.closest(".date-tab");
+  if (!button) return;
+  setActiveDate(button.dataset.date);
+});
+
+dateTabs.addEventListener("touchstart", (event) => {
+  dateTouchStartX = event.changedTouches[0].clientX;
+}, { passive: true });
+
+dateTabs.addEventListener("touchend", (event) => {
+  if (dateTouchStartX === null) return;
+  const deltaX = event.changedTouches[0].clientX - dateTouchStartX;
+  dateTouchStartX = null;
+  if (Math.abs(deltaX) < 42) return;
+  shiftDate(deltaX < 0 ? 1 : -1);
+}, { passive: true });
+
+document.querySelectorAll(".check-group").forEach((group) => {
+  group.querySelectorAll(".choice").forEach((choice) => {
+    choice.addEventListener("click", () => {
+      group.querySelectorAll(".choice").forEach((item) => {
+        item.classList.remove("selected");
+        item.setAttribute("aria-pressed", "false");
+      });
+      choice.classList.add("selected");
+      choice.setAttribute("aria-pressed", "true");
+    });
+  });
+});
+
+function appendMessage(role, text) {
+  if (role === "assistant" && Array.isArray(text)) {
+    return appendAssistantSequence(text);
+  }
+  const row = document.createElement("div");
+  row.className = `message-row ${role}`;
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble";
+  bubble.textContent = text;
+  row.appendChild(bubble);
+  messageList.appendChild(row);
+  row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  return Promise.resolve(row);
+}
+
+function appendAssistantTyping(text) {
+  return new Promise((resolve) => {
+    const row = document.createElement("div");
+    row.className = "message-row assistant";
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble typing";
+    row.appendChild(bubble);
+    messageList.appendChild(row);
+    const chars = Array.from(text);
+    let index = 0;
+    const typeNext = () => {
+      bubble.textContent = chars.slice(0, index).join("");
+      row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (index >= chars.length) {
+        bubble.classList.remove("typing");
+        resolve(row);
+        return;
+      }
+      index += 1;
+      window.setTimeout(typeNext, text.length > 56 ? 18 : 24);
+    };
+    typeNext();
+  });
+}
+
+function appendAssistantSequence(messages) {
+  return messages.reduce((chain, text, index) => {
+    return chain
+      .then(() => new Promise((resolve) => window.setTimeout(resolve, index === 0 ? 0 : 220)))
+      .then(() => appendAssistantTyping(text));
+  }, Promise.resolve());
+}
+
+function getDateTabsConfig() {
+  if (isPlanMode()) {
+    const reportDays = getReportDaysForEntry();
+    return {
+      tabs: reportDays.map((day) => ({ key: day.key, label: day.label })),
+      defaultKey: reportDays.some((day) => day.key === requestedDateKey) ? requestedDateKey : "day1"
+    };
+  }
+  return {
+    tabs: defaultDateTabs,
+    defaultKey: "today"
+  };
+}
+
+function renderDateTabs() {
+  const config = getDateTabsConfig();
+  dateOrder = config.tabs.map((tab) => tab.key);
+  dateTabs.innerHTML = config.tabs.map((tab) => `<button class="date-tab" type="button" data-date="${tab.key}">${tab.label}</button>`).join("");
+  dateButtons = Array.from(document.querySelectorAll(".date-tab"));
+  return config.defaultKey;
+}
+
+function getPlanConfig() {
+  if (isPlanMode()) {
+    const reportDays = getReportDaysForEntry();
+    return reportDays.find((day) => day.key === activeDateKey)?.config || reportDays[0].config;
+  }
+  return {
+    variant: "daily-update",
+    score: 60,
+    completedCount: 0,
+    copy: "根据你昨天“入睡顺利；夜醒1次；睡醒有疲惫感”的记录，今天先把节奏放轻一点。",
+    statusTitle: "今日身体状况解读",
+    statusCopy: "昨晚睡眠有恢复但仍有轻微疲惫感，围绝经期阶段睡眠、情绪和潮热可能互相影响。今天优先稳定能量、减少刺激，并继续记录身体细微信号。",
+    focus: ["睡眠恢复", "补水早餐", "轻量运动"],
+    items: [
+      "起床后先喝一杯温水，观察口干、手麻或晨起疲惫有没有缓解。",
+      "早餐补充鸡蛋、豆制品或酸奶等优质蛋白，帮助上午能量更稳定。",
+      "上午晒 10 分钟自然光，帮助身体慢慢校准清醒和睡眠节律。",
+      "安排 15-20 分钟散步或拉伸，强度以舒展、不加重疲惫为准。",
+      "午后减少咖啡、浓茶和高糖饮料，降低夜间睡眠被影响的可能。",
+      "记录一次潮热、心慌、手麻或情绪波动出现的时间和持续感受。",
+      "营养补剂按原方案或医嘱进行，不临时加量，也不空腹硬吃。",
+      "睡前留 20 分钟放松，少刷刺激内容，记录入睡前的身体感受。"
+    ]
+  };
+}
+
+function getDateAdjustedConfig(config, dateKey) {
+  if (dateKey === "yesterday") {
+    return {
+      ...config,
+      score: Math.max(0, config.score - 5),
+      completedCount: Math.min(config.items.length, Math.max(config.completedCount, 3)),
+      statusTitle: "昨日身体状态回顾",
+      statusCopy: "昨天已经留下了一些身体信号记录，可以继续把睡眠、症状、饮食和运动放在一起看。身体活力值会根据已完成的记录和清单打卡逐步更新。",
+      focus: ["昨日回顾", "已打卡项", "趋势观察"],
+      tip: "昨天完成的记录会沉淀到身体趋势里，后续可以和今天的状态一起对照看。"
+    };
+  }
+  if (dateKey === "tomorrow") {
+    return {
+      ...config,
+      completedCount: 0,
+      statusTitle: "明日身体状态预告",
+      statusCopy: "明天可以延续今天的节奏，提前安排补水、轻运动和睡前放松。若出现潮热、尿频、情绪波动或排卵相关信号，继续及时记录下来。",
+      focus: ["提前安排", "轻量行动", "继续观察"],
+      tip: "明天完成清单后，身体活力值会继续更新，也能帮助你更早发现身体变化。"
+    };
+  }
+  return config;
+}
+
+function getActivePlanConfig() {
+  const config = getPlanConfig();
+  if (entryMode === "morning-plan") {
+    return config;
+  }
+  return getDateAdjustedConfig(config, activeDateKey);
+}
+
+function renderPlanPage() {
+  messageList.innerHTML = "";
+  if (entryMode === "ovulation-plan") return;
+  appendPlanMessage(getActivePlanConfig(), false);
+}
+
+function getDemo5DailyCheckVitality() {
+  if (entryDemo !== "demo5") return null;
+  try {
+    const record = JSON.parse(window.localStorage.getItem("meiyou-daily-health-check") || "null");
+    const now = new Date();
+    const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    if (record?.date !== todayKey) return null;
+    const values = Object.values(record.values || {}).filter((value) => Number.isInteger(value));
+    if (values.length !== 6) return null;
+    if (Number.isFinite(record.vitality)) return record.vitality;
+    const average = values.reduce((total, value) => total + value, 0) / values.length;
+    return Math.max(52, Math.min(85, 82 - Math.round(average * 7)));
+  } catch (_) {
+    return null;
+  }
+}
+
+function updateVitalityHero(score) {
+  if (entryMode !== "ovulation-plan") return;
+  const dailyCheckScore = getDemo5DailyCheckVitality();
+  const resolvedScore = Number.isFinite(score) ? score : (dailyCheckScore ?? getActivePlanConfig().score);
+  vitalityScore.textContent = String(resolvedScore);
+  vitalityTrendScore.textContent = String(resolvedScore);
+  vitalityTrendLatest.textContent = String(resolvedScore);
+}
+
+function showBodyAbilityContent() {
+  if (entryMode !== "ovulation-plan") return;
+  vitalityHero.hidden = false;
+  vitalityPillars.hidden = false;
+  vitalityTrend.hidden = false;
+  abilityStageSummary.hidden = false;
+  impactFactors.hidden = true;
+  syncAbilityForecast();
+}
+
+function getAbilityDemoQuery() {
+  const demo = entryDemo || "ovulation";
+  return demo === "morning" ? "" : `?demo=${demo}`;
+}
+
+function syncAbilityForecast() {
+  try {
+    const prediction = JSON.parse(window.localStorage.getItem("meiyou-menopause-prediction") || "null");
+    if (!prediction?.ageLabel) return;
+    abilityForecastAge.textContent = prediction.ageLabel;
+    abilityRecalculate.textContent = "重新计算 ›";
+  } catch (_) {
+    // Keep the default prediction placeholder for malformed demo data.
+  }
+}
+
+function setActiveDate(dateKey) {
+  if (!dateOrder.includes(dateKey)) return;
+  activeDateKey = dateKey;
+  dateButtons.forEach((button) => {
+    const isActive = button.dataset.date === dateKey;
+    button.classList.toggle("active", isActive);
+    if (isActive) {
+      button.setAttribute("aria-current", "date");
+      button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    } else {
+      button.removeAttribute("aria-current");
+    }
+  });
+  renderPlanPage();
+  updateVitalityHero();
+}
+
+function shiftDate(direction) {
+  const currentIndex = dateOrder.indexOf(activeDateKey);
+  const nextIndex = Math.min(dateOrder.length - 1, Math.max(0, currentIndex + direction));
+  if (nextIndex !== currentIndex) {
+    setActiveDate(dateOrder[nextIndex]);
+  }
+}
+
+document.getElementById("ability-stage-guide").addEventListener("click", () => {
+  const demo = entryDemo || "ovulation";
+  window.location.href = `./meiyou-menopause-stage-guide.html?demo=${demo}&from=body-status`;
+});
+abilityRecalculate.addEventListener("click", () => {
+  const demo = entryDemo || "ovulation";
+  window.location.href = `./meiyou-menopause-prediction.html?demo=${demo}&from=body-status`;
+});
+window.addEventListener("pageshow", () => {
+  syncAbilityForecast();
+  updateVitalityHero();
+});
+window.addEventListener("storage", (event) => {
+  if (event.key === "meiyou-daily-health-check") updateVitalityHero();
+});
+
+function appendPlanMessage(config = getActivePlanConfig(), shouldScroll = true) {
+  const row = document.createElement("div");
+  row.className = "message-row assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble plan-message";
+  const checked = (index) => index < config.completedCount ? " checked" : "";
+  const items = config.items.map((item, index) => {
+    const text = typeof item === "string" ? item : item.text;
+    const link = typeof item === "string" || !item.linkTitle ? "" : `<a class="knowledge-link" href="${item.href}">${item.linkTitle}</a>`;
+    return `<div class="plan-item-wrap"><label class="plan-item"><input class="plan-checkbox" type="checkbox"${checked(index)}><span class="plan-text">${text}</span></label>${link}</div>`;
+  }).join("");
+  const usesTopVitalityScore = entryMode === "ovulation-plan";
+  const header = config.variant === "daily-update"
+    ? `
+    <div class="daily-section-title">${config.statusTitle === "今日身体状况解读" ? "今日身体解读" : config.statusTitle}</div>
+    <div class="daily-update">
+      <div class="daily-update-main${usesTopVitalityScore ? " no-inline-score" : ""}">
+        <div class="daily-interpretation">
+          ${config.dayTitle ? `<div class="daily-day-title">${config.dayTitle}</div>` : ""}
+          <div class="daily-copy">${config.statusCopy}</div>
+          ${config.focus?.length ? `<div class="daily-focus">${config.focus.map((item) => `<span class="daily-chip">${item}</span>`).join("")}</div>` : ""}
+        </div>
+        ${usesTopVitalityScore ? "" : `<div class="energy-score">
+          <button class="energy-info-button" type="button" aria-label="查看身体活力值说明" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
+          </button>
+          <span class="energy-score-label">身体活力值</span>
+          <strong>${config.score}</strong>
+        </div>`}
+      </div>
+      ${usesTopVitalityScore ? "" : `<div class="energy-explain-wrap">
+        ${renderEnergyExplain(config.score)}
+      </div>`}
+    </div>
+  `
+    : `
+    <div class="energy-head">
+      <div class="energy-copy">${config.copy}</div>
+      <div class="energy-score">身体活力值 <strong>${config.score}</strong></div>
+    </div>
+  `;
+  bubble.innerHTML = `
+    ${header}
+    <div class="plan-title">提升身体活力清单</div>
+    <div class="plan-list">
+      ${items}
+    </div>
+    <div class="plan-tip">${config.tip || "完成这些小任务后，今天的身体活力值可以逐步提升；每记录一次身体感受，我也会帮你更新状态。"}</div>
+  `;
+  row.appendChild(bubble);
+  messageList.appendChild(row);
+  if (shouldScroll) {
+    row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+
+function refreshEnergyExplain(planBubble, scoreValue) {
+  const wrapper = planBubble?.querySelector(".energy-explain-wrap");
+  const dailyUpdate = wrapper?.closest(".daily-update");
+  if (!wrapper || !dailyUpdate) return;
+  const wasOpen = dailyUpdate.classList.contains("energy-open");
+  wrapper.innerHTML = renderEnergyExplain(scoreValue);
+  if (wasOpen) {
+    dailyUpdate.classList.add("energy-open");
+    const toggle = planBubble.querySelector(".energy-info-button");
+    toggle?.setAttribute("aria-expanded", "true");
+  }
+}
+
+messageList.addEventListener("click", (event) => {
+  const toggle = event.target.closest(".energy-info-button");
+  if (!toggle) return;
+  const dailyUpdate = toggle.closest(".daily-update");
+  const isOpen = dailyUpdate.classList.toggle("energy-open");
+  toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+
+const impactDetailData = {
+  "经期健康度": { baselineLabel: "近 180 天综合得分", baseline: "82分", recentLabel: "本周期得分", recent: "85分", delta: "+4", marker: "85%", labels: ["0分", "80分", "100分"], insight: "<strong>本周期已完成 4 次出血与周期记录。</strong>持续记录经量、周期长度和异常出血，能帮助更早识别需要关注的变化。" },
+  "情绪评分": { baselineLabel: "近 180 天平均", baseline: "3.6<small>分</small>", recentLabel: "近 30 天平均", recent: "4<small>分</small>", delta: "+2", marker: "80%", labels: ["1分", "3分", "5分"], insight: "<strong>今天的情绪评分为 4 分。</strong>围绝经期的情绪变化常会和睡眠、潮热、压力互相影响，连续记录会比单次感受更有参考价值。" },
+  "体脂率": { baselineLabel: "近 180 天平均", baseline: "27.9<small>%</small>", recentLabel: "近 30 天平均", recent: "28.6<small>%</small>", delta: "-2", marker: "58%", labels: ["20%", "28%", "35%"], loss: true, insight: "<strong>体脂率有轻微波动。</strong>围绝经期更容易发生脂肪分布变化，优先保证蛋白质和规律力量训练，不需要追求快速下降。" },
+  "腰围与内脏脂肪": { baselineLabel: "近 180 天平均", baseline: "76<small>cm</small>", recentLabel: "近 30 天平均", recent: "78<small>cm</small>", delta: "-1", marker: "52%", labels: ["65cm", "75cm", "90cm"], loss: true, insight: "<strong>腰围建议每月在同一时间测量。</strong>围绝经期更容易出现向心性脂肪堆积，关注长期趋势即可，不必被单次数字影响。" },
+  "肌肉量": { baselineLabel: "近 180 天平均", baseline: "39.1<small>kg</small>", recentLabel: "近 30 天平均", recent: "39.5<small>kg</small>", delta: "+3", marker: "62%", labels: ["32kg", "38kg", "43kg"], insight: "<strong>肌肉量目前维持得不错。</strong>围绝经期的肌肉量下降更值得长期关注，每周 2 次抗阻训练比突击运动更有效。" },
+  "骨密度风险": { baselineLabel: "近 180 天风险评估", baseline: "中等", recentLabel: "本季度风险评估", recent: "中风险", delta: "-2", marker: "61%", labels: ["高风险", "中风险", "低风险"], loss: true, insight: "<strong>当前以骨量流失速度观察为主。</strong>保证钙、维生素 D 和负重训练；如有骨折家族史或持续疼痛，可考虑骨密度评估。" },
+  "睡眠评分": { baselineLabel: "近 180 天平均", baseline: "78<small>分</small>", recentLabel: "近 30 天平均", recent: "81<small>分</small>", delta: "+3", marker: "78%", recentMarker: "81%", labels: ["0分", "80分", "100分"], insight: "<strong>昨晚睡眠评分为 81 分。</strong>睡眠时长、入睡情况和夜间连续性都会影响评分，连续记录更能看见恢复趋势。" },
+  "步数": { baselineLabel: "近 180 天平均", baseline: "5,340<small>步</small>", recentLabel: "近 30 天平均", recent: "6,412<small>步</small>", delta: "+2", marker: "71%", labels: ["0步", "4,000步", "8,000步"], insight: "<strong>今天已完成轻量步行。</strong>把步数分散到全天，既能稳住代谢，也不会额外增加疲惫感。" },
+  "力量训练": { baselineLabel: "近 180 天平均", baseline: "1<small>次 / 周</small>", recentLabel: "近 30 天平均", recent: "2<small>次 / 周</small>", delta: "+4", marker: "67%", labels: ["0次", "2次", "3次"], insight: "<strong>本周已完成 2 次力量训练。</strong>规律抗阻训练能同时支持肌肉量、骨量和内脏脂肪管理。" },
+  "静息心率": { baselineLabel: "近 180 天平均", baseline: "68<small>bpm</small>", recentLabel: "近 30 天平均", recent: "66<small>bpm</small>", delta: "+1", marker: "43%", labels: ["47bpm", "65bpm", "97bpm"], insight: "<strong>静息心率处于个人稳定范围。</strong>若连续多天明显升高，可结合潮热、睡眠和压力一起观察。" }
+};
+
+function renderImpactDetails() {
+  impactFactors.querySelectorAll(".impact-row").forEach((row) => {
+    const name = row.querySelector(".impact-name")?.textContent.trim();
+    const data = impactDetailData[name];
+    const detail = row.querySelector(".impact-detail");
+    if (!data || !detail) return;
+    detail.innerHTML = `
+      <div class="impact-metrics">
+        <div>
+          <div class="impact-metric-label">${data.baselineLabel}</div>
+          <div class="impact-metric-value">${data.baseline}</div>
+        </div>
+        <div class="impact-score-change${data.loss ? " loss" : ""}">
+          <div class="impact-metric-label">身体活力值</div>
+          <div class="impact-metric-value">${data.delta}</div>
+        </div>
+      </div>
+      <div class="impact-scale-detail" style="--baseline-position:${data.marker};--recent-position:${data.recentMarker || "-20%"};">
+        <span class="impact-score-marker" aria-hidden="true"></span>
+        <span class="impact-score-marker recent" aria-hidden="true"${data.recentMarker ? "" : " hidden"}></span>
+        <div class="impact-gradient-bar"><span>${data.labels[0]}</span><span>${data.labels[1]}</span><span>${data.labels[2]}</span></div>
+      </div>
+      <div class="impact-metric-label">${data.recentLabel}</div>
+      <div class="impact-metric-value">${data.recent}</div>
+      <p class="impact-insight">${data.insight}</p>
+    `;
+  });
+  const firstRow = impactFactors.querySelector(".impact-row");
+  if (firstRow) {
+    firstRow.classList.add("open");
+    firstRow.querySelector(".impact-toggle")?.setAttribute("aria-expanded", "true");
+  }
+}
+
+renderImpactDetails();
+
+function toggleImpactDetail(event) {
+  const toggle = event.target.closest(".impact-toggle");
+  if (!toggle) return;
+  const row = toggle.closest(".impact-row");
+  const isOpen = row.classList.toggle("open");
+  toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+}
+
+vitalityHero.querySelector(".confidence-card")?.remove();
+impactFactors.addEventListener("click", toggleImpactDetail);
+
+function appendSymptomPrompt() {
+  const row = document.createElement("div");
+  row.className = "message-row assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble symptom-message";
+  bubble.innerHTML = `
+    <div class="symptom-title">你今天记录了乳房胀痛，我们再确认一下位置</div>
+    <div class="symptom-sub">围绝经期乳房胀痛可能从“经前一周”变成“随时发生”。注意胀痛的位置，选一个更接近你的感受。</div>
+    <div class="symptom-grid" aria-label="症状选择">
+      <button class="symptom-option" type="button" data-symptom="靠近乳头的前部痛">靠近乳头的前部痛</button>
+      <button class="symptom-option" type="button" data-symptom="靠近腋窝的外侧痛">靠近腋窝的外侧痛</button>
+    </div>
+  `;
+  row.appendChild(bubble);
+  messageList.appendChild(row);
+  row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function appendOvulationPrompt() {
+  const row = document.createElement("div");
+  row.className = "message-row assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble symptom-message";
+  bubble.innerHTML = `
+    <div class="symptom-title">我们来看看今天有没有排卵信号</div>
+    <div class="symptom-sub">选出你今天观察到的情况，我会帮你做一个温和判断。</div>
+    <div class="ovulation-group" data-ovulation-group="secretion">
+      <div class="ovulation-label">1. 分泌物状态</div>
+      <div class="ovulation-choice-row">
+        <button class="ovulation-option" type="button">清亮拉丝</button>
+        <button class="ovulation-option" type="button">和平时差不多</button>
+        <button class="ovulation-option" type="button">偏少或干涩</button>
+      </div>
+    </div>
+    <div class="ovulation-group" data-ovulation-group="body">
+      <div class="ovulation-label">2. 身体感觉</div>
+      <div class="ovulation-choice-row">
+        <button class="ovulation-option" type="button">下腹轻微坠胀</button>
+        <button class="ovulation-option" type="button">乳房胀感</button>
+        <button class="ovulation-option" type="button">没有明显感觉</button>
+      </div>
+    </div>
+    <div class="ovulation-group" data-ovulation-group="test">
+      <div class="ovulation-label">3. 体温或试纸</div>
+      <div class="ovulation-choice-row">
+        <button class="ovulation-option" type="button">体温有升高</button>
+        <button class="ovulation-option" type="button">试纸接近阳性</button>
+        <button class="ovulation-option" type="button">还没测</button>
+      </div>
+    </div>
+    <button class="confirm-ovulation" type="button" id="confirm-ovulation">确认并发送</button>
+  `;
+  row.appendChild(bubble);
+  messageList.appendChild(row);
+  row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function appendKmiPrompt() {
+  const row = document.createElement("div");
+  row.className = "message-row assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble symptom-message";
+  bubble.innerHTML = `
+    <div class="kmi-card">
+      <span class="kmi-badge">KMI评估量表</span>
+      <div class="kmi-title">我们花3分钟，全面看看你最近的身体状态吧</div>
+      <div class="kmi-copy">我会根据围绝经期常见信号，带你从睡眠、潮热、情绪、泌尿、关节和月经变化几个方面做一次轻量评估。回答时不用追求“标准”，按最近一周真实感受选就好。</div>
+      <div class="kmi-points" aria-label="KMI评估内容">
+        <span>帮助你觉察哪些变化可能和围绝经期有关</span>
+        <span>评估后会生成今日重点和能量清单建议</span>
+        <span>如果有需要就医关注的信号，我会温和提醒你</span>
+      </div>
+      <button class="kmi-start" type="button" data-entry="KMI评估">开始KMI评估</button>
+    </div>
+  `;
+  row.appendChild(bubble);
+  messageList.appendChild(row);
+  row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function appendKmiAssessmentCard() {
+  kmiState = {
+    current: 0,
+    answers: Array(kmiQuestions.length).fill(null)
+  };
+  const row = document.createElement("div");
+  row.className = "message-row assistant";
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble symptom-message";
+  bubble.innerHTML = `<div class="kmi-assessment" id="kmi-assessment"></div>`;
+  row.appendChild(bubble);
+  messageList.appendChild(row);
+  renderKmiQuestion();
+  row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function renderKmiQuestion() {
+  const container = document.getElementById("kmi-assessment");
+  if (!container || !kmiState) return;
+  const question = kmiQuestions[kmiState.current];
+  const selected = kmiState.answers[kmiState.current];
+  const progress = Math.round(((kmiState.current + 1) / kmiQuestions.length) * 100);
+  const options = kmiOptions.map((option) => {
+    const active = selected === option.score ? " selected" : "";
+    return `<button class="kmi-option${active}" type="button" data-kmi-score="${option.score}">
+      <span><strong>${option.label}</strong>：${option.desc}</span>
+    </button>`;
+  }).join("");
+  container.innerHTML = `
+    <div class="kmi-progress" aria-hidden="true"><span style="width:${progress}%"></span></div>
+    <div class="kmi-step">第 ${kmiState.current + 1} / ${kmiQuestions.length} 题</div>
+    <div class="kmi-question-title">${question.title}</div>
+    <div class="kmi-question-desc">${question.desc}</div>
+    <div class="kmi-options">${options}</div>
+    <div class="kmi-controls">
+      <button class="kmi-control secondary" type="button" data-kmi-prev ${kmiState.current === 0 ? "disabled" : ""}>上一题</button>
+      <button class="kmi-control primary" type="button" data-kmi-next ${selected === null ? "disabled" : ""}>${kmiState.current === kmiQuestions.length - 1 ? "生成结果" : "下一题"}</button>
+    </div>
+  `;
+}
+
+function getKmiResult(score) {
+  if (score <= 5) {
+    return {
+      level: "暂未见明显围绝经期症状",
+      advice: ["继续保持基础记录，先关注睡眠、情绪和周期变化。", "今天的能量清单可以维持轻量行动，不需要额外加压。"]
+    };
+  }
+  if (score <= 15) {
+    return {
+      level: "轻度围绝经期相关症状",
+      advice: ["目前更适合从睡眠、补水、运动和情绪稳定开始管理。", "今日能量清单会优先安排2-3项低负担任务。"]
+    };
+  }
+  if (score <= 30) {
+    return {
+      level: "中度围绝经期相关症状",
+      advice: ["建议重点观察影响最大的2个症状，连续记录一周看趋势。", "如果潮热、失眠、心悸或情绪波动影响生活，可以考虑咨询医生。"]
+    };
+  }
+  return {
+    level: "重度围绝经期相关症状",
+    advice: ["今天先以休息和减负为主，不建议给自己安排太多任务。", "如果症状已经明显影响睡眠、工作或生活，建议尽快咨询妇科或更年期门诊。"]
+  };
+}
+
+function renderKmiResult() {
+  const container = document.getElementById("kmi-assessment");
+  if (!container || !kmiState) return;
+  const score = kmiState.answers.reduce((total, answer, index) => total + answer * kmiQuestions[index].weight, 0);
+  const result = getKmiResult(score);
+  container.innerHTML = `
+    <div class="kmi-result">
+      <span class="kmi-badge">KMI评估结果</span>
+      <div class="kmi-score-card">
+        <div>
+          <div class="kmi-title">${result.level}</div>
+          <div class="kmi-score-copy">本次总分仅作为自我觉察参考，不替代医生诊断。</div>
+        </div>
+        <div class="kmi-score-value"><strong>${score}</strong>分</div>
+      </div>
+      <div class="kmi-result-list">
+        ${result.advice.map((item) => `<span>${item}</span>`).join("")}
+        <span>我也会把“KMI评估已完成”同步到今天的能量清单里，身体活力值+5。</span>
+      </div>
+    </div>
+  `;
+  appendMessage("assistant", [
+    `测完啦，这次 KMI 是 ${score} 分，整体属于“${result.level}”。`,
+    "我会把这次结果放进你的身体档案里，后面再结合睡眠、潮热和情绪记录一起看，会更接近你真实的状态。"
+  ]).then(() => showToast("身体活力值+5"));
+}
+
+function buildOvulationUserMessage(answers) {
+  return `分泌物${answers[0]}；${answers[1]}；${answers[2]}`;
+}
+
+function buildOvulationReply(answers) {
+  const signalScore = answers.filter((answer) => answer === "清亮拉丝" || answer === "下腹轻微坠胀" || answer === "体温有升高" || answer === "试纸接近阳性").length;
+  if (signalScore >= 2) {
+    return buildGuidedReply(
+      `${buildOvulationUserMessage(answers)}。`,
+      "这样看，今天是有一些排卵相关信号的。不过围绝经期阶段，排卵可能没有以前那么稳定，所以不用靠一次观察下结论，我们先把趋势记起来。",
+      "我也顺手把“白带观测”同步到今天的能量清单里啦。今天继续看分泌物和体温就好，完成这条记录后，身体活力值会加5。"
+    );
+  }
+  return buildGuidedReply(
+    `${buildOvulationUserMessage(answers)}。`,
+    "目前看排卵信号还不算明显。围绝经期里，周期内无排卵会更常见一些，所以先别急着焦虑，连续观察会比单次判断更可靠。",
+    "我把今天的清单调成轻量观察版啦。先完成分泌物记录和固定时间测体温，完成后身体活力值会加5。"
+  );
+}
+
+function buildSymptomReply(symptom) {
+  if (symptom === "靠近乳头的前部痛" || symptom === "靠近腋窝的外侧痛") {
+    return buildGuidedReply(
+      `今天乳房胀痛的位置是：${symptom}。`,
+      "我先帮你记下来。靠近乳头的前部痛，多和雌激素波动有关；靠近腋窝的外侧痛，可能更容易和黄体期变化联系在一起。",
+      "今天先不用紧张，可以继续观察胀痛位置、程度和持续时间。如果出现明显硬块、单侧持续疼痛，或疼痛越来越重，记得及时做乳腺检查。"
+    );
+  }
+  return buildGuidedReply(
+    `今天有${symptom}感受。`,
+    "我会把它和今天的睡眠、饮食、压力、运动放在一起看。这样的记录多几次之后，就更容易看出它通常在什么时候出现。",
+    "今天先不用做太多，我把清单调轻一点：完成1项身体观察，再做1项让身体舒服的小行动就好。这条记录也会让身体活力值加5。"
+  );
+}
+
+messageList.addEventListener("click", (event) => {
+  const kmiStart = event.target.closest(".kmi-start");
+  if (kmiStart) {
+    kmiStart.disabled = true;
+    appendMessage("user", "开始KMI评估");
+    window.setTimeout(() => {
+      appendMessage("assistant", [
+        "好，我们开始。接下来我会用几道很轻的问题，帮你看看最近一周围绝经期相关症状的强弱。",
+        "你只需要按真实感受选择就好，没有标准答案。完成后，我会帮你生成今日重点和适合你的能量清单。"
+      ]).then(() => appendKmiAssessmentCard());
+    }, 260);
+    return;
+  }
+
+  const kmiOption = event.target.closest(".kmi-option");
+  if (kmiOption && kmiState) {
+    kmiState.answers[kmiState.current] = Number(kmiOption.dataset.kmiScore);
+    renderKmiQuestion();
+    return;
+  }
+
+  const kmiPrev = event.target.closest("[data-kmi-prev]");
+  if (kmiPrev && kmiState) {
+    kmiState.current = Math.max(0, kmiState.current - 1);
+    renderKmiQuestion();
+    return;
+  }
+
+  const kmiNext = event.target.closest("[data-kmi-next]");
+  if (kmiNext && kmiState) {
+    if (kmiState.answers[kmiState.current] === null) {
+      showToast("先选择一个感受程度");
+      return;
+    }
+    if (kmiState.current === kmiQuestions.length - 1) {
+      renderKmiResult();
+      return;
+    }
+    kmiState.current += 1;
+    renderKmiQuestion();
+    return;
+  }
+
+  const option = event.target.closest(".symptom-option");
+  if (option) {
+    const symptom = option.dataset.symptom;
+    option.closest(".symptom-grid").querySelectorAll(".symptom-option").forEach((item) => {
+      item.disabled = true;
+    });
+    appendMessage("user", symptom);
+    window.setTimeout(() => {
+      appendMessage("assistant", buildSymptomReply(symptom)).then(() => showToast("身体活力值+5"));
+    }, 260);
+    return;
+  }
+
+  const ovulationOption = event.target.closest(".ovulation-option");
+  if (ovulationOption) {
+    const group = ovulationOption.closest(".ovulation-group");
+    group.querySelectorAll(".ovulation-option").forEach((item) => {
+      item.classList.remove("selected");
+      item.setAttribute("aria-pressed", "false");
+    });
+    ovulationOption.classList.add("selected");
+    ovulationOption.setAttribute("aria-pressed", "true");
+    return;
+  }
+
+  const confirmOvulation = event.target.closest("#confirm-ovulation");
+  if (!confirmOvulation) return;
+  const prompt = confirmOvulation.closest(".symptom-message");
+  const groups = Array.from(prompt.querySelectorAll(".ovulation-group"));
+  const completed = groups.every((group) => group.querySelector(".ovulation-option.selected"));
+  if (!completed) {
+    showToast("还有选项未完成");
+    return;
+  }
+  const answers = groups.map((group) => group.querySelector(".ovulation-option.selected").textContent.trim());
+  prompt.querySelectorAll(".ovulation-option").forEach((item) => {
+    item.disabled = true;
+  });
+  confirmOvulation.disabled = true;
+  appendMessage("user", buildOvulationUserMessage(answers));
+  window.setTimeout(() => {
+    appendMessage("assistant", buildOvulationReply(answers)).then(() => showToast("身体活力值+5"));
+  }, 260);
+});
+
+messageList.addEventListener("change", (event) => {
+  const checkbox = event.target.closest(".plan-checkbox");
+  if (!checkbox) return;
+  const planBubble = checkbox.closest(".plan-message");
+  const scoreWrap = planBubble?.querySelector(".energy-score");
+  const score = scoreWrap?.querySelector("strong");
+  if ((!score || !scoreWrap) && entryMode !== "ovulation-plan") return;
+  const updateScore = (delta) => {
+    const currentScore = Number(score?.textContent || vitalityScore.textContent) || 60;
+    const nextScore = currentScore + delta;
+    if (score) score.textContent = String(nextScore);
+    updateVitalityHero(nextScore);
+    if (scoreWrap) {
+      refreshEnergyExplain(planBubble, nextScore);
+      scoreWrap.classList.remove("energy-pulse");
+      void scoreWrap.offsetWidth;
+      scoreWrap.classList.add("energy-pulse");
+      window.setTimeout(() => scoreWrap.classList.remove("energy-pulse"), 700);
+    }
+  };
+  if (checkbox.checked) {
+    checkbox.disabled = true;
+    showToast("身体活力值+5");
+    window.setTimeout(() => {
+      updateScore(5);
+      checkbox.disabled = false;
+    }, 520);
+    return;
+  }
+  updateScore(-5);
+});
+
+function buildReply(answers) {
+  const sleepStart = answers[0].value;
+  const wakeCount = answers[1].value;
+  const earlyWake = answers[2].value;
+  const wakeFeeling = answers[3].value;
+  const needsCare = sleepStart === "不顺利" || wakeCount === "2～3次" || wakeCount === "3次以上" || earlyWake === "是" || wakeFeeling === "疲惫";
+  if (needsCare) {
+    return buildGuidedReply(
+      `${buildUserMessage(answers)}。`,
+      "昨晚睡眠是有一点波动的，这在围绝经期很常见。睡眠、潮热和情绪有时候会互相影响，所以今天不用逼自己满格，先把节奏稳住就好。",
+      "我已经把今天的能量清单调轻一点啦：先做温水补水、15分钟散步和睡前放松。你完成了这次睡眠记录，身体活力值会加5。"
+    );
+  }
+  return buildGuidedReply(
+    `${buildUserMessage(answers)}。`,
+    "昨晚整体睡得还不错，身体恢复度是在线的。围绝经期阶段，能保持这样的稳定作息，本身就是在帮身体减负。",
+    "今天的清单我就不加重啦，继续保留规律补水、优质蛋白和舒缓运动。完成这次睡眠记录后，身体活力值会加5。"
+  );
+}
+
+function buildGuidedReply(record, explanation, adjustment) {
+  return [
+    `好呀，我帮你记下来啦：${record}`,
+    explanation,
+    adjustment
+  ];
+}
+
+function buildUserMessage(answers) {
+  const sleepStart = answers[0].value === "顺利" ? "入睡顺利" : "入睡不顺利";
+  const wakeCount = `夜醒${answers[1].value}`;
+  const earlyWake = answers[2].value === "是" ? "有早醒" : "没有早醒";
+  const wakeFeeling = answers[3].value === "疲惫" ? "睡醒有疲惫感" : "睡醒感觉轻松";
+  return `${sleepStart}；${wakeCount}；${earlyWake}；${wakeFeeling}`;
+}
+
+function buildTextReply(text) {
+  if (text.includes("手") && (text.includes("麻") || text.includes("发麻"))) {
+    return buildGuidedReply(
+      `${text}。`,
+      "醒来手有点发麻，很多时候可能和睡姿压迫、夜间循环不太顺，或者身体比较紧绷有关。你可以先轻轻活动手指和手腕，看看会不会慢慢缓解。",
+      "我把今天的清单也调了一下：保留轻柔拉伸、补水和一次身体感受复查。刚刚这条补充记录会让身体活力值加5。如果麻木一直不退，或者伴随单侧无力、胸闷、头晕，就要及时咨询医生。"
+    );
+  }
+  return buildGuidedReply(
+    `${text}。`,
+    "我会把这条感受和今天的睡眠、潮热、情绪、饮食、运动放在一起看。连续记录下来，就更容易找到属于你的身体模式。",
+    "今天我先把清单调轻一点，推荐你完成1项观察和1项舒缓行动。完成这条补充记录后，身体活力值会加5。"
+  );
+}
+
+function sendInputMessage() {
+  const text = input.value.trim();
+  if (!text) {
+    showToast("先说说你的感受吧");
+    return;
+  }
+  appendMessage("user", text);
+  input.value = "";
+  window.setTimeout(() => {
+    appendMessage("assistant", buildTextReply(text)).then(() => showToast("身体活力值+5"));
+  }, 260);
+}
+
+document.getElementById("confirm-sleep").addEventListener("click", () => {
+  const groups = Array.from(document.querySelectorAll(".check-group"));
+  const completed = groups.every((group) => group.querySelector(".choice.selected"));
+  if (!completed) {
+    showToast("还有选项未完成");
+    return;
+  }
+  const answers = groups.map((group) => {
+    const label = group.querySelector(".check-label").textContent.replace(/^\d+\.\s*/, "");
+    const value = group.querySelector(".choice.selected").textContent.trim();
+    return { label, value };
+  });
+  const userMessage = buildUserMessage(answers);
+  appendMessage("user", userMessage);
+  window.setTimeout(() => {
+    appendMessage("assistant", buildReply(answers)).then(() => showToast("身体活力值+5"));
+  }, 260);
+});
+
+document.getElementById("send").addEventListener("click", () => {
+  sendInputMessage();
+});
+
+input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    sendInputMessage();
+  }
+});
+
+if (entryMode === "morning-plan" || entryMode === "noon-plan" || entryMode === "ovulation-plan") {
+  const planTitle = entryMode === "ovulation-plan" ? "身体活力" : "今日密报";
+  document.title = planTitle;
+  pageTitle.textContent = planTitle;
+  assistantIntro.hidden = true;
+  dateTabs.hidden = entryMode === "ovulation-plan";
+  entryBar.hidden = true;
+  inputBar.hidden = true;
+  pageScroll.classList.add("compact-bottom");
+  sleepCheckCard.hidden = true;
+  ovulationTimeline.hidden = entryMode === "ovulation-plan";
+  vitalityHero.hidden = entryMode !== "ovulation-plan";
+  impactFactors.hidden = entryMode !== "ovulation-plan";
+  setActiveDate(renderDateTabs());
+  showBodyAbilityContent();
+} else if (entryMode === "noon-symptom") {
+  sleepCheckCard.hidden = true;
+  appendSymptomPrompt();
+} else if (entryMode === "ovulation-signal") {
+  sleepCheckCard.hidden = true;
+  appendOvulationPrompt();
+} else if (entryMode === "kmi-assessment") {
+  sleepCheckCard.hidden = true;
+  input.value = "";
+  appendKmiPrompt();
+} else {
+  input.value = "醒来手还有点发麻";
+}
+</script>
+</body>
+</html>

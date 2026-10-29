@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>睡眠评分</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root { --purple: #8a70d6; --purple-soft: #f3efff; --brand: #ff4d88; --bg: #f5f5f7; --surface: #fff; --text: #323232; --sub: #666; --tertiary: #999; --line: rgba(0, 0, 0, .07); --success: #00b894; }
+html, body { min-height: 100%; }
+body { min-width: 634px; background: #f1f0eb; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+button, input, select { border: 0; font: inherit; color: inherit; }
+button { cursor: pointer; background: none; }
+.stage { width: 594px; min-height: 100vh; margin: 0 auto; background: var(--bg); }
+.app { width: 430px; min-height: 100vh; margin: 0 auto; padding: 12px 16px 100px; background: var(--bg); }
+.topbar { height: 48px; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; }
+.back { width: 44px; height: 44px; color: var(--text); font-size: 38px; line-height: 36px; }
+.topbar h1 { text-align: center; font-size: 18px; line-height: 25px; font-weight: 600; }
+.history { width: 38px; height: 38px; justify-self: end; border-radius: 50%; color: var(--purple); font-size: 20px; font-weight: 600; }
+.date-switch { display: flex; align-items: center; justify-content: center; gap: 22px; width: 132px; height: 34px; margin: 0 auto 2px; border-radius: 18px; background: #ececf0; color: var(--text); font-size: 15px; font-weight: 600; }
+.date-switch span { color: #aaa; font-size: 17px; }
+.date-navigation { margin: -12px -16px 14px; padding: 0 16px 13px; background: #ff5d96; color: #fff; }
+.date-nav-head { height: 48px; display: grid; grid-template-columns: 42px 1fr 42px; align-items: center; }
+.date-nav-back { width: 42px; height: 42px; color: #fff; font-size: 36px; line-height: 34px; }
+.date-nav-head h1 { text-align: center; font-size: 18px; line-height: 25px; font-weight: 600; }
+.date-nav-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.date-nav-tab { min-height: 32px; color: rgba(255,255,255,.62); font-size: 13px; line-height: 18px; white-space: nowrap; }
+.date-nav-tab.active { color: #fff; font-size: 15px; font-weight: 600; }
+.score-panel { padding: 0 0 14px; background: var(--surface); border-radius: 12px; }
+.score-gauge { position: relative; width: 270px; height: 125px; margin: -8px auto 0; overflow: hidden; }
+.score-gauge::before { content: ""; position: absolute; left: 50%; top: 0; width: 252px; height: 252px; border-radius: 50%; transform: translateX(-50%); background: conic-gradient(from 270deg, var(--purple) 0deg calc(var(--score-progress) * 1deg), #ececf0 calc(var(--score-progress) * 1deg) 180deg, transparent 180deg); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 28px), #000 calc(100% - 27px)); mask: radial-gradient(farthest-side, transparent calc(100% - 28px), #000 calc(100% - 27px)); }
+.score-core { position: absolute; inset: 45px 0 auto; text-align: center; }
+.score-tag { color: var(--purple); font-size: 15px; line-height: 21px; font-weight: 600; }
+.score-tag::before { content: "Z"; display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin-right: 5px; border-radius: 50%; background: var(--purple); color: #fff; font-size: 10px; vertical-align: -1px; }
+.score-number { margin-top: 6px; color: #161616; font-size: 50px; line-height: 54px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.score-number small { margin-left: 3px; font-size: 18px; font-weight: 600; }
+.score-status { margin-top: 4px; color: var(--success); font-size: 13px; font-weight: 600; }
+.score-tags { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 0; }
+.score-tags div { min-width: 0; padding: 0 8px; border-left: 1px solid var(--line); color: var(--tertiary); font-size: 12px; line-height: 18px; text-align: center; }
+.score-tags div:first-child { border-left: 0; }
+.score-tags b { display: block; color: var(--success); font-size: 13px; font-weight: 600; }
+.insight { margin-top: 12px; padding: 17px 16px; border-radius: 10px; background: #fff; }
+.insight-kicker { display: inline-flex; align-items: center; gap: 6px; color: var(--purple); font-size: 13px; font-weight: 600; }
+.ai-mark { display: inline-flex; align-items: center; justify-content: center; min-width: 23px; height: 17px; padding: 0 4px; border-radius: 4px; background: var(--purple-soft); color: var(--purple); font-size: 10px; line-height: 1; font-weight: 700; }
+.insight-copy { display: -webkit-box; margin-top: 8px; overflow: hidden; color: var(--text); font-size: 17px; line-height: 26px; font-weight: 600; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.form-section { margin-top: 12px; padding: 4px 16px 16px; border-radius: 10px; background: var(--surface); }
+.form-heading { padding: 13px 0 11px; color: var(--text); font-size: 17px; line-height: 24px; font-weight: 600; }
+.form-row { padding: 14px 0; border-top: 1px solid var(--line); }
+.form-row:first-of-type { border-top: 0; }
+.field-title { color: var(--text); font-size: 15px; line-height: 22px; font-weight: 500; }
+.field-desc { margin-top: 3px; color: var(--tertiary); font-size: 12px; line-height: 18px; }
+.choices { display: flex; gap: 8px; margin-top: 11px; }
+.choices.reason { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.choice { flex: 1; height: 36px; border-radius: 7px; background: #f5f5f7; color: #777; font-size: 14px; }
+.choice.active { background: var(--purple-soft); color: var(--purple); font-weight: 600; }
+.stepper { display: inline-grid; grid-template-columns: 36px 58px 36px; align-items: center; height: 38px; margin-top: 11px; overflow: hidden; border: 1px solid #e6e5e9; border-radius: 7px; }
+.stepper button { height: 36px; color: var(--purple); font-size: 20px; }
+.stepper strong { text-align: center; font-size: 15px; font-variant-numeric: tabular-nums; }
+.duration { display: flex; align-items: center; gap: 8px; margin-top: 11px; }
+.duration input, .duration select { height: 40px; border: 1px solid #e5e4e9; border-radius: 7px; background: #fff; padding: 0 10px; outline: none; font-size: 15px; }
+.duration input { width: 74px; }
+.duration select { width: 86px; }
+.duration span { color: var(--sub); font-size: 14px; }
+.duration-summary { margin-top: 9px; color: var(--purple); font-size: 13px; font-weight: 600; }
+.save-wrap { position: fixed; z-index: 2; bottom: 0; left: 50%; width: 430px; padding: 12px 16px 18px; transform: translateX(-50%); background: linear-gradient(180deg, rgba(245,245,247,0), var(--bg) 28%); }
+.save { width: 100%; height: 48px; border-radius: 24px; background: var(--purple); color: #fff; font-size: 16px; font-weight: 600; box-shadow: 0 6px 14px rgba(138,112,214,.22); }
+.toast { position: fixed; z-index: 3; left: 50%; bottom: 84px; padding: 9px 13px; transform: translate(-50%, 12px); border-radius: 18px; background: rgba(35,35,38,.88); color: #fff; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; white-space: nowrap; }
+.toast.visible { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 633px) { body { min-width: 0; background: var(--bg); } .stage { width: 100%; } .app, .save-wrap { width: 100%; } }
+</style>
+</head>
+<body><div style="position:relative;z-index:9999;background:#fff0f5;color:#963051;padding:16px;font:14px/1.6 sans-serif">原demo静态参考，未接入算法。页面中的示例数字和建议未经本次验收。<a href="meiyou-menopause-home.html">返回算法联调首页</a></div>
+  <div class="stage"><main class="app">
+    <header class="date-navigation" aria-label="日期导航"><div class="date-nav-head"><button class="date-nav-back" id="back" type="button" aria-label="返回">‹</button><h1>睡眠评分</h1><span></span></div><nav class="date-nav-tabs"><button class="date-nav-tab" type="button" data-date="yesterday">周日（8月30日）</button><button class="date-nav-tab active" type="button" data-date="today">今天（8月31日）</button><button class="date-nav-tab" type="button" data-date="tomorrow">周二（9月1日）</button></nav></header>
+
+    <section class="score-panel" aria-label="今日睡眠评分">
+      <div class="score-gauge" id="score-gauge" style="--score-progress:146deg">
+        <div class="score-core"><div class="score-tag">睡眠</div><div class="score-number"><span id="score">81</span><small>分</small></div><div class="score-status" id="score-status">睡眠恢复不错</div></div>
+      </div>
+      <div class="score-tags"><div>睡眠时长<b id="duration-tag">充足</b></div><div>入睡情况<b id="difficulty-tag">正常</b></div><div>连续睡眠<b id="continuity-tag">一般</b></div></div>
+    </section>
+
+    <section class="insight" aria-label="AI 睡眠洞察"><div class="insight-kicker"><span class="ai-mark">AI</span>睡眠洞察</div><p class="insight-copy" id="insight-copy">昨晚睡得不错，睡眠时长比较充足。保持规律的入睡时间，会让围绝经期的身体恢复更稳定。</p></section>
+
+    <form class="form-section" id="sleep-form">
+      <h2 class="form-heading">补充昨晚的睡眠情况</h2>
+      <div class="form-row">
+        <div class="field-title">是否入睡困难</div><div class="field-desc">躺下超过 30 分钟仍难以入睡</div>
+        <div class="choices" data-field="difficulty"><button class="choice" type="button" data-value="1">是</button><button class="choice active" type="button" data-value="0">否</button></div>
+      </div>
+      <div class="form-row">
+        <div class="field-title">夜醒次数</div><div class="field-desc">夜间醒来后需要重新入睡的次数</div>
+        <div class="stepper" aria-label="夜醒次数"><button type="button" id="wake-minus" aria-label="减少夜醒次数">−</button><strong id="wake-count">1 次</strong><button type="button" id="wake-plus" aria-label="增加夜醒次数">+</button></div>
+      </div>
+      <div class="form-row" id="wake-reason-row" hidden>
+        <div class="field-title">夜醒原因</div><div class="field-desc">选择最主要的一项原因</div>
+        <div class="choices reason" data-field="wakeReason"><button class="choice" type="button" data-value="尿意">尿意</button><button class="choice" type="button" data-value="潮热">潮热</button><button class="choice" type="button" data-value="环境温度高">环境温度高</button><button class="choice" type="button" data-value="不记得了">不记得了</button></div>
+      </div>
+      <div class="form-row">
+        <div class="field-title">是否早醒</div><div class="field-desc">比计划起床时间早 1 小时以上醒来</div>
+        <div class="choices" data-field="early"><button class="choice" type="button" data-value="1">是</button><button class="choice active" type="button" data-value="0">否</button></div>
+      </div>
+      <div class="form-row">
+        <div class="field-title">睡眠总时长</div><div class="field-desc">从入睡到最终醒来的总睡眠时间</div>
+        <div class="duration"><input id="sleep-hours" type="number" min="0" max="14" step="1" value="7" aria-label="睡眠小时数"><span>小时</span><select id="sleep-minutes" aria-label="睡眠分钟数"><option value="0">0</option><option value="15">15</option><option value="30" selected>30</option><option value="45">45</option></select><span>分钟</span></div>
+        <div class="duration-summary" id="duration-summary">当前记录：7小时30分钟</div>
+      </div>
+    </form>
+  </main></div>
+  <div class="save-wrap"><button class="save" id="save" type="button">保存并更新评分</button></div>
+  <div class="toast" id="toast" role="status"></div>
+<script>
+const state = { difficulty: 0, wakes: 1, wakeReason: "", early: 0, hours: 7, minutes: 30 };
+const scoreEl = document.getElementById("score");
+const gauge = document.getElementById("score-gauge");
+const scoreStatus = document.getElementById("score-status");
+const insight = document.getElementById("insight-copy");
+const hoursInput = document.getElementById("sleep-hours");
+const minutesInput = document.getElementById("sleep-minutes");
+const wakeCount = document.getElementById("wake-count");
+const durationSummary = document.getElementById("duration-summary");
+const wakeReasonRow = document.getElementById("wake-reason-row");
+const toast = document.getElementById("toast");
+let toastTimer;
+let insightTimer;
+
+function sleepDurationText() { return `${state.hours}小时${state.minutes}分钟`; }
+function calculateScore() {
+  const totalMinutes = state.hours * 60 + state.minutes;
+  const durationPenalty = totalMinutes < 360 ? 18 : totalMinutes < 420 ? 9 : totalMinutes > 570 ? 5 : 0;
+  return Math.max(35, Math.min(98, 92 - durationPenalty - state.difficulty * 6 - state.wakes * 4 - state.early * 5));
+}
+function renderScore() {
+  const score = calculateScore();
+  scoreEl.textContent = score;
+  gauge.style.setProperty("--score-progress", `${Math.round(score * 1.8)}deg`);
+  const durationGood = state.hours * 60 + state.minutes >= 420 && state.hours * 60 + state.minutes <= 540;
+  document.getElementById("duration-tag").textContent = durationGood ? "充足" : "需关注";
+  document.getElementById("difficulty-tag").textContent = state.difficulty === 0 ? "正常" : "有困难";
+  document.getElementById("continuity-tag").textContent = state.wakes <= 1 && state.early === 0 ? "正常" : "一般";
+  scoreStatus.textContent = score >= 80 ? "睡眠恢复不错" : score >= 60 ? "还有提升空间" : "今天优先照顾睡眠";
+  wakeCount.textContent = `${state.wakes} 次`;
+  durationSummary.textContent = `当前记录：${sleepDurationText()}`;
+  wakeReasonRow.hidden = state.wakes === 0;
+  if (state.wakes === 0) {
+    state.wakeReason = "";
+    wakeReasonRow.querySelectorAll(".choice").forEach((button) => button.classList.remove("active"));
+  }
+}
+function showToast(message) { window.clearTimeout(toastTimer); toast.textContent = message; toast.classList.add("visible"); toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 1600); }
+function buildAiInsight() {
+  const totalMinutes = state.hours * 60 + state.minutes;
+  if (totalMinutes < 420) return "昨晚睡眠时长偏短，今天优先给自己留出更早的放松时间。今晚尽量提前半小时上床，别用补觉硬撑。";
+  if (state.difficulty) return "入睡有些费劲。睡前一小时少看屏幕、减少咖啡因，给大脑留一点安静的缓冲时间。";
+  if (state.early) return "昨晚有早醒的情况，今天不必强撑满格节奏。睡前留出放松时间，并观察是否和潮热或压力变化有关。";
+  if (state.wakes > 0 && state.wakeReason === "潮热") return "夜醒和潮热有关，今晚可试试调低室温、准备透气床品。醒来后先做几轮慢呼吸，再回到睡眠节奏。";
+  if (state.wakes > 0 && state.wakeReason === "尿意") return "夜醒可能受尿意影响。傍晚后把饮水分散一些，睡前先排空膀胱，观察夜醒是否减少。";
+  if (state.wakes > 0 && state.wakeReason === "环境温度高") return "夜醒可能和睡眠环境偏热有关。睡前给卧室降一点温，准备可随时增减的薄被会更舒服。";
+  if (state.wakes > 1) return "昨晚夜醒次数稍多，睡眠连续性需要一点支持。先连续记录几天，看看是否和潮热、压力或晚间饮水有关。";
+  return "昨晚睡眠恢复不错，时长和连续性都比较稳定。保持规律的入睡时间，会让围绝经期的身体恢复更有节奏。";
+}
+function streamAiInsight(text) {
+  window.clearTimeout(insightTimer);
+  insight.textContent = "";
+  const chars = Array.from(text);
+  let index = 0;
+  const typeNext = () => {
+    insight.textContent = chars.slice(0, index).join("");
+    if (index >= chars.length) return;
+    index += 1;
+    insightTimer = window.setTimeout(typeNext, 20);
+  };
+  typeNext();
+}
+
+document.querySelectorAll(".choices").forEach((group) => group.addEventListener("click", (event) => {
+  const button = event.target.closest(".choice");
+  if (!button) return;
+  state[group.dataset.field] = group.dataset.field === "wakeReason" ? button.dataset.value : Number(button.dataset.value);
+  group.querySelectorAll(".choice").forEach((item) => item.classList.toggle("active", item === button));
+  renderScore();
+}));
+document.getElementById("wake-minus").addEventListener("click", () => { state.wakes = Math.max(0, state.wakes - 1); renderScore(); });
+document.getElementById("wake-plus").addEventListener("click", () => { state.wakes = Math.min(8, state.wakes + 1); renderScore(); });
+hoursInput.addEventListener("input", () => { state.hours = Math.max(0, Math.min(14, Number(hoursInput.value) || 0)); renderScore(); });
+minutesInput.addEventListener("change", () => { state.minutes = Number(minutesInput.value); renderScore(); });
+document.getElementById("save").addEventListener("click", () => {
+  const score = calculateScore();
+  window.localStorage.setItem("meiyou-sleep-score", JSON.stringify({ score, duration: sleepDurationText(), difficulty: state.difficulty, wakes: state.wakes, wakeReason: state.wakeReason, early: state.early }));
+  streamAiInsight(buildAiInsight());
+  showToast("睡眠记录已保存，评分已更新");
+});
+document.getElementById("back").addEventListener("click", () => { window.location.href = `./meiyou-menopause-home.html?demo=${new URLSearchParams(window.location.search).get("demo") || "ovulation"}`; });
+document.querySelectorAll(".date-nav-tab").forEach((tab) => tab.addEventListener("click", () => document.querySelectorAll(".date-nav-tab").forEach((item) => item.classList.toggle("active", item === tab))));
+renderScore();
+</script>
+</body>
+</html>

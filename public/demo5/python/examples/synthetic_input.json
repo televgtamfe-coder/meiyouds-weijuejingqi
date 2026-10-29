@@ -1,0 +1,634 @@
+{
+  "mode": "research",
+  "synthetic": true,
+  "subject_id": "SYNTHETIC-001",
+  "as_of": "2026-02-25",
+  "birth_date": "1978-02-25",
+  "safety_state": "clear_for_test",
+  "formula_version": "candidate_gate_lambda_v0.2",
+  "config": {
+    "version": "engineering_prior_v0.2",
+    "alpha": {
+      "CR": ".6",
+      "FUNCTION": ".2",
+      "BC": ".2"
+    },
+    "T": "5",
+    "lambda_table": {
+      "BC+CR|higher": ".30",
+      "CR|higher": ".25",
+      "BC|consumer": ".15",
+      "NONE|none": "0"
+    }
+  },
+  "external_base": {
+    "S_age": "52",
+    "M": "47",
+    "source": "synthetic_fixture"
+  },
+  "daily_records": [
+    {
+      "date": "2026-01-01",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-02",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-03",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-04",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-05",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-06",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-07",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-08",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-09",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-10",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-11",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-12",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-13",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-14",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-15",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-16",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-17",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-18",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-19",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-20",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-21",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-22",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-23",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-24",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-25",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-26",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-27",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-28",
+      "scores": {
+        "B": 3,
+        "Y": 3,
+        "L": 3,
+        "PsyDaily": 3,
+        "Udaily": 2
+      }
+    },
+    {
+      "date": "2026-01-29",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-01-30",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-01-31",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-01",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-02",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-03",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-04",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-05",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-06",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-07",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-08",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-09",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-10",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-11",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-12",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-13",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-14",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-15",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-16",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-17",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-18",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-19",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-20",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-21",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-22",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-23",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-24",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    },
+    {
+      "date": "2026-02-25",
+      "scores": {
+        "B": 0,
+        "Y": 0,
+        "L": 0,
+        "PsyDaily": 3,
+        "Udaily": 1
+      }
+    }
+  ],
+  "baseline": {
+    "id": "baseline-001",
+    "start": "2026-01-01",
+    "end": "2026-01-28"
+  },
+  "current": {
+    "id": "current-002",
+    "start": "2026-01-29",
+    "end": "2026-02-25"
+  },
+  "previous_device_modules": [],
+  "external_devices": [
+    {
+      "module": "CR",
+      "d": "-6",
+      "quality_components": [
+        ".8",
+        ".8",
+        ".8",
+        ".8"
+      ],
+      "validated_for_test": true,
+      "evidence_tier": "higher",
+      "measured_at": "2026-02-20",
+      "valid_until": "2026-03-20",
+      "segment_id": "CR-test-v1"
+    },
+    {
+      "module": "BC",
+      "d": "-3",
+      "quality_components": [
+        ".9",
+        ".9",
+        ".9",
+        ".9"
+      ],
+      "validated_for_test": true,
+      "evidence_tier": "consumer",
+      "measured_at": "2026-02-20",
+      "valid_until": "2026-03-20",
+      "segment_id": "BC-test-v1"
+    }
+  ]
+}

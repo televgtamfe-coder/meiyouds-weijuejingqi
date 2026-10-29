@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>美柚围绝经期花朵状态组件</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --my-brand: #ff4d88;
+  --my-brand-deep: #e93678;
+  --my-brand-soft: rgba(255, 77, 136, 0.08);
+  --my-bg: #f2f2f5;
+  --my-surface: #ffffff;
+  --my-text: #323232;
+  --my-sub: #666666;
+  --my-tertiary: #999999;
+  --my-line: rgba(0, 0, 0, 0.08);
+  --my-shadow: 0 2px 10px rgba(50, 50, 50, 0.08);
+}
+html, body { min-height: 100%; }
+body {
+  background: #e8e8ec;
+  color: var(--my-text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0;
+}
+button { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.screen {
+  width: min(100%, 430px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 16px 12px 28px;
+  background: var(--my-bg);
+}
+.topbar {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+.back {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  color: var(--my-sub);
+  font-size: 24px;
+  line-height: 30px;
+}
+.nav-title {
+  font-size: 17px;
+  font-weight: 500;
+}
+.ghost { width: 32px; height: 32px; }
+.card {
+  margin-top: 10px;
+  border-radius: 12px;
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+  overflow: hidden;
+}
+.intro {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--my-line);
+}
+.intro-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.intro h1 {
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 500;
+}
+.intro p {
+  margin-top: 4px;
+  color: var(--my-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.pill {
+  min-width: 68px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--my-brand-soft);
+  color: var(--my-brand-deep);
+  font-size: 12px;
+}
+.flower-area {
+  padding: 14px 16px 16px;
+  background: linear-gradient(180deg, #fff 0%, #fff8fb 100%);
+}
+.art-frame {
+  height: 260px;
+  display: grid;
+  place-items: center;
+}
+.flower-svg {
+  width: 222px;
+  height: 222px;
+  display: block;
+  overflow: visible;
+}
+.art-stage {
+  opacity: 0;
+  transform-origin: 110px 110px;
+  transform: scale(.96);
+  transition: opacity 220ms ease, transform 320ms cubic-bezier(.2, .8, .2, 1);
+  pointer-events: none;
+}
+.art-stage.active {
+  opacity: 1;
+  transform: scale(1);
+}
+.soft-shadow {
+  fill: rgba(224, 65, 129, .13);
+  filter: url(#blurShadow);
+}
+.flower-shape {
+  filter: url(#petalSoftness);
+}
+.flower-shape.s0 { fill: url(#stage0); }
+.flower-shape.s1 { fill: url(#stage1); }
+.flower-shape.s2 { fill: url(#stage2); }
+.flower-shape.s3 { fill: url(#stage3); }
+.flower-shape.s4 { fill: url(#stage4); }
+.inner-glow {
+  fill: rgba(255, 255, 255, .16);
+  filter: url(#innerBlur);
+}
+.stage-copy {
+  min-height: 56px;
+  text-align: center;
+}
+.stage-copy h2 {
+  color: var(--my-text);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+.stage-copy p {
+  margin-top: 3px;
+  color: var(--my-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.stage-controls {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 14px;
+}
+.stage-btn {
+  min-height: 44px;
+  padding: 6px 3px;
+  border-radius: 8px;
+  background: #f6f6f8;
+  color: var(--my-sub);
+  font-size: 12px;
+  line-height: 16px;
+}
+.stage-btn.active {
+  background: var(--my-brand-soft);
+  color: var(--my-brand-deep);
+  font-weight: 500;
+}
+.mini-card {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--my-surface);
+  box-shadow: var(--my-shadow);
+}
+.mini-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+}
+.mini-flower {
+  width: 48px;
+  height: 48px;
+}
+.mini-title {
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 500;
+}
+.mini-desc {
+  margin-top: 2px;
+  color: var(--my-tertiary);
+  font-size: 12px;
+  line-height: 17px;
+}
+.mini-meta {
+  color: var(--my-brand-deep);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.notes {
+  margin-top: 12px;
+  padding: 0 4px;
+  color: var(--my-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+@media (max-width: 360px) {
+  .screen { padding-left: 10px; padding-right: 10px; }
+  .flower-svg { width: 210px; height: 210px; }
+  .art-frame { height: 248px; }
+  .stage-btn { font-size: 11px; }
+}
+</style>
+</head>
+<body><div style="position:relative;z-index:9999;background:#fff0f5;color:#963051;padding:16px;font:14px/1.6 sans-serif">原demo静态参考，未接入算法。页面中的示例数字和建议未经本次验收。<a href="meiyou-menopause-home.html">返回算法联调首页</a></div>
+<main class="screen">
+  <header class="topbar">
+    <button class="back" aria-label="返回">‹</button>
+    <div class="nav-title">花朵状态组件</div>
+    <div class="ghost"></div>
+  </header>
+
+  <section class="card">
+    <div class="intro">
+      <div class="intro-row">
+        <div>
+          <h1>用花朵开放度表达今日身体记录</h1>
+          <p>保持美柚首页同款软花形，中心不放文字。</p>
+        </div>
+        <div class="pill" id="stagePill">0/4</div>
+      </div>
+    </div>
+
+    <div class="flower-area">
+      <div class="art-frame" aria-live="polite">
+        <svg class="flower-svg" viewBox="0 0 220 220" role="img" aria-label="身体状态花朵">
+          <defs>
+            <g id="meiyouFlower">
+              <circle cx="110" cy="67" r="43"/>
+              <circle cx="151" cy="97" r="43"/>
+              <circle cx="135" cy="145" r="43"/>
+              <circle cx="85" cy="145" r="43"/>
+              <circle cx="69" cy="97" r="43"/>
+              <circle cx="110" cy="112" r="42"/>
+            </g>
+            <radialGradient id="stage0" cx="38%" cy="23%" r="82%">
+              <stop offset="0" stop-color="#fff1f7"/>
+              <stop offset=".62" stop-color="#ffd1e3"/>
+              <stop offset="1" stop-color="#ffb3d2"/>
+            </radialGradient>
+            <radialGradient id="stage1" cx="38%" cy="23%" r="82%">
+              <stop offset="0" stop-color="#fff0f7"/>
+              <stop offset=".58" stop-color="#ffc8de"/>
+              <stop offset="1" stop-color="#ffa1c7"/>
+            </radialGradient>
+            <radialGradient id="stage2" cx="38%" cy="23%" r="82%">
+              <stop offset="0" stop-color="#ffedf6"/>
+              <stop offset=".55" stop-color="#ffbbd7"/>
+              <stop offset="1" stop-color="#ff8cba"/>
+            </radialGradient>
+            <radialGradient id="stage3" cx="38%" cy="23%" r="82%">
+              <stop offset="0" stop-color="#ffe8f3"/>
+              <stop offset=".5" stop-color="#ffacd0"/>
+              <stop offset="1" stop-color="#ff6fa9"/>
+            </radialGradient>
+            <radialGradient id="stage4" cx="38%" cy="23%" r="82%">
+              <stop offset="0" stop-color="#ffe4f0"/>
+              <stop offset=".48" stop-color="#ff9cc5"/>
+              <stop offset="1" stop-color="#ff5b99"/>
+            </radialGradient>
+            <filter id="petalSoftness" x="-12%" y="-12%" width="124%" height="124%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation=".35" result="soft"/>
+              <feOffset in="soft" dx="0" dy="1" result="offset"/>
+              <feComposite in="offset" in2="SourceAlpha" operator="out" result="edge"/>
+              <feColorMatrix in="edge" type="matrix"
+                values="0 0 0 0 1
+                        0 0 0 0 .45
+                        0 0 0 0 .68
+                        0 0 0 .16 0"/>
+              <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="blurShadow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="5"/>
+            </filter>
+            <filter id="innerBlur" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="10"/>
+            </filter>
+          </defs>
+
+          <g class="art-stage active" data-stage="0">
+            <ellipse class="soft-shadow" cx="110" cy="167" rx="49" ry="12"/>
+            <use href="#meiyouFlower" class="flower-shape s0" transform="translate(110 112) scale(.55) translate(-110 -110)"/>
+            <circle class="inner-glow" cx="94" cy="80" r="30" opacity=".38"/>
+          </g>
+
+          <g class="art-stage" data-stage="1">
+            <ellipse class="soft-shadow" cx="110" cy="169" rx="54" ry="12"/>
+            <use href="#meiyouFlower" class="flower-shape s1" transform="translate(110 112) scale(.66) translate(-110 -110)"/>
+            <circle class="inner-glow" cx="92" cy="78" r="33" opacity=".35"/>
+          </g>
+
+          <g class="art-stage" data-stage="2">
+            <ellipse class="soft-shadow" cx="110" cy="172" rx="60" ry="13"/>
+            <use href="#meiyouFlower" class="flower-shape s2" transform="translate(110 112) scale(.78) translate(-110 -110)"/>
+            <circle class="inner-glow" cx="90" cy="77" r="36" opacity=".31"/>
+          </g>
+
+          <g class="art-stage" data-stage="3">
+            <ellipse class="soft-shadow" cx="110" cy="176" rx="67" ry="14"/>
+            <use href="#meiyouFlower" class="flower-shape s3" transform="translate(110 112) scale(.91) translate(-110 -110)"/>
+            <circle class="inner-glow" cx="89" cy="77" r="40" opacity=".27"/>
+          </g>
+
+          <g class="art-stage" data-stage="4">
+            <ellipse class="soft-shadow" cx="110" cy="180" rx="74" ry="15"/>
+            <use href="#meiyouFlower" class="flower-shape s4"/>
+            <circle class="inner-glow" cx="87" cy="76" r="44" opacity=".24"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="stage-copy">
+        <h2 id="stageTitle">清晨花朵</h2>
+        <p id="stageDesc">一天开始时是小小的浅粉花朵，等待记录身体感受。</p>
+      </div>
+
+      <div class="stage-controls" aria-label="花朵阶段切换">
+        <button class="stage-btn active" type="button" data-index="0">清晨<br>花朵</button>
+        <button class="stage-btn" type="button" data-index="1">睡眠<br>已记</button>
+        <button class="stage-btn" type="button" data-index="2">症状<br>已记</button>
+        <button class="stage-btn" type="button" data-index="3">补剂运动<br>已记</button>
+        <button class="stage-btn" type="button" data-index="4">今日<br>完成</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="mini-card">
+    <div class="mini-row">
+      <svg class="mini-flower" viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <g id="miniFlowerShape">
+            <circle cx="24" cy="13.7" r="10.2"/>
+            <circle cx="33.8" cy="20.8" r="10.2"/>
+            <circle cx="30.1" cy="32.3" r="10.2"/>
+            <circle cx="17.9" cy="32.3" r="10.2"/>
+            <circle cx="14.2" cy="20.8" r="10.2"/>
+            <circle cx="24" cy="24.2" r="10"/>
+          </g>
+          <radialGradient id="miniFlowerFill" cx="35%" cy="22%" r="84%">
+            <stop offset="0" stop-color="#ffeaf4"/>
+            <stop offset=".52" stop-color="#ffacd0"/>
+            <stop offset="1" stop-color="#ff6fa9"/>
+          </radialGradient>
+        </defs>
+        <use href="#miniFlowerShape" fill="url(#miniFlowerFill)"/>
+      </svg>
+      <div>
+        <div class="mini-title">今日身体状态</div>
+        <div class="mini-desc">已记录睡眠、症状与运动</div>
+      </div>
+      <div class="mini-meta">75%</div>
+    </div>
+  </section>
+
+  <p class="notes">这个版本按照参考图改为均匀的一体化五瓣花形：花朵中心不放任何字、数字或图案，后续可放入首页主卡右侧。</p>
+</main>
+
+<script>
+const stageInfo = [
+  { pill: "0/4", title: "清晨花朵", desc: "一天开始时是小小的浅粉花朵，等待记录身体感受。" },
+  { pill: "1/4", title: "睡眠已记录", desc: "记录昨晚睡眠后，花朵轻轻变大、颜色更清透。" },
+  { pill: "2/4", title: "症状已记录", desc: "补充症状、情绪和潮热等信息后，花朵继续舒展。" },
+  { pill: "3/4", title: "补剂与运动已记录", desc: "营养补剂、饮食和运动信息同步后，花朵接近完整。" },
+  { pill: "4/4", title: "今日计划完成", desc: "花朵完全盛放，代表今天的关怀记录已经比较完整。" }
+];
+
+const artStages = Array.from(document.querySelectorAll(".art-stage"));
+const buttons = Array.from(document.querySelectorAll(".stage-btn"));
+const pill = document.getElementById("stagePill");
+const stageTitle = document.getElementById("stageTitle");
+const stageDesc = document.getElementById("stageDesc");
+
+function setStage(index) {
+  artStages.forEach((stage) => {
+    stage.classList.toggle("active", Number(stage.dataset.stage) === index);
+  });
+  buttons.forEach((button) => {
+    button.classList.toggle("active", Number(button.dataset.index) === index);
+  });
+  pill.textContent = stageInfo[index].pill;
+  stageTitle.textContent = stageInfo[index].title;
+  stageDesc.textContent = stageInfo[index].desc;
+}
+
+buttons.forEach((button) => {
+  button.addEventListener("click", () => setStage(Number(button.dataset.index)));
+});
+</script>
+</body>
+</html>

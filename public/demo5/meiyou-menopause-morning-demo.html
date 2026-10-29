@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>早间demo</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --my-brand: #ff4d88;
+  --my-brand-deep: #ec2f75;
+  --my-brand-soft: rgba(255, 77, 136, 0.08);
+  --my-bg: #f2f2f5;
+  --my-surface: #ffffff;
+  --my-text: #323232;
+  --my-sub: #666666;
+  --my-tertiary: #999999;
+  --my-line: rgba(0, 0, 0, 0.08);
+  --my-success: #00b894;
+  --my-link: #4f7cae;
+  --my-purple: #8a70d6;
+  --my-purple-soft: #f2edff;
+  --my-blue-soft: #eef6fb;
+  --my-radius-md: 12px;
+  --my-shadow: 0 2px 10px rgba(50, 50, 50, 0.06);
+}
+html, body { min-height: 100%; }
+body {
+  background: #e8e8ec;
+  color: var(--my-text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0;
+}
+button { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.screen { position: relative; width: min(100%, 430px); min-height: 100vh; margin: 0 auto; overflow: hidden; background: var(--my-bg); }
+.scroll { min-height: 100vh; padding-bottom: 88px; }
+.status { position: relative; height: 58px; padding: 22px 22px 0; }
+.time { color: #070708; font-size: 19px; font-weight: 600; }
+.island {
+  position: absolute; top: 14px; left: 50%; width: 196px; height: 38px; transform: translateX(-50%);
+  border-radius: 22px; background: #000; color: #fff; display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 13px 4px 7px;
+}
+.mini-avatar {
+  width: 30px; height: 30px; border: 2px solid #fff; border-radius: 50%;
+  background: radial-gradient(circle at 50% 36%, #ffd7c2 0 28%, transparent 29%),
+    radial-gradient(circle at 50% 23%, #222 0 18%, transparent 19%),
+    linear-gradient(135deg, #ff4b58, #ff8a5f);
+}
+.island span { font-size: 14px; font-weight: 600; }
+.phone-icons { position: absolute; right: 17px; top: 25px; display: flex; align-items: center; gap: 7px; color: #111; }
+.silent { position: absolute; left: 80px; top: 27px; width: 14px; height: 17px; }
+.silent::before, .silent::after { content: ""; position: absolute; background: #080809; }
+.silent::before { left: 1px; top: 2px; width: 10px; height: 13px; border-radius: 2px 2px 4px 4px; }
+.silent::after { left: 6px; top: -2px; width: 2px; height: 22px; transform: rotate(-42deg); border-radius: 2px; }
+.bars { display: grid; grid-template-columns: repeat(4, 4px); align-items: end; gap: 3px; height: 17px; }
+.bars i { display: block; width: 4px; border-radius: 2px; background: #c8c8ce; }
+.bars i:nth-child(1) { height: 5px; background: #202124; }
+.bars i:nth-child(2) { height: 8px; background: #202124; }
+.bars i:nth-child(3) { height: 12px; }
+.bars i:nth-child(4) { height: 16px; }
+.wifi { position: relative; width: 22px; height: 16px; }
+.wifi::before { content: ""; position: absolute; inset: 0; border: 4px solid #111; border-color: #111 transparent transparent transparent; border-radius: 50% 50% 0 0; }
+.wifi::after { content: ""; position: absolute; left: 8px; bottom: 1px; width: 7px; height: 7px; border-radius: 50%; background: #111; }
+.battery { position: relative; width: 28px; height: 15px; border: 1.7px solid #9b9ba1; border-radius: 5px; }
+.battery::before { content: ""; position: absolute; inset: 3px 8px 3px 3px; border-radius: 2px; background: #111; }
+.battery::after { content: ""; position: absolute; top: 4px; right: -4px; width: 2px; height: 6px; border-radius: 0 2px 2px 0; background: #9b9ba1; }
+.channel { height: 68px; display: grid; grid-template-columns: 46px 1fr 46px; align-items: start; gap: 4px; padding: 10px 12px 0; }
+.icon-btn { width: 42px; height: 42px; display: grid; place-items: center; color: #303136; }
+.icon-btn svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.tabs { display: flex; justify-content: space-between; gap: 10px; padding-top: 1px; }
+.tab { position: relative; min-width: 44px; color: #77777d; font-size: 16px; font-weight: 500; text-align: center; white-space: nowrap; }
+.tab.active { color: var(--my-brand); font-weight: 600; }
+.tab.active::after { content: ""; position: absolute; left: 50%; bottom: -13px; width: 26px; height: 4px; transform: translateX(-50%); border-radius: 99px; background: var(--my-brand); }
+.content { padding: 0 12px 22px; }
+.hero {
+  position: relative; min-height: 132px; overflow: hidden; border-radius: var(--my-radius-md);
+  background: linear-gradient(135deg, #ff6ca5 0%, #ff4d88 62%, #f74283 100%);
+  color: #fff; padding: 22px 17px 17px;
+}
+.hero-title { max-width: 240px; font-size: 20px; line-height: 1.25; font-weight: 600; }
+.hero-title strong { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hero-sub { margin-top: 8px; color: rgba(255, 255, 255, 0.72); font-size: 14px; }
+.flower { position: absolute; right: 15px; top: 50%; width: 118px; height: 118px; display: grid; place-items: center; transform: translateY(-50%); }
+.flower img { width: 100%; height: 100%; display: block; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(211, 39, 105, 0.16)); }
+.coach-card, .feed-card {
+  margin-top: 10px; border-radius: var(--my-radius-md); background: var(--my-surface); box-shadow: var(--my-shadow);
+}
+.coach-card { padding: 16px; }
+.coach-head { display: flex; align-items: center; gap: 10px; color: var(--my-text); font-size: 16px; font-weight: 500; }
+.coach-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex: 0 0 auto; background: linear-gradient(180deg, #ffe8f1, #fff); }
+.coach-avatar img { width: 32px; height: 42px; object-fit: cover; object-position: 50% 8%; display: block; }
+.coach-copy { margin-top: 16px; color: #111113; font-size: 20px; line-height: 1.3; font-weight: 600; }
+.coach-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.coach-action {
+  min-height: 44px; border-radius: 22px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: #f1eff5; color: #5b5365; font-size: 14px; font-weight: 500; white-space: nowrap;
+}
+.coach-action.primary-action { background: var(--my-purple-soft); color: var(--my-purple); }
+.coach-action svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.sparkle { position: relative; width: 19px; height: 19px; color: currentColor; }
+.sparkle::before, .sparkle::after {
+  content: ""; position: absolute; left: 50%; top: 50%; background: currentColor; transform: translate(-50%, -50%) rotate(45deg);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+.sparkle::before { width: 16px; height: 16px; }
+.sparkle::after { left: 82%; top: 17%; width: 7px; height: 7px; opacity: 0.78; }
+.feed-card { padding: 18px 16px 16px; }
+.feed-head { display: grid; grid-template-columns: 38px 1fr 20px; align-items: center; gap: 9px; }
+.avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: radial-gradient(circle at 52% 36%, #ffe0c9 0 25%, transparent 26%),
+    radial-gradient(circle at 52% 22%, #2d2525 0 16%, transparent 17%),
+    linear-gradient(135deg, #f7c0cf, #b489de 56%, #7cc0d4);
+}
+.name { color: #46474d; font-size: 15px; font-weight: 500; }
+.meta { margin-top: 1px; color: var(--my-tertiary); font-size: 12px; }
+.more { color: #b6b6bc; font-size: 20px; line-height: 1; }
+.feed-text { margin-top: 13px; color: #38393f; font-size: 16px; line-height: 1.45; }
+.post-topic {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 16px;
+  background: var(--my-brand-soft);
+  color: var(--my-brand);
+  font-size: 15px;
+  font-weight: 500;
+}
+.post-text {
+  margin-top: 20px;
+  color: #34343a;
+  font-size: 17px;
+  line-height: 1.72;
+}
+.post-more {
+  color: var(--my-link);
+  white-space: nowrap;
+}
+.post-media {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+.post-tile {
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fde8f1, #eaf2ff);
+}
+.post-tile:nth-child(2) {
+  background: linear-gradient(135deg, #fff2dc, #ffdcea);
+}
+.post-tile:nth-child(3) {
+  background: linear-gradient(135deg, #e3e3e8, #cfcfd7);
+}
+.feed-actions { display: flex; justify-content: flex-end; gap: 22px; margin-top: 15px; color: #929298; font-size: 15px; }
+.action { display: inline-flex; align-items: center; gap: 6px; }
+.action svg { width: 23px; height: 23px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.compose {
+  position: fixed; right: max(18px, calc((100vw - 430px) / 2 + 18px)); bottom: 112px; z-index: 15;
+  width: 56px; height: 56px; border-radius: 50%; background: var(--my-brand); color: #fff;
+  box-shadow: 0 8px 18px rgba(255, 77, 136, 0.24); display: grid; place-items: center;
+}
+.compose svg { width: 32px; height: 32px; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.bottom-nav {
+  position: fixed; left: 50%; bottom: 0; z-index: 20; width: min(100%, 430px); transform: translateX(-50%);
+  border-top: 1px solid #e4e4e8; background: rgba(255, 255, 255, 0.98); display: grid; grid-template-columns: repeat(5, 1fr);
+  padding: 7px 4px max(7px, env(safe-area-inset-bottom));
+}
+.nav-item {
+  position: relative; min-height: 54px; color: #595a61; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; font-size: 11px; font-weight: 500;
+}
+.nav-item svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.nav-item.active { color: var(--my-brand); font-weight: 600; }
+.badge {
+  position: absolute; top: 4px; right: 17px; min-width: 26px; height: 16px; border-radius: 9px; background: #ff4b4f; color: #fff;
+  display: grid; place-items: center; padding: 0 5px; font-size: 10px; line-height: 1;
+}
+.dot { position: absolute; top: 7px; right: 24px; width: 8px; height: 8px; border-radius: 50%; background: #ff4b4f; }
+.toast {
+  position: fixed; left: 50%; bottom: 88px; z-index: 40; width: min(340px, calc(100% - 32px)); transform: translateX(-50%) translateY(10px);
+  border-radius: 18px; background: rgba(35, 35, 38, 0.92); color: #fff; padding: 10px 14px; text-align: center; font-size: 14px;
+  opacity: 0; pointer-events: none; transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+.sheet-mask { position: fixed; inset: 0; z-index: 35; display: none; place-items: end center; background: rgba(0, 0, 0, 0.28); padding: 16px 12px; }
+.sheet-mask.visible { display: grid; }
+.sheet { width: min(100%, 406px); border-radius: 18px; background: #fff; padding: 15px; }
+.handle { width: 42px; height: 4px; margin: 0 auto 14px; border-radius: 99px; background: #d7d7dc; }
+.sheet h2 { color: var(--my-text); font-size: 18px; font-weight: 600; }
+.sheet p { margin-top: 8px; color: var(--my-sub); font-size: 14px; line-height: 1.65; }
+.primary {
+  width: 100%; height: 42px; margin-top: 14px; border-radius: 21px; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--my-brand); color: #fff; font-size: 14px; font-weight: 500;
+}
+@media (max-width: 370px) {
+  .channel { grid-template-columns: 42px 1fr 42px; padding-inline: 10px; }
+  .tab { min-width: 38px; font-size: 15px; }
+  .hero-title { max-width: 200px; font-size: 18px; }
+  .hero-title strong { font-size: 25px; }
+  .flower { right: 10px; width: 108px; height: 108px; transform: translateY(-50%); }
+  .coach-actions { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body><div style="position:relative;z-index:9999;background:#fff0f5;color:#963051;padding:16px;font:14px/1.6 sans-serif">原demo静态参考，未接入算法。页面中的示例数字和建议未经本次验收。<a href="meiyou-menopause-home.html">返回算法联调首页</a></div>
+<main class="screen">
+  <div class="scroll">
+    <section class="status" aria-hidden="true">
+      <div class="time">09:41</div>
+      <div class="silent"></div>
+      <div class="island"><div class="mini-avatar"></div><span>美柚</span></div>
+      <div class="phone-icons"><div class="bars"><i></i><i></i><i></i><i></i></div><div class="wifi"></div><div class="battery"></div></div>
+    </section>
+
+    <header class="channel">
+      <button class="icon-btn" type="button" aria-label="搜索" data-toast="搜索潮热、睡眠、情绪等内容">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"></circle><path d="m16.5 16.5 4 4"></path></svg>
+      </button>
+      <nav class="tabs" aria-label="频道">
+        <button class="tab active" type="button">妈妈</button>
+        <button class="tab" type="button">小兔子</button>
+        <button class="tab" type="button">桃子</button>
+        <button class="tab" type="button">宝宝</button>
+      </nav>
+      <button class="icon-btn" type="button" aria-label="添加记录" data-toast="添加月经、症状或睡眠记录">
+        <svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path><path d="M14 3v5h5"></path><path d="M12 13v6"></path><path d="M9 16h6"></path></svg>
+      </button>
+    </header>
+
+    <div class="content">
+      <section class="hero" aria-label="围绝经期今日状态">
+        <div class="hero-title">距上次月经 <strong>23</strong> 天</div>
+        <div class="hero-sub">如果出现潮热症状，请及时记录下来 ›</div>
+        <div class="flower" aria-hidden="true">
+          <img src="./meiyou-flower-no-text-cutout.png" alt="">
+        </div>
+      </section>
+
+      <section class="coach-card" aria-label="美柚姐姐">
+        <div class="coach-head"><span class="coach-avatar" aria-hidden="true"><img src="./meiyou-sister-avatar.png" alt=""></span><span>美柚姐姐</span></div>
+        <div class="coach-copy">早上好，昨晚睡得好吗？说说睡眠感受，不错过身体细微信号</div>
+        <div class="coach-actions">
+          <button class="coach-action primary-action" type="button" id="generate-plan"><span class="sparkle" aria-hidden="true"></span>生成今日计划</button>
+          <button class="coach-action" type="button" id="chat-sister">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-1.1 4.2 8.5 8.5 0 0 1-7.4 4.3 8.7 8.7 0 0 1-4.1-1l-5 1.4 1.5-4.8A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5Z"></path><path d="M16.5 6.5l.7 1.9 1.8.7-1.8.7-.7 1.9-.7-1.9-1.8-.7 1.8-.7.7-1.9Z"></path></svg>
+            与美柚姐姐聊聊
+          </button>
+        </div>
+      </section>
+
+      <article class="feed-card" aria-label="社区帖子 今日记录">
+        <span class="post-topic"># 今日记录</span>
+        <div class="post-text">
+          今天的状态比昨天轻松一点，早上醒来没有明显不适，喝了热水之后整个人都暖起来了。把症状和心情都记下来，晚上再回看会更清楚地知道身体变化，也能给下一次周期预测多一点参考。
+          <span class="post-more">全文</span>
+        </div>
+        <div class="post-media" aria-hidden="true">
+          <div class="post-tile"></div>
+          <div class="post-tile"></div>
+          <div class="post-tile"></div>
+        </div>
+        <div class="feed-actions">
+          <span class="action"><svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"></path><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path></svg>128</span>
+          <span class="action"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>86</span>
+        </div>
+      </article>
+
+      <article class="feed-card" aria-label="社区帖子 姐妹聊天">
+        <span class="post-topic"># 姐妹聊天</span>
+        <div class="post-text">
+          最近开始认真记录周期以后，才发现很多小变化原来都有迹可循。以前只是觉得情绪忽高忽低，现在能把饮食、睡眠和身体感受放在一起看，心里反而踏实很多。也想提醒自己，身体不是突然变糟的，它一直在很努力地发信号。
+          <span class="post-more">全文</span>
+        </div>
+        <div class="feed-actions">
+          <span class="action"><svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"></path><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path></svg>64</span>
+          <span class="action"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>102</span>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <button class="compose" type="button" aria-label="发布记录" data-toast="发布入口：可以写下今天的感受">
+    <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"></path><path d="M15 4v5h4"></path><path d="M9 15h6"></path><path d="M12 12v6"></path></svg>
+  </button>
+</main>
+
+<nav class="bottom-nav" aria-label="底部导航">
+  <button class="nav-item active" type="button" aria-label="美柚"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v18"></path><path d="M4.2 8h15.6"></path><path d="M4.2 16h15.6"></path></svg>美柚</button>
+  <button class="nav-item" type="button" data-toast="记录：月经、症状、睡眠都会在这里汇总"><svg viewBox="0 0 24 24"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect x="4" y="5" width="16" height="17" rx="3"></rect><path d="M8 12h8"></path><path d="M12 9v6"></path></svg>记录</button>
+  <button class="nav-item" type="button" data-toast="发现：科普知识和舒缓练习"><span class="dot"></span><svg viewBox="0 0 24 24"><path d="M12 2v20"></path><path d="m5 7 7-4 7 4"></path><path d="m5 17 7 4 7-4"></path><path d="M5 7v10"></path><path d="M19 7v10"></path></svg>发现</button>
+  <button class="nav-item" type="button" data-toast="消息：你关注的话题有新回复"><span class="badge">99+</span><svg viewBox="0 0 24 24"><path d="M4 5h16v12H7l-3 3z"></path><path d="M8 9h8"></path><path d="M8 13h5"></path></svg>消息</button>
+  <button class="nav-item" type="button" data-toast="我的阶段放在个人页，避免首页过载"><span class="dot"></span><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 22a8 8 0 0 1 16 0"></path></svg>我</button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sheet-mask" id="sheet-mask" aria-hidden="true">
+  <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="handle"></div>
+    <h2 id="sheet-title">本周密报</h2>
+    <p id="sheet-copy">本周你记录了 5 天平稳、1 天一般、1 天不太好。潮热常出现在距上次月经 20-25 天，今天可以重点留意体感温度和睡眠。</p>
+    <button class="primary" type="button" id="close-sheet">知道了</button>
+  </section>
+</div>
+
+<script>
+const toast = document.getElementById("toast");
+const sheetMask = document.getElementById("sheet-mask");
+const sheetTitle = document.getElementById("sheet-title");
+const sheetCopy = document.getElementById("sheet-copy");
+let toastTimer = null;
+
+function showToast(message) {
+  window.clearTimeout(toastTimer);
+  toast.textContent = message;
+  toast.classList.add("visible");
+  toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 1800);
+}
+
+function openSheet(title, copy) {
+  sheetTitle.textContent = title;
+  sheetCopy.textContent = copy;
+  sheetMask.classList.add("visible");
+  sheetMask.setAttribute("aria-hidden", "false");
+}
+
+function closeSheet() {
+  sheetMask.classList.remove("visible");
+  sheetMask.setAttribute("aria-hidden", "true");
+}
+
+document.getElementById("generate-plan").addEventListener("click", () => {
+  openSheet("今日计划", "根据昨晚睡眠和今天的身体状态，美柚姐姐会生成一份轻量计划：补水提醒、舒缓拉伸、睡前放松和症状速记。");
+});
+
+document.getElementById("chat-sister").addEventListener("click", () => {
+  window.location.href = "./meiyou-sister-chat.html";
+});
+
+document.querySelectorAll("[data-toast]").forEach((el) => {
+  el.addEventListener("click", () => showToast(el.dataset.toast));
+});
+
+document.getElementById("close-sheet").addEventListener("click", closeSheet);
+sheetMask.addEventListener("click", (event) => {
+  if (event.target === sheetMask) closeSheet();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeSheet();
+});
+</script>
+</body>
+</html>
