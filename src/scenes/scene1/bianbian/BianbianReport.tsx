@@ -1,4 +1,4 @@
-import {missingRiskMessage} from './riskObservations';
+import {missingRiskMessage,riskQuantity} from './riskObservations';
 import {displayCopy} from './presentationCopy';
 import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion,indicatorDetails,riskObservationConclusion,conclusionSegments,overviewConclusion} from './reportSummary';
 import {riskPresentation} from './riskPresentation';
@@ -28,11 +28,10 @@ export function ReportContent({record,showTimestamp=true,jointLoading=false,join
 
    <section className={`br-summary bs-observation-summary bs-observation-v19 br-risk-${r.risk}`} aria-label="本次分析结论" style={{'--observation-color':riskPresentation[r.risk].color,'--observation-background':riskPresentation[r.risk].background} as import('react').CSSProperties}>
     <div className="bs-observation-result"><h3 className="bs-risk-heading">{riskLabels[r.risk]}</h3><p>{conclusionSegments(conclusion).map((part,i)=>part.strong?<strong key={i}>{part.text}</strong>:<span key={i}>{part.text}</span>)}</p></div>
-    <div className="bs-important-indicators"><h3>重要指标解读</h3><div className="bs-observation-facts">{indicatorDetails(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{f.value}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description">{f.description}</p>}</div>)}</div>
-     <div className="bs-risk-observations" aria-label="风险观察"><div>{riskObservations(record).filter(item=>item.state!=='unknown').map(item=><span className={`bs-risk-observation bs-risk-observation-${item.state}`} key={item.label}><span>{item.label}</span><strong title={item.value}>{item.state==='absent'?'无':'有'}</strong></span>)}</div>{missingRiskMessage(r)&&<p className="br-support">{missingRiskMessage(r)}</p>}</div>
-    </div>
+    </section><section className="br-report-section bs-important-indicators bs-observation-v19"><h3>重要指标解读</h3><div className="bs-observation-facts">{indicatorDetails(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{f.value}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description">{f.description}</p>}</div>)}</div>
+     <div className="bs-risk-observations" aria-label="风险观察"><div>{riskObservations(record).filter(item=>riskQuantity(item.value)).map(item=><span className={`bs-risk-observation bs-risk-observation-${item.state}`} key={item.label}><span>{item.label}</span><strong title={item.value}>{riskQuantity(item.value)}</strong></span>)}</div>{missingRiskMessage(r)&&<p className="br-support">{missingRiskMessage(r)}</p>}</div>
    </section>
-   {record.trendSnapshot&&<StoolWeekChart data={record.trendSnapshot} compact/>}
+   {record.regularitySnapshot&&<StoolWeekChart data={record.regularitySnapshot} compact/>}
    {r.question&&<section className="br-report-section"><h3>可补充的信息</h3><p>{r.question}</p><button className="br-text-button" type="button" onClick={onEdit}>补充信息<Icon name="next"/></button></section>}
    <section className="br-report-section bv-actions"><h3>行动建议</h3>{importantActions(record).map((a,i)=><div className="bt-plan" key={i}><span>{i+1}</span><div><h4>{a.title}</h4><p>{a.action}</p></div></div>)}</section>
    <section className="br-report-section bs-reference"><h3>深度分析</h3><details className="br-summary-details" open><summary><span>完整分析依据</span><Icon name="next"/></summary>{referenceParagraphs(record).map((text,i)=><p key={i}>{text}</p>)}{r.facts.filter(f=>!['颜色','性状'].includes(f.label)).map(f=><p key={f.label}><strong>{f.label}：</strong>{[f.value,f.detail,f.comparison].filter(Boolean).join('；')}</p>)}</details></section>

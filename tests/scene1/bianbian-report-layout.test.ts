@@ -8,7 +8,7 @@ import {mockBabyProfile} from '../../src/scenes/scene1/bianbian/babyProfile';
 import {createMockTrends} from '../../src/scenes/scene1/bianbian/trendData';
 it('保存内容先精简总结再七天规律，完整依据仅在末尾深度分析',()=>{
  const r=makeRecord(demoReport,'',true,{profile:mockBabyProfile,trendSnapshot:createMockTrends()});const titles=reportSections(r).map(x=>x.title);
- expect(titles.slice(0,3)).toEqual(['本次分析结论','近 7 天便便规律','行动建议']);
+ expect(titles.slice(0,3)).toEqual(['本次分析结论','重要指标解读','行动建议']);
  expect(reportSections(r)[0].body).not.toContain('这是一份中文文案示例');expect(reportSections(r).find(s=>s.title==='深度分析')?.body).toContain(demoReport.detail);expect(titles).not.toContain('颜色与性状情况');
  expect(titles.indexOf('行动建议')).toBeLessThan(titles.indexOf('深度分析'));expect(titles.at(-1)).toBe('育儿参考资料');
 });
@@ -36,7 +36,7 @@ it('重复结论只展示一次，完整依据保留新的信息及否定表述'
 it('风险观察只使用当前照片的明确事实，不把缺失、疑似或建议当成阴性',()=>{
  const r=makeRecord({...demoReport,facts:[{label:'可见混合物',value:'未见明显血丝或灰白色区域，可见少量奶瓣。',detail:'',comparison:''}]},'',true);
  expect(riskObservations(r).map(x=>x.state)).toEqual(['absent','present','absent']);
- expect(reportSections(r)[0].body).toContain('奶瓣：有');
+ expect(reportSections(r)[1].body).toContain('奶瓣：少量');
  r.report.facts=[{label:'可见混合物',value:'无法排除血丝，疑似奶瓣。',detail:'若出现灰白色需注意。',comparison:'未见血丝'}];
  expect(riskObservations(r).every(x=>x.state==='unknown')).toBe(true);
  r.report.facts=[{label:'可见混合物',value:'未见血丝。',detail:'可见血丝。',comparison:''}];
@@ -45,9 +45,9 @@ it('风险观察只使用当前照片的明确事实，不把缺失、疑似或�
 
 it('完整示例的结论与三个风险指标一致，导出先结论再指标',()=>{
  const r=makeRecord(demoReport,'',true);
- expect(riskObservations(r).map(x=>x.value)).toEqual(['未见明显','未见明显','未见明显']);
+ expect(riskObservations(r).map(x=>x.value)).toEqual(['未发现','未发现','未发现']);
  expect(observationConclusion(r)).toContain('柔软糊状');expect(observationConclusion(r)).toContain('未见明显血丝、奶瓣或灰白色区域');
- const body=reportSections(r)[0].body;expect(body.indexOf(observationConclusion(r))).toBeLessThan(body.indexOf('重要指标解读'));
+ expect(reportSections(r).slice(0,2).map(x=>x.title)).toEqual(['本次分析结论','重要指标解读']);
 });
 
 it('顶部概括排便规律与同日关联，不把奶量减少写成增加或解释成因果',()=>{
@@ -65,8 +65,8 @@ it('去掉关联解释套话但保留数据和临床否定描述',()=>{
 
 it('顶部补齐风险观察，未知项目不当作未见，已有描述不重复',()=>{
  const r=makeRecord({...demoReport,summary:'本次为棕色糊状便。',facts:[{label:'可见混合物',value:'未见血丝，未见灰白色。',detail:'',comparison:''}]},'',true);
- expect(riskObservationConclusion(r)).toBe('未见明显血丝、灰白色');
- expect(riskObservationConclusion(makeRecord(demoReport,'',true))).toBe('未见明显血丝、奶瓣、灰白色');
+ expect(riskObservationConclusion(r)).toBe('未发现血丝、灰白色');
+ expect(riskObservationConclusion(makeRecord(demoReport,'',true))).toBe('未发现血丝、奶瓣、灰白色');
  expect(conclusionSegments('排便增多，奶量与睡眠同步减少。').every(x=>x.strong)).toBe(true);
 });
 it('指标卡不复述颜色结论，细节移至默认展开的完整依据',()=>{
@@ -77,7 +77,7 @@ it('指标卡不复述颜色结论，细节移至默认展开的完整依据',()
 
 it('未带句末标点的模型结论与风险补充自然分句',()=>{
  const r=makeRecord({...demoReport,summary:'本次为糊状便',detail:'',cause:''},'',true);
- expect(overviewConclusion(r)).toContain('本次为糊状便。未见明显');
+ expect(overviewConclusion(r)).toContain('本次为糊状便。未发现');
 });
 
 it('结论开头保留本次完整依据首句，不固定套用四个月混合喂养或低风险',()=>{
@@ -90,7 +90,7 @@ it('结论开头保留本次完整依据首句，不固定套用四个月混合�
 it('开头合并颜色性状与阶段判断，不再追加一遍模型总结',()=>{
  const r=makeRecord(demoReport,'',true);const result=overviewConclusion(r);
  expect(result.startsWith('本次便便呈芥末黄与深棕绿色、质地柔软糊状，与四个月混合喂养宝宝的常见便便表现相近。')).toBe(true);
- expect(result.match(/柔软糊状/g)).toHaveLength(1);expect(result.match(/未见明显/g)).toHaveLength(1);
+ expect(result.match(/柔软糊状/g)).toHaveLength(1);expect(result.match(/未发现/g)).toHaveLength(1);
  expect(result).not.toContain('便便质地柔软糊状');expect(result).not.toContain('当前观察为低风险');
  expect(referenceParagraphs(r).join('')).toContain(demoReport.summary);
 });

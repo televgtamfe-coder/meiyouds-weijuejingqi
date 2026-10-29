@@ -228,3 +228,10 @@
 .bh-first-screen .bh-history-row:active{background:#fff7fa}
 @media(min-height:800px){.bh-history-excerpt{-webkit-line-clamp:3}}
 @media(max-width:359px){.bh-first-screen .bh-history-row{padding:10px 27px 10px 12px}.bh-first-screen .bh-history-heading time{font-size:14px}.bh-history-excerpt{font-size:12px;line-height:20px}}
+
+/* V43: peer report sections and consistent observation field typography. */
+.br-report-paper>.bs-important-indicators{margin:12px 0;padding:12px;border-radius:12px;background:#fff}
+.br-report-paper>.bs-important-indicators>h3{font-size:16px;line-height:24px;font-weight:600;color:#323232;margin:0 0 10px}
+.bs-important-indicators .bs-observation-fact>span,.bs-important-indicators .bs-risk-observation>span{font-size:13px;line-height:20px;font-weight:600;color:#323232}
+.bs-important-indicators .bs-observation-fact strong,.bs-important-indicators .bs-risk-observation strong{font-size:14px;line-height:21px;font-weight:600;color:#aa365f}
+.bs-important-indicators .bs-risk-observation{gap:5px}

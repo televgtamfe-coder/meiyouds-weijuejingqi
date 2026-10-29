@@ -1,3 +1,4 @@
+import {regularityTrend} from './regularity';
 import {useEffect,useRef} from 'react';
 import {KitIcon} from './KitIcon';
 import {overviewConclusion} from './reportSummary';
@@ -21,6 +22,7 @@ export function BianbianHome({records,onPhoto,onHistory,onRecord,trends,onCamera
   resize();if(typeof ResizeObserver==='undefined')return;
   const observer=new ResizeObserver(resize);observer.observe(root);return()=>observer.disconnect();
  },[]);
+ const regularity=regularityTrend(records);
  const recent=[...records].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt)).slice(0,3);
  return <div className="br-scroll br-home" ref={scroll}>
   <div className="bh-first-screen"><button ref={entry} type="button" className="bh-camera-entry" onClick={onPhoto} aria-label="拍照分析"><span className="bh-camera-art" aria-hidden="true"><KitIcon name="camera"/></span><span className="bh-camera-copy"><strong>拍照分析</strong><span>打开相机，拍摄宝宝便便</span></span><span className="bh-camera-go" aria-hidden="true"><Icon name="next"/></span></button>
@@ -28,7 +30,7 @@ export function BianbianHome({records,onPhoto,onHistory,onRecord,trends,onCamera
    <div className="bh-history-feed">{recent.length?recent.map(r=><HistoryCard key={r.id} record={r} onClick={()=>onRecord(r)} feed/>):<p className="br-support">还没有分析记录，拍一张照片开始记录。</p>}</div>
   </section>
   </div>
-  <StoolWeekChart data={trends}/>
+  {regularity&&<StoolWeekChart data={regularity}/>}
  </div>;
 }
 export function BianbianHistory({records,onRecord,onPhoto}:{records:SavedReport[];onRecord:(r:SavedReport)=>void;onPhoto:()=>void}) {

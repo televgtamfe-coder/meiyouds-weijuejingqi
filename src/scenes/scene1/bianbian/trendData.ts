@@ -6,7 +6,7 @@ export type StoolEvent={time:string;color:StoolColor;risk:TrendRisk};
 export type DayTrend={date:string;stools:StoolEvent[];heightCm:number|null;weightKg:number|null;loggedMilkMl:number;feedingCount:number;sleepHours:number;nightWakings:number};
 export type MonthTrend={label:string;days:DayTrend[]};
 export type MonthComparison={previous:MonthTrend;current:MonthTrend;comparisonDays:number};
-export type TrendSet={source:'mock';days:DayTrend[];note:string;months?:MonthComparison};
+export type TrendSet={source:'mock'|'records';days:DayTrend[];note:string;months?:MonthComparison};
 export const stoolColors:Record<StoolColor,{label:string;fill:string}>={yellow:{label:'黄色',fill:'#d5a637'},green:{label:'绿色',fill:'#6e8c63'},brown:{label:'棕色',fill:'#a77552'},red:{label:'红色',fill:'#cb6565'},pale:{label:'灰白色',fill:'#bcc4c8'}};
 export const trendRisks:Record<TrendRisk,{label:string;color:string}>={low:{label:'低风险',color:riskPresentation.green.color},watch:{label:'需要关注',color:riskPresentation.yellow.color},high:{label:'建议就医',color:riskPresentation.red.color},unknown:{label:'需要关注',color:riskPresentation.yellow.color}};
 export const trendRiskLabels:Record<TrendRisk,string>={low:riskPresentation.green.label,watch:riskPresentation.yellow.label,high:riskPresentation.red.label,unknown:'需要关注'};
@@ -22,7 +22,7 @@ export function dayRisk(day:DayTrend):TrendRisk{return day.stools.some(s=>s.risk
 export function mockDetailDefaults(data:TrendSet):Partial<AnalysisForm>{const day=data.days[data.days.length-1];return {bowelPattern:'usual',frequency:String(day.stools.length),baseline:'2',symptoms:['无以下情况'],notes:'示例记录：近期喂养方式未改变，精神及吃奶状态无明显变化。',mockFields:['bowelPattern','frequency','baseline','symptoms','notes']};}
 function validDay(d:DayTrend){return !!d&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)&&Array.isArray(d.stools)&&d.stools.length<=50&&d.stools.every(s=>s&&/^([01]\d|2[0-3]):[0-5]\d$/.test(s.time)&&Object.prototype.hasOwnProperty.call(stoolColors,s.color)&&Object.prototype.hasOwnProperty.call(trendRisks,s.risk))&&[d.loggedMilkMl,d.feedingCount,d.sleepHours,d.nightWakings].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0)&&[d.heightCm,d.weightKg].every(n=>n===null||typeof n==='number'&&Number.isFinite(n)&&n>0);}
 export function validTrends(value:unknown):value is TrendSet{
- const x=value as TrendSet;if(!x||x.source!=='mock'||typeof x.note!=='string'||!Array.isArray(x.days)||x.days.length!==7||!x.days.every(validDay))return false;
+ const x=value as TrendSet;if(!x||!['mock','records'].includes(x.source)||typeof x.note!=='string'||!Array.isArray(x.days)||x.days.length!==7||!x.days.every(validDay))return false;
  if(x.months===undefined)return true;
  const m=x.months;if(!m||!Number.isInteger(m.comparisonDays)||m.comparisonDays<1)return false;
  return [m.previous,m.current].every(v=>v&&typeof v.label==='string'&&Array.isArray(v.days)&&v.days.length>=m.comparisonDays&&v.days.length<=31&&v.days.every(validDay));

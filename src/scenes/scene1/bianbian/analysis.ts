@@ -54,7 +54,7 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
     risk_observation_contract: riskObservationContract,
     source: 'meiyou_parenting_single_page', delivery_mode: form.deliveryMode || 'unknown',
     mock_prefilled_fields: form.mockFields || [], trend_context: form.trendContext,
-    ...(form.trendContext ? {analysis_scope:'完整分析依据 core_conclusion.detail 首句必须是一句连贯的综合描述：先说明本次照片的具体颜色和性状，再结合已确认的实际月龄与喂养方式，判断是否符合这一阶段的常见便便表现。颜色、性状和阶段判断各描述一次，不要先说相近，再重复解释常见颜色或性状；如果有关注点，直接写出关注点，不固定套用常见、正常或低风险结论。资料不足时说明缺失，不编造月龄或喂养方式。趋势为模拟记录，带有 mock_prefilled_fields 的日常字段也仍为示例。请明确标注模拟背景，不据此判断真实健康或生长达标。结合照片与背景给出观察；不得把同时变化写成因果；输出仅呈现实际观察和重点，不输出“可能有关联”“不能认定因果”等解释性文案。'} : {}), profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
+    ...{analysis_scope:'完整分析依据 core_conclusion.detail 首句必须是一句连贯的综合描述：先说明本次照片的具体颜色和性状，再结合已确认的实际月龄与喂养方式，判断是否符合这一阶段的常见便便表现。颜色、性状和阶段判断各描述一次，不要先说相近，再重复解释常见颜色或性状；如果有关注点，直接写出关注点，不固定套用常见、正常或低风险结论。资料不足时说明缺失，不编造月龄或喂养方式。仅当 trend_context.source 为 records 时才可采用其中的真实照片分析记录；无趋势时不推测规律。source 为 mock 的趋势和带有 mock_prefilled_fields 的字段属于示例，不据此判断真实健康或生长达标。结合照片与背景给出观察；不得把同时变化写成因果；输出仅呈现实际观察和重点，不输出“可能有关联”“不能认定因果”等解释性文案。'}, profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
     age_days: Math.round((today.getTime() - birthday.getTime()) / 86400000),
     feeding_method: form.feeding, feedingType: form.feeding, complementary_food: form.complementary,
     ...(form.frequency.trim() ? { daily_frequency: Number(form.frequency) } : {}),

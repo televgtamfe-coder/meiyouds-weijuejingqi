@@ -7,7 +7,7 @@ export function mockHistory(profile:BabyProfile,data:TrendSet):SavedReport[]{
  const states=[
   {risk:'green' as const,color:'黄色',texture:'柔软糊状',mix:'未见明显血丝，未见明显奶瓣，未见明显灰白色。',appearance:'主体呈黄色、质地柔软糊状',assessment:'与当前喂养阶段常见的便便外观相近',detail:'整体较均匀，边缘柔软，水分未见明显增多。',action:'继续记录下一次排便',instruction:'记录下一次排便时间、外观和吃奶睡眠情况，便于与本次对照。',count:2,milk:780,sleep:14},
   {risk:'yellow' as const,color:'黄绿色',texture:'偏稀、夹颗粒',mix:'未见明显血丝，疑似少量奶瓣，未见明显灰白色。',appearance:'呈黄绿色、质地偏稀并夹少量颗粒',assessment:'本次稀软程度较前次记录明显，结合排便增多，需要关注后续变化',detail:'局部可见少量颗粒，水分较前次记录增多，尚未呈明显水样。',action:'留意后续排便及吃奶状态',instruction:'下次排便时记录次数和稀软程度，同时留意尿量、精神及吃奶情况；若持续变稀或出现不适，联系儿科医生。',count:4,milk:710,sleep:12.5},
-  {risk:'red' as const,color:'灰白、局部红色',texture:'稀软、夹红色条状物',mix:'疑似大量血丝，未见明显奶瓣，发现灰白色异常区域。',appearance:'局部呈灰白色并夹红色条状物、质地稀软',assessment:'外观偏离这一阶段常见表现，需要医生进一步评估，建议就医',detail:'灰白区域与局部红色条状物较突出，水分增多，照片无法确认红色物质来源。',action:'携带照片和记录联系医生',instruction:'保留本次照片及近期排便、喂养记录，及时联系儿科医生；若伴精神差、明显出血或持续呕吐，请立即就医。',count:3,milk:680,sleep:12}
+  {risk:'red' as const,color:'灰白、局部红色',texture:'稀软、夹红色条状物',mix:'疑似大量血丝，未见明显奶瓣，可见大量灰白色区域。',appearance:'局部呈灰白色并夹红色条状物、质地稀软',assessment:'外观偏离这一阶段常见表现，需要医生进一步评估，建议就医',detail:'灰白区域与局部红色条状物较突出，水分增多，照片无法确认红色物质来源。',action:'携带照片和记录联系医生',instruction:'保留本次照片及近期排便、喂养记录，及时联系儿科医生；若伴精神差、明显出血或持续呕吐，请立即就医。',count:3,milk:680,sleep:12}
  ];
  return states.map((s,i)=>{
   const date=data.days[6-i].date,at=new Date(`${date}T21:30:00+08:00`),generated=createMockTrends(at);

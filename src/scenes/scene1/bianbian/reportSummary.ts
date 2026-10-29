@@ -62,7 +62,7 @@ export function indicatorDetails(record:SavedReport){
 export function riskObservationConclusion(record:SavedReport){
  const summary=observationContextIntro(record);
  const missing=riskObservations(record).filter(x=>!summary.includes(x.label)&&!(x.label==='灰白色'&&summary.includes('灰白')));
- return ['疑似少量','疑似大量','发现异常','未见明显'].map(value=>{
+ return ['少量','大量','发现异常','未发现'].map(value=>{
   const labels=missing.filter(x=>x.value===value).map(x=>x.label).join('、');
   return !labels?'':value==='发现异常'?`${labels}发现异常`:`${value}${labels}`;
  }).filter(Boolean).join('；');

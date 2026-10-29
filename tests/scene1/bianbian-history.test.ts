@@ -22,9 +22,9 @@ it('迁移旧会话报告，不修改内容、时间或补造背景',()=>{
 it('三条示例均包含完整报告、输入、七天和联合分析，日期不越过当时分析时间',()=>{
  const all=mockHistory(mockBabyProfile,trends());expect(all.map(r=>r.report.risk)).toEqual(['green','yellow','red']);
  for(const r of all){expect(validRecord(r,true)).toBe(true);expect(r.report.facts).toHaveLength(3);expect(r.report.actions.length).toBeGreaterThan(0);expect(r.report.evidence.length).toBeGreaterThan(0);expect(r.report.cause).not.toBe('');expect(r.formSnapshot).toBeDefined();expect(r.jointAnalysis?.domains).toHaveLength(3);expect(r.trendSnapshot?.days).toHaveLength(7);expect(r.trendSnapshot?.days.at(-1)?.date).toBe(shanghaiDate(new Date(r.createdAt)));expect(r.trendSnapshot?.days.every(d=>d.date<=shanghaiDate(new Date(r.createdAt)))).toBe(true);}
- expect(riskObservations(all[0]).map(x=>x.value)).toEqual(['未见明显','未见明显','未见明显']);
- expect(riskObservations(all[1]).map(x=>x.value)).toEqual(['未见明显','疑似少量','未见明显']);
- expect(riskObservations(all[2]).map(x=>x.value)).toEqual(['疑似大量','未见明显','发现异常']);
+ expect(riskObservations(all[0]).map(x=>x.value)).toEqual(['未发现','未发现','未发现']);
+ expect(riskObservations(all[1]).map(x=>x.value)).toEqual(['未发现','少量','未发现']);
+ expect(riskObservations(all[2]).map(x=>x.value)).toEqual(['大量','未发现','大量']);
 });
 it('重新进入和修改宝宝资料不重新生成历史示例，清除本地数据才重建',()=>{
  const first=loadMockHistory(mockBabyProfile,trends());
@@ -34,8 +34,8 @@ it('重新进入和修改宝宝资料不重新生成历史示例，清除本地�
 });
 it('风险状态固定映射但不猜测缺失结果或互相冲突的数量',()=>{
  const result=(value:string)=>riskObservations(makeRecord({...demoReport,facts:[{label:'可见混合物',value,detail:'',comparison:''}]}));
- expect(result('未见明显血丝；疑似少量奶瓣；发现灰白色异常区域。').map(x=>x.value)).toEqual(['未见明显','疑似少量','发现异常']);
- expect(result('疑似大量血丝。')[0].value).toBe('疑似大量');
+ expect(result('未见明显血丝；疑似少量奶瓣；发现灰白色异常区域。').map(x=>x.value)).toEqual(['未发现','少量','发现异常']);
+ expect(result('疑似大量血丝。')[0].value).toBe('大量');
  expect(result('未见血丝；可见血丝。')[0].state).toBe('unknown');
  expect(result('疑似少量血丝；疑似大量血丝。')[0].state).toBe('unknown');
  expect(result('无法排除血丝；可见奶瓣。').every(x=>x.state==='unknown')).toBe(true);
