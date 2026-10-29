@@ -213,3 +213,18 @@
 .bh-history-row:active{background:#fff7fa}
 @media(max-width:359px){.bh-camera-entry{padding:16px 12px;gap:10px;min-height:88px}.bh-camera-art{width:48px;height:48px;border-radius:14px}.br-app .bh-camera-copy strong{font-size:18px}.bh-camera-go{width:26px;height:26px}.bh-camera-copy>span{font-size:11px}.bh-history-feed{padding:0 12px}.bh-history-heading time{font-size:13px}.bh-history-heading{gap:5px}}
 @media(prefers-reduced-motion:reduce){.bh-camera-entry:active{transform:none}}
+
+/* V42: a focused first screen with three substantial report previews. */
+.br-home .bh-first-screen{min-height:max(520px,var(--home-first-height,calc(100dvh - 124px)));display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
+.bh-first-screen .bh-camera-entry{margin:0;flex-shrink:0}
+.br-home .bh-first-screen .bh-history-preview{display:flex;flex:1;flex-direction:column;margin:0}
+.bh-first-screen .bh-history-feed{flex:1;gap:8px;padding:0;background:transparent;border-radius:0}
+.bh-first-screen .bh-history-row{flex:1;min-height:116px;padding:12px 32px 12px 14px;border:1px solid #f2edf0;border-radius:12px;background:#fff;gap:6px;justify-content:center}
+.bh-first-screen .bh-history-row>.br-icon{right:12px}
+.bh-first-screen .bh-history-heading time{font-size:15px;line-height:22px;font-weight:600}
+.br-app .bh-first-screen .bh-history-heading strong{font-size:12px;padding:2px 8px}
+.bh-history-excerpt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:13px;line-height:21px;color:#555}
+.bh-first-screen .bh-history-facts{font-size:12px;line-height:20px;color:#946078}
+.bh-first-screen .bh-history-row:active{background:#fff7fa}
+@media(min-height:800px){.bh-history-excerpt{-webkit-line-clamp:3}}
+@media(max-width:359px){.bh-first-screen .bh-history-row{padding:10px 27px 10px 12px}.bh-first-screen .bh-history-heading time{font-size:14px}.bh-history-excerpt{font-size:12px;line-height:20px}}

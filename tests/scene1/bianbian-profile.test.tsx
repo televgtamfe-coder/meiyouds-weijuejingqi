@@ -56,25 +56,13 @@ describe('三步资料与参考版导航', () => {
  });
 });
 
-it('首页标签直达单项修改，保存生效，取消不覆盖',async()=>{
- const user=userEvent.setup();renderPage();await complete(user);
- await user.click(screen.getByRole('button',{name:'修改喂养方式',exact:true}));
- expect(screen.getByRole('heading',{name:'喂养方式',exact:true})).toBeVisible();
- await user.click(screen.getByRole('button',{name:/纯母乳喂养/}));await user.click(screen.getByRole('button',{name:'保存修改',exact:true}));
- expect(screen.getByRole('button',{name:'修改喂养方式'})).toHaveTextContent('纯母乳喂养');
- await user.click(screen.getByRole('button',{name:'修改过敏原'}));await user.click(screen.getByRole('button',{name:'牛奶及乳制品'}));await user.click(screen.getByRole('button',{name:'取消修改'}));
- expect(screen.getByRole('button',{name:'修改过敏原'})).toHaveTextContent('无已知过敏');
- await user.click(screen.getByRole('button',{name:'修改过敏原'}));await user.click(screen.getByRole('button',{name:'牛奶及乳制品'}));await user.click(screen.getByRole('button',{name:'保存修改'}));
- expect(screen.getByRole('button',{name:'修改过敏原'})).toHaveTextContent('牛奶及乳制品');
-});
-
-it('默认奶粉可编辑，清空回到默认，已填品牌保留',async()=>{
- const user=userEvent.setup();let view=renderPage();await complete(user);
- expect(screen.getByRole('button',{name:'修改奶粉品牌',exact:true})).toHaveTextContent('皇家美素佳尔3段');
- await user.click(screen.getByRole('button',{name:'修改喂养方式',exact:true}));await user.clear(screen.getByLabelText('奶粉品牌'));await user.type(screen.getByLabelText('奶粉品牌'),'品牌甲');await user.click(screen.getByRole('button',{name:'保存修改',exact:true}));
- expect(screen.getByRole('button',{name:'修改奶粉品牌'})).toHaveTextContent('品牌甲');
- await user.click(screen.getByRole('button',{name:'修改奶粉品牌'}));expect(screen.getByRole('heading',{name:'修改奶粉品牌',exact:true})).toBeVisible();expect(screen.queryByRole('group',{name:'喂养方式'})).not.toBeInTheDocument();
- await user.clear(screen.getByLabelText('奶粉品牌'));await user.type(screen.getByLabelText('奶粉品牌'),'品牌乙');await user.click(screen.getByRole('button',{name:'取消修改',exact:true}));expect(screen.getByRole('button',{name:'修改奶粉品牌'})).toHaveTextContent('品牌甲');
- await user.click(screen.getByRole('button',{name:'修改奶粉品牌'}));await user.clear(screen.getByLabelText('奶粉品牌'));await user.type(screen.getByLabelText('奶粉品牌'),'品牌乙');await user.click(screen.getByRole('button',{name:'保存修改',exact:true}));view.unmount();view=renderPage();expect(screen.getByRole('button',{name:'修改奶粉品牌'})).toHaveTextContent('品牌乙');
- await user.click(screen.getByRole('button',{name:'修改奶粉品牌'}));await user.clear(screen.getByLabelText('奶粉品牌'));await user.click(screen.getByRole('button',{name:'保存修改',exact:true}));expect(screen.getByRole('button',{name:'修改奶粉品牌'})).toHaveTextContent('皇家美素佳尔3段');
+it('首页仅保留拍照、三条报告摘要和七天规律',async()=>{
+ const user=userEvent.setup();const view=renderPage();await complete(user);
+ expect(view.container.querySelectorAll('.bh-history-row')).toHaveLength(3);
+ expect([...view.container.querySelectorAll('.bh-history-excerpt')].every(e=>(e.textContent||'').length>20)).toBe(true);
+ expect(view.container.querySelectorAll('.br-baby-card,.bt-daily-inline,.bv-month,.bm-month')).toHaveLength(0);
+ expect(screen.queryByRole('button',{name:'修改喂养方式'})).not.toBeInTheDocument();
+ expect(screen.queryByText('今日密报')).not.toBeInTheDocument();
+ expect(screen.queryByText('月度联合成长分析')).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'查看全部历史报告'})).toHaveTextContent('更多');
 });
