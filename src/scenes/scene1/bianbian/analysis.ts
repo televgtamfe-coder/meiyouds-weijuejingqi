@@ -1,3 +1,5 @@
+import {normalizeRiskObservations,riskObservationContract,missingRiskLabels,missingRiskMessage} from './riskObservations';
+import type {StructuredRiskObservations} from './riskObservations';
 import type {TrendSet} from './trendData';
 export type AnalysisForm = {
   profileSource?: string;
@@ -12,6 +14,7 @@ export type AnalysisForm = {
 export const emptyForm: AnalysisForm = { birthDate: '', feeding: '', complementary: '', frequency: '', baseline: '', symptoms: [], notes: '', formula: '', consent: false };
 export type Risk = 'green' | 'yellow' | 'orange' | 'red' | 'unknown';
 export type Report = {
+  riskObservations?: StructuredRiskObservations;
   kind: 'report' | 'unqualified' | 'followup'; risk: Risk; summary: string; detail: string;
   question: string; facts: { label: string; value: string; detail: string; comparison: string }[];
   actions: { title: string; items: string[] }[]; evidence: string[]; cause: string;
@@ -31,13 +34,14 @@ export function normalizeReport(value: unknown): Report {
     ['home_care', '居家照护'], ['observation_focus', '接下来关注什么'], ['special_population_tips', '特殊情况提醒'],
   ];
   return {
+    riskObservations: normalizeRiskObservations(d.risk_observations || facts.risk_observations),
     kind: d.status === 'unqualified' ? 'unqualified' : ['red', 'orange'].includes(risk) ? 'report' : text(d.follow_up_question) ? 'followup' : 'report',
     risk, summary: text(conclusion.summary) || text(d.scenario) || '本次信息暂不足以形成明确结论',
     detail: text(conclusion.detail), question: text(d.follow_up_question) || text(d.message) || text(d.reason),
     cause: text(analysis.core_cause), evidence: list(analysis.evidence),
     facts: [['color', '颜色'], ['consistency', '性状'], ['foreign_bodies', '可见混合物'], ['amount', '量感']].map(([key, label]) => {
       const f = record(facts[key]);
-      return { label, value: text(f.main) || '未提供', detail: text(f.detail), comparison: text(f.comparison) || text(f.evaluation) };
+      return { label, value: text(f.main) || text(facts[key]) || '未提供', detail: text(f.detail), comparison: text(f.comparison) || text(f.evaluation) };
     }),
     actions: groups.map(([key, title]) => ({ title, items: list(d[key]) })).filter(x => x.items.length),
   };
@@ -47,6 +51,7 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
   const birthday = new Date(`${form.birthDate}T00:00:00`);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   return {
+    risk_observation_contract: riskObservationContract,
     source: 'meiyou_parenting_single_page', delivery_mode: form.deliveryMode || 'unknown',
     mock_prefilled_fields: form.mockFields || [], trend_context: form.trendContext,
     ...(form.trendContext ? {analysis_scope:'完整分析依据 core_conclusion.detail 首句必须是一句连贯的综合描述：先说明本次照片的具体颜色和性状，再结合已确认的实际月龄与喂养方式，判断是否符合这一阶段的常见便便表现。颜色、性状和阶段判断各描述一次，不要先说相近，再重复解释常见颜色或性状；如果有关注点，直接写出关注点，不固定套用常见、正常或低风险结论。资料不足时说明缺失，不编造月龄或喂养方式。趋势为模拟记录，带有 mock_prefilled_fields 的日常字段也仍为示例。请明确标注模拟背景，不据此判断真实健康或生长达标。结合照片与背景给出观察；不得把同时变化写成因果；输出仅呈现实际观察和重点，不输出“可能有关联”“不能认定因果”等解释性文案。'} : {}), profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,
@@ -62,12 +67,17 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
 }
 
 export async function analyze(image: string, form: AnalysisForm, signal: AbortSignal) {
-  const response = await fetch('https://mybianbian.com/api/analyze', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, signal,
-    body: JSON.stringify({ image, metadata: buildMetadata(form) }),
-  });
-  if (!response.ok) throw new Error(response.status === 429 ? '当前使用人数较多，请稍后重试。' : '暂时没能完成分析，照片和填写内容已保留，请稍后重试。');
-  return normalizeReport(await response.json());
+  for(let attempt=0;attempt<2;attempt++){
+    const response=await fetch('https://mybianbian.com/api/analyze',{
+      method:'POST',headers:{'Content-Type':'application/json'},signal,
+      body:JSON.stringify({image,metadata:{...buildMetadata(form),...(attempt?{risk_observation_retry:'上次风险观察缺项或冲突，请重新检查本次照片并完整返回三个观察项及依据；不得用默认阴性填充。'}:{})}}),
+    });
+    if(!response.ok)throw new Error(response.status===429?'当前使用人数较多，请稍后重试。':'暂时没能完成分析，照片和填写内容已保留，请稍后重试。');
+    const result=normalizeReport(await response.json());
+    if(result.kind!=='report'||!missingRiskLabels(result).length||['red','orange'].includes(result.risk))return result;
+    if(attempt===1)throw new Error(missingRiskMessage(result));
+  }
+  throw new Error('风险观察信息不完整，请重新分析。');
 }
 
 // Resize locally and re-encode to remove image metadata before upload.

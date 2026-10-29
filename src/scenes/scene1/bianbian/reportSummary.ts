@@ -1,3 +1,4 @@
+import {readRiskObservations} from './riskObservations';
 import {dayShort,shanghaiDate,dayRisk} from './trendData';
 import {SavedReport} from './records';
 import {riskPresentation} from './riskPresentation';
@@ -30,24 +31,7 @@ export function referenceParagraphs(record:SavedReport){
  return paragraphs;
 }
 
-// Only explicit observations from the current photo are used, never advice or historical comparisons.
-export function riskObservations(record:SavedReport){
- const clauses=record.report.facts.filter(f=>['颜色','性状','可见混合物'].includes(f.label)).flatMap(f=>[f.value,f.detail]).flatMap(text=>text.split(/[，,。；;！？\n]/)).map(text=>text.trim());
- return [{label:'血丝',pattern:/血丝|血迹/},{label:'奶瓣',pattern:/奶瓣/},{label:'灰白色',pattern:/灰白色|灰白|陶土色/}].map(item=>{
-  const states=new Set<string>(),values=new Set<string>();
-  for(const clause of clauses){
-   if(!item.pattern.test(clause)||/可能|无法|不能|未能|不排除|难以|不确定|历史|此前|之前|既往|如果|若|需|建议|注意|但|不明显/.test(clause))continue;
-   const clean=clause.replace(/^(?:本次(?:照片)?|照片中|图片中|示例中|图中|便便中|便便)/,'');
-   if(/^(?:未见|未发现|没有|无)(?:明显|可见)?/.test(clean)&&!/(?:可见|伴有|存在)/.test(clean.replace(/^(?:未见|未发现|没有|无)(?:明显|可见)?/,'')))states.add('absent');
-   else if(!/未|无|不|没有/.test(clean)&&(/^(?:疑似|可见|发现|伴有|存在|有|少量|大量|明显|呈|以)/.test(clean)||item.pattern.test(clean)&&clean.match(item.pattern)?.index===0)){
-    const value=/大量|较多/.test(clean)?'疑似大量':/少量|少许|零星/.test(clean)?'疑似少量':!clean.includes('疑似')&&(item.label!=='奶瓣'||clean.includes('异常'))?'发现异常':'';
-    states.add(value?'present':'unknown');if(value)values.add(value);
-   }
-  }
-  const state=states.size===1&&values.size<=1?[...states][0]:'unknown';
-  return {label:item.label,state,value:state==='absent'?'未见明显':state==='present'?[...values][0]:'待确认'};
- });
-}
+export function riskObservations(record:SavedReport){return readRiskObservations(record.report);}
 
 // Brief factual cross-reference to the same dated records shown in the charts.
 export function observationTrendConclusion(record:SavedReport){
@@ -78,9 +62,9 @@ export function indicatorDetails(record:SavedReport){
 export function riskObservationConclusion(record:SavedReport){
  const summary=observationContextIntro(record);
  const missing=riskObservations(record).filter(x=>!summary.includes(x.label)&&!(x.label==='灰白色'&&summary.includes('灰白')));
- return ['疑似少量','疑似大量','发现异常','未见明显','待确认'].map(value=>{
+ return ['疑似少量','疑似大量','发现异常','未见明显'].map(value=>{
   const labels=missing.filter(x=>x.value===value).map(x=>x.label).join('、');
-  return !labels?'':value==='待确认'?`${labels}待确认`:value==='发现异常'?`${labels}发现异常`:`${value}${labels}`;
+  return !labels?'':value==='发现异常'?`${labels}发现异常`:`${value}${labels}`;
  }).filter(Boolean).join('；');
 }
 // Highlight complete clauses to preserve qualifications and negations.

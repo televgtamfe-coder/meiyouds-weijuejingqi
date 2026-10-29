@@ -36,7 +36,7 @@ it('风险状态固定映射但不猜测缺失结果或互相冲突的数量',()
  const result=(value:string)=>riskObservations(makeRecord({...demoReport,facts:[{label:'可见混合物',value,detail:'',comparison:''}]}));
  expect(result('未见明显血丝；疑似少量奶瓣；发现灰白色异常区域。').map(x=>x.value)).toEqual(['未见明显','疑似少量','发现异常']);
  expect(result('疑似大量血丝。')[0].value).toBe('疑似大量');
- expect(result('未见血丝；可见血丝。')[0].value).toBe('待确认');
- expect(result('疑似少量血丝；疑似大量血丝。')[0].value).toBe('待确认');
- expect(result('无法排除血丝；可见奶瓣。').every(x=>x.value==='待确认')).toBe(true);
+ expect(result('未见血丝；可见血丝。')[0].state).toBe('unknown');
+ expect(result('疑似少量血丝；疑似大量血丝。')[0].state).toBe('unknown');
+ expect(result('无法排除血丝；可见奶瓣。').every(x=>x.state==='unknown')).toBe(true);
 });

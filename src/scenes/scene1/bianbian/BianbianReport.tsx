@@ -1,3 +1,4 @@
+import {missingRiskMessage} from './riskObservations';
 import {displayCopy} from './presentationCopy';
 import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion,indicatorDetails,riskObservationConclusion,conclusionSegments,overviewConclusion} from './reportSummary';
 import {riskPresentation} from './riskPresentation';
@@ -29,7 +30,7 @@ export function ReportContent({record,jointLoading=false,jointError='',onJoint=(
    <section className={`br-summary bs-observation-summary bs-observation-v19 br-risk-${r.risk}`} aria-label="本次分析结论" style={{'--observation-color':riskPresentation[r.risk].color,'--observation-background':riskPresentation[r.risk].background} as import('react').CSSProperties}>
     <div className="bs-observation-result"><h3 className="bs-risk-heading">{riskLabels[r.risk]}</h3><p>{conclusionSegments(conclusion).map((part,i)=>part.strong?<strong key={i}>{part.text}</strong>:<span key={i}>{part.text}</span>)}</p></div>
     <div className="bs-important-indicators"><h3>重要指标解读</h3><div className="bs-observation-facts">{indicatorDetails(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{f.value}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description">{f.description}</p>}</div>)}</div>
-     <div className="bs-risk-observations" aria-label="风险观察"><h4>风险观察</h4><div>{riskObservations(record).map(item=><span className={`bs-risk-observation bs-risk-observation-${item.state}`} key={item.label}><span>{item.label}</span><strong>{item.value}</strong></span>)}</div></div>
+     <div className="bs-risk-observations" aria-label="风险观察"><h4>风险观察</h4><div>{riskObservations(record).filter(item=>item.state!=='unknown').map(item=><span className={`bs-risk-observation bs-risk-observation-${item.state}`} key={item.label}><span>{item.label}</span><strong>{item.value}</strong></span>)}</div>{missingRiskMessage(r)&&<p className="br-support">{missingRiskMessage(r)}</p>}</div>
     </div>
    </section>
    {record.trendSnapshot&&<StoolWeekChart data={record.trendSnapshot} compact/>}
