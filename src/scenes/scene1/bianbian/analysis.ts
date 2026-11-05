@@ -1,3 +1,4 @@
+import {reportContentContract,parentExplanation} from './reportContentContract';
 import {normalizeRiskObservations,riskObservationContract,missingRiskLabels,missingRiskMessage} from './riskObservations';
 import type {StructuredRiskObservations} from './riskObservations';
 import type {TrendSet} from './trendData';
@@ -15,6 +16,8 @@ export const emptyForm: AnalysisForm = { birthDate: '', feeding: '', complementa
 export type Risk = 'green' | 'yellow' | 'orange' | 'red' | 'unknown';
 export type Report = {
   riskObservations?: StructuredRiskObservations;
+  actionPlan?: {title:string;when:string;steps:string[];watchFor:string}[];
+  deepAnalysis?: {title:string;body:string}[];
   kind: 'report' | 'unqualified' | 'followup'; risk: Risk; summary: string; detail: string;
   question: string; facts: { label: string; value: string; detail: string; comparison: string }[];
   actions: { title: string; items: string[] }[]; evidence: string[]; cause: string;
@@ -34,6 +37,8 @@ export function normalizeReport(value: unknown): Report {
     ['home_care', '居家照护'], ['observation_focus', '接下来关注什么'], ['special_population_tips', '特殊情况提醒'],
   ];
   return {
+    actionPlan: Array.isArray(d.action_plan)?d.action_plan.slice(0,3).map(value=>{const a=record(value);return {title:parentExplanation(text(a.title)),when:parentExplanation(text(a.when)),steps:list(a.steps).map(parentExplanation).filter(Boolean),watchFor:parentExplanation(text(a.watch_for))};}).filter(a=>a.title&&a.when&&a.steps.length):undefined,
+    deepAnalysis: [['appearance','外观与性状解读'],['feeding_context','当前阶段与喂养背景'],['attention','需要留意的变化']].map(([key,title])=>({title,body:parentExplanation(text(record(d.deep_analysis)[key]))})).filter(x=>x.body),
     riskObservations: normalizeRiskObservations(d.risk_observations || facts.risk_observations),
     kind: d.status === 'unqualified' ? 'unqualified' : ['red', 'orange'].includes(risk) ? 'report' : text(d.follow_up_question) ? 'followup' : 'report',
     risk, summary: text(conclusion.summary) || text(d.scenario) || '本次信息暂不足以形成明确结论',
@@ -52,6 +57,7 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   return {
     risk_observation_contract: riskObservationContract,
+    report_content_contract: reportContentContract,
     source: 'meiyou_parenting_single_page', delivery_mode: form.deliveryMode || 'unknown',
     mock_prefilled_fields: form.mockFields || [], trend_context: form.trendContext,
     ...{analysis_scope:'完整分析依据 core_conclusion.detail 首句必须是一句连贯的综合描述：先说明本次照片的具体颜色和性状，再结合已确认的实际月龄与喂养方式，判断是否符合这一阶段的常见便便表现。颜色、性状和阶段判断各描述一次，不要先说相近，再重复解释常见颜色或性状；如果有关注点，直接写出关注点，不固定套用常见、正常或低风险结论。资料不足时说明缺失，不编造月龄或喂养方式。仅当 trend_context.source 为 records 时才可采用其中的真实照片分析记录；无趋势时不推测规律。source 为 mock 的趋势和带有 mock_prefilled_fields 的字段属于示例，不据此判断真实健康或生长达标。结合照片与背景给出观察；不得把同时变化写成因果；输出仅呈现实际观察和重点，不输出“可能有关联”“不能认定因果”等解释性文案。'}, profile_source: form.profileSource || 'user_entered', birthDate: form.birthDate,

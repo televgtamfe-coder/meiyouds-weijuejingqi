@@ -21,7 +21,7 @@ import {TrendsPage} from './TrendsPage';
 import {reportImage} from './reportExport';
 import { Icon,PageHeader } from './ui';
 import { KitIcon } from './KitIcon';
-import { SavedReport,downloadBlob,clearBianbianData,createThumbnail,loadRecords,makeRecord,readFlag,reminderKey,reminderSeenKey,saveRecord,writeFlag } from './records';
+import { SavedReport,downloadBlob,clearBianbianData,createThumbnail,loadRecords,makeRecord,readFlag,reminderKey,saveRecord,writeFlag } from './records';
 import './bianbian.css';
 import './reference.css';
 import './trends.css';
@@ -68,7 +68,7 @@ export function BianbianPage(){
   try{const result=await analyze(image,form,request.signal);if(!alive.current||request.signal.aborted)return;
    if(result.kind==='unqualified')setError(result.question||'这张照片暂时无法识别，请在自然光下重新拍摄。');
    else if(result.kind==='followup')setQuestion(result.question);
-   else{let thumbnail='';try{thumbnail=await createThumbnail(image);}catch{/* A missing thumbnail must not discard the report. */}if(!alive.current||request.signal.aborted)return;const cached=jointCache.current?.key===jointKey(profile,trends)?jointCache.current.value:undefined;const next=makeRecord(result,thumbnail,false,{profile,trendSnapshot:form.trendContext,jointAnalysis:cached,form});const saved=saveRecord(next);setDraftRecordId(next.id);setRecords(prev=>[next,...prev].slice(0,20));setRecord(next);setReportBack('details');setView('report');if(!saved)setNotice('报告已生成，但本地历史保存失败。请下载报告保留。');if(result.risk==='green'&&!reminder&&!readFlag(reminderSeenKey)){writeFlag(reminderSeenKey,true);setPanel('first-reminder');}}
+   else{let thumbnail='';try{thumbnail=await createThumbnail(image);}catch{/* A missing thumbnail must not discard the report. */}if(!alive.current||request.signal.aborted)return;const cached=jointCache.current?.key===jointKey(profile,trends)?jointCache.current.value:undefined;const next=makeRecord(result,thumbnail,false,{profile,trendSnapshot:form.trendContext,jointAnalysis:cached,form});const saved=saveRecord(next);setDraftRecordId(next.id);setRecords(prev=>[next,...prev].slice(0,20));setRecord(next);setReportBack('details');setView('report');if(!saved)setNotice('报告已生成，但本地历史保存失败。请下载报告保留。');}
   }catch(e){if(alive.current)setError(request.signal.aborted?(timedOut?'等待时间较长，已停止等待。内容已保留，请稍后再试。':'已停止等待，填写内容已保留。'):e instanceof Error?e.message:'网络连接失败，请检查后重试。');}
   finally{window.clearTimeout(timeout);if(controller.current===request)controller.current=null;if(alive.current)setLoading(false);}
  }
@@ -89,14 +89,14 @@ export function BianbianPage(){
   finally{window.clearTimeout(timer);if(jointController.current===request)jointController.current=null;}
  }
  async function saveReport(){if(!record||saving)return;setSaving(true);setNotice('');try{const blob=await reportImage(record);if(!alive.current)return;const name=(record.babyName||'宝宝').replace(/[\/:*?"<>|]/g,'');downloadBlob(blob,`${name}_${record.createdAt.slice(0,10)}_便便分析报告.png`);setNotice('报告长图已生成，请在浏览器下载记录中查看。');}catch(e){setNotice(e instanceof Error?e.message:'报告保存失败，请重试。');}finally{if(alive.current)setSaving(false);}}
- function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView(reportBack==='report'?'home':reportBack);else if(view==='home')navigate('/scene1-parenting');else setView('home');}
+ function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView('home');else if(view==='home')navigate('/scene1-parenting');else setView('home');}
  function clear(){resetBowel();setEntryStage('preview');jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(false);setView('home');}
  const displayedRecords=[...records,...demoRecords].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt));
  const title={home:'便便智能分析',details:'补充信息',report:'便便分析报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
  return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'}`} data-testid="bianbian-page">
   <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
    {entryStage==='preview'?<EntryPreview onBack={()=>navigate('/scene1-parenting')} onActivate={()=>setPanel('member-first')}/>:wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={entryStage==='profile'||!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
-    <PageHeader title={title} onBack={back} onAction={view==='report'?()=>{setNotice('');setError('');setView('home');}:undefined} actionLabel="关闭" onReset={view==='home'?resetEntry:undefined}/>
+    <PageHeader title={title} onBack={back} onAction={view==='report'&&record?()=>setPanel(['red','orange'].includes(record.report.risk)?'doctor':'share'):undefined} actionLabel="分享" onReset={view==='home'?resetEntry:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
     {view==='home'&&<BianbianHome records={displayedRecords} onCameraVisible={setHomeCameraVisible} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} trends={trends}/>}
     {view==='details'&&<BianbianDetails image={image} form={form} repeat={repeatDetails} onChange={changeDetails} onSubmit={submit} onPhoto={openPhoto} error={error} question={question} busy={preparing}/>}

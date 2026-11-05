@@ -19,6 +19,8 @@ export function recordTimestamp(value:string){const parts=new Intl.DateTimeForma
 export function validRecord(v:unknown,allowDemo=false):v is SavedReport {
  if(!v||typeof v!=='object')return false;
  const x=v as SavedReport,r=x.report;
+ if(r?.actionPlan!==undefined&&(!Array.isArray(r.actionPlan)||!r.actionPlan.every(a=>a&&typeof a.title==='string'&&typeof a.when==='string'&&Array.isArray(a.steps)&&a.steps.every(v=>typeof v==='string')&&typeof a.watchFor==='string')))return false;
+ if(r?.deepAnalysis!==undefined&&(!Array.isArray(r.deepAnalysis)||!r.deepAnalysis.every(a=>a&&typeof a.title==='string'&&typeof a.body==='string')))return false;
  return (x.regularitySnapshot===undefined||(validTrends(x.regularitySnapshot)&&x.regularitySnapshot.source==='records'))&&(x.babyName===undefined||typeof x.babyName==='string')&&(x.trendSnapshot===undefined||validTrends(x.trendSnapshot))&&(x.jointAnalysis===undefined||validJoint(x.jointAnalysis))&&typeof x.id==='string'&&typeof x.createdAt==='string'&&Number.isFinite(Date.parse(x.createdAt))&&typeof x.thumbnail==='string'&&(x.demo===false||allowDemo&&x.demo===true)&&!!r&&r.kind==='report'&&['green','yellow','orange','red','unknown'].includes(r.risk)&&['summary','detail','question','cause'].every(k=>typeof r[k as keyof Report]==='string')&&Array.isArray(r.facts)&&r.facts.every(f=>f&&['label','value','detail','comparison'].every(k=>typeof f[k as keyof typeof f]==='string'))&&Array.isArray(r.actions)&&r.actions.every(a=>a&&typeof a.title==='string'&&Array.isArray(a.items)&&a.items.every(i=>typeof i==='string'))&&Array.isArray(r.evidence)&&r.evidence.every(e=>typeof e==='string');
 }
 export function loadRecords():SavedReport[] {

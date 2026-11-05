@@ -1,3 +1,4 @@
+import {deepAnalysisSections} from './deepAnalysis';
 import {missingRiskMessage,riskQuantity} from './riskObservations';
 import {displayCopy} from './presentationCopy';
 import {reportContext,appearanceConclusion,observationConclusion,referenceParagraphs,riskObservations,observationTrendConclusion,indicatorDetails,riskObservationConclusion,conclusionSegments,overviewConclusion} from './reportSummary';
@@ -14,11 +15,11 @@ export function BianbianReport({record,onShare,onDoctor,onEdit,notice,jointLoadi
 
   {notice&&<p className="br-error" role="status">{notice}</p>}
   <ReportContent record={record} jointLoading={jointLoading} jointError={jointError} onJoint={onJoint} onCancelJoint={onCancelJoint} onEdit={onEdit}/>
- </div><footer className="br-action-footer bs-share-footer"><button type="button" className={`br-primary ${riskPresentation[r.risk].doctor?'br-doctor-cta':''}`} onClick={riskPresentation[r.risk].doctor?onDoctor:onShare}><Icon name="share"/>{riskPresentation[r.risk].doctor?'分享给医生 · 一键问诊':'分享给家人'}</button></footer></>;
+ </div></>;
 
 }
 
-export function ReportContent({record,conclusionText,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;conclusionText?:string;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
+export function ReportContent({record,conclusionText,showRegularity=false,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;conclusionText?:string;showRegularity?:boolean;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
  record=displayCopy(record);
  const r=record.report;
  const conclusion=conclusionText??overviewConclusion(record);
@@ -31,10 +32,10 @@ export function ReportContent({record,conclusionText,showTimestamp=true,jointLoa
     </section><section className="br-report-section bs-important-indicators bs-observation-v19"><h3>重要指标解读</h3><div className="bs-observation-facts">{indicatorDetails(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{f.value}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description">{f.description}</p>}</div>)}</div>
      <div className="bs-risk-observations" aria-label="风险观察"><div>{riskObservations(record).filter(item=>riskQuantity(item.value)).map(item=><span className={`bs-risk-observation bs-risk-observation-${item.state}`} key={item.label}><span>{item.label}</span><strong title={item.value}>{riskQuantity(item.value)}</strong></span>)}</div>{missingRiskMessage(r)&&<p className="br-support">{missingRiskMessage(r)}</p>}</div>
    </section>
-   {record.regularitySnapshot&&<StoolWeekChart data={record.regularitySnapshot} compact/>}
+   {showRegularity&&record.regularitySnapshot&&<StoolWeekChart data={record.regularitySnapshot} compact/>}
    {r.question&&<section className="br-report-section"><h3>可补充的信息</h3><p>{r.question}</p><button className="br-text-button" type="button" onClick={onEdit}>补充信息<Icon name="next"/></button></section>}
    <section className="br-report-section bv-actions"><h3>行动建议</h3>{importantActions(record).map((a,i)=><div className="bt-plan" key={i}><span>{i+1}</span><div><h4>{a.title}</h4><p>{a.action}</p></div></div>)}</section>
-   <section className="br-report-section bs-reference"><h3>深度分析</h3><details className="br-summary-details" open><summary><span>完整分析依据</span><Icon name="next"/></summary>{referenceParagraphs(record).map((text,i)=><p key={i}>{text}</p>)}{r.facts.filter(f=>!['颜色','性状'].includes(f.label)).map(f=><p key={f.label}><strong>{f.label}：</strong>{[f.value,f.detail,f.comparison].filter(Boolean).join('；')}</p>)}</details></section>
+   <section className="br-report-section bs-reference"><h3>深度分析</h3>{deepAnalysisSections(record).map(s=><div className="br-deep-item" key={s.title}><h4>{s.title}</h4><p>{s.body}</p></div>)}</section>
    <section className="br-report-section br-sources"><h3><Icon name="book"/>育儿参考资料</h3>{referenceSources.map(s=><a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.title}<span aria-hidden="true">↗</span></a>)}</section>
    <p className="br-report-disclaimer">如宝宝出现不适，请及时咨询医生。</p>
   </article>);

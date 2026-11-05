@@ -237,3 +237,13 @@
 .bs-important-indicators .bs-observation-fact>span,.bs-important-indicators .bs-risk-observation>span{font-size:13px;line-height:20px;font-weight:600;color:#323232}
 .bs-important-indicators .bs-observation-fact strong,.bs-important-indicators .bs-risk-observation strong{font-size:14px;line-height:21px;font-weight:600;color:#aa365f}
 .bs-important-indicators .bs-risk-observation{gap:5px}
+
+/* V46: the same reading hierarchy for live and sample reports. */
+.br-report-paper{--report-body-size:13px;--report-body-line:23px;--report-title-size:16px}
+.br-report-paper .br-report-section>h3{font-size:var(--report-title-size);line-height:24px;font-weight:600;color:#323232;margin:0 0 10px}
+.br-report-paper .bv-actions .bt-plan{margin:10px 0 0;gap:8px}
+.br-report-paper .bv-actions .bt-plan h4,.br-report-paper .br-deep-item h4{font-size:14px;line-height:22px;font-weight:600;color:#323232;margin:0 0 4px}
+.br-report-paper .bv-actions .bt-plan p,.br-report-paper .br-deep-item p,.br-report-paper .bs-observation-result>p{font-size:var(--report-body-size);line-height:var(--report-body-line);font-weight:400;margin:0;overflow-wrap:anywhere}
+.br-report-paper .br-deep-item p,.br-report-paper .bv-actions .bt-plan p{color:#666}
+.br-report-paper .br-deep-item+.br-deep-item{margin-top:12px}
+.br-report-scroll{padding-bottom:max(16px,env(safe-area-inset-bottom))}
