@@ -98,7 +98,7 @@ export function BianbianPage(){
  return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'} ${view==='report'||entryStage==='preview'?'br-report-view':''}`} style={reportDesignVariables} data-testid="bianbian-page">
   <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
    {entryStage==='preview'?<EntryPreview onBack={()=>navigate('/scene1-parenting')} onActivate={()=>setPanel('member-first')}/>:wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={entryStage==='profile'||!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
-    <PageHeader title={title} onBack={back} onShare={view==='report'&&record?()=>setPanel('share'):undefined} onAction={view==='report'?back:undefined} actionLabel="关闭" onReset={view==='home'?resetEntry:undefined}/>
+    <PageHeader title={title} onBack={back} onAction={view==='report'&&record?()=>setPanel('share'):undefined} actionLabel="分享" onReset={view==='home'?resetEntry:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
     {view==='home'&&<BianbianHome records={displayedRecords} onCameraVisible={setHomeCameraVisible} onPhoto={openPhoto} onHistory={()=>setView('history')} onRecord={r=>showRecord(r,'home')} trends={trends}/>}
     {view==='details'&&<BianbianDetails image={image} form={form} repeat={repeatDetails} onChange={changeDetails} onSubmit={submit} onPhoto={openPhoto} error={error} question={question} busy={preparing}/>}
