@@ -1,3 +1,4 @@
+import {reportDesignVariables} from './reportDesign';
 import {regularityTrend} from './regularity';
 import {bowelSnapshot,loadPreviousBowel,savePreviousBowel,reusePreviousBowel} from './previousBowel';
 import {EntryPreview,CameraDock} from './EntryPreview';
@@ -25,6 +26,7 @@ import { SavedReport,downloadBlob,clearBianbianData,createThumbnail,loadRecords,
 import './bianbian.css';
 import './reference.css';
 import './trends.css';
+import './reportDesign.css';
 type View='home'|'details'|'report'|'history'|'settings'|'trends';
 export function BianbianPage(){
  const navigate=useNavigate();const [initial]=useState(loadBabyProfile);
@@ -93,7 +95,7 @@ export function BianbianPage(){
  function clear(){resetBowel();setEntryStage('preview');jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(false);setView('home');}
  const displayedRecords=[...records,...demoRecords].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt));
  const title={home:'便便智能分析',details:'补充信息',report:'便便分析报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
- return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'}`} data-testid="bianbian-page">
+ return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'} ${view==='report'||entryStage==='preview'?'br-report-view':''}`} style={reportDesignVariables} data-testid="bianbian-page">
   <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
    {entryStage==='preview'?<EntryPreview onBack={()=>navigate('/scene1-parenting')} onActivate={()=>setPanel('member-first')}/>:wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={entryStage==='profile'||!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
     <PageHeader title={title} onBack={back} onShare={view==='report'&&record?()=>setPanel('share'):undefined} onAction={view==='report'?back:undefined} actionLabel="关闭" onReset={view==='home'?resetEntry:undefined}/>

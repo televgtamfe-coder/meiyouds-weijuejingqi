@@ -34,7 +34,7 @@ describe('第四版资料、趋势和报告边界',()=>{
   const r=makeRecord(demoReport,'',false,{profile,trendSnapshot:trends});
   profile.nickname='改名后';trends.days[0].sleepHours=1;
   expect(r.babyName).toBe('小宝');expect(r.trendSnapshot?.days[0].sleepHours).not.toBe(1);
-  expect(recordTimestamp('2026-10-27T09:56:24Z')).toBe('2026年10月27日17:56:24');
+  expect(recordTimestamp('2026-10-27T09:56:24Z')).toBe('2026年10月27日 17:56:24');
  });
  it('联合结果缺少必要领域不得冒充完整分析',()=>{
   expect(()=>parseJointAnalysis('{"summary":"一切正常"}')).toThrow();

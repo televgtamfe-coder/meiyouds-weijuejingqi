@@ -15,7 +15,7 @@ export function makeRecord(report:Report,thumbnail='',demo=false,context?:{profi
  if(!demo)result.regularitySnapshot=regularityTrend([...loadRecords(),result],new Date(result.createdAt));
  return result;
 }
-export function recordTimestamp(value:string){const parts=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value));const v=(key:string)=>parts.find(p=>p.type===key)?.value||'';return `${v('year')}年${v('month')}月${v('day')}日${v('hour')}:${v('minute')}:${v('second')}`;}
+export function recordTimestamp(value:string){const parts=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value));const v=(key:string)=>parts.find(p=>p.type===key)?.value||'';return `${v('year')}年${v('month')}月${v('day')}日 ${v('hour')}:${v('minute')}:${v('second')}`;}
 export function validRecord(v:unknown,allowDemo=false):v is SavedReport {
  if(!v||typeof v!=='object')return false;
  const x=v as SavedReport,r=x.report;
