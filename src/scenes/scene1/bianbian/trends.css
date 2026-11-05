@@ -247,3 +247,12 @@
 .br-report-paper .br-deep-item p,.br-report-paper .bv-actions .bt-plan p{color:#666}
 .br-report-paper .br-deep-item+.br-deep-item{margin-top:12px}
 .br-report-scroll{padding-bottom:max(16px,env(safe-area-inset-bottom))}
+
+/* V49: grouped report explanations, aligned with indicator cards. */
+.br-report-paper .br-deep-sections{display:grid;gap:8px}
+.br-report-paper .br-deep-item{padding:12px;background:#f8f6f9;border-radius:10px;min-width:0}
+.br-report-paper .br-deep-item+.br-deep-item{margin-top:0}
+.br-report-paper .br-deep-item h4{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.br-report-paper .br-deep-item h4>span{font-size:11px;line-height:18px;color:#bd3565;background:#ffeaf2;border-radius:4px;padding:0 4px;font-weight:600}
+.br-report-paper .br-deep-item p+p{margin-top:7px}
+.br-chart-sample{display:inline-block;margin-left:6px;vertical-align:middle;font-size:10px;line-height:18px;font-weight:400;color:#946078;background:#fff0f6;border-radius:4px;padding:0 5px}

@@ -12,8 +12,8 @@ it('有记录快照的报告与分享均保留图表，深度分析保持展开'
  const row=createEntrySample();const view=render(<ReportContent record={row}/>);
  expect(view.container.querySelector('.bt-stool-card')).not.toBeNull();expect(view.container.querySelector('details')).toBeNull();
  expect(reportSections(row).map(s=>s.title)).toContain('便便规律性解读');
- expect(view.container.querySelector('.bs-important-indicators')?.nextElementSibling).toHaveClass('bt-stool-card');
- expect(screen.getByText('外观与性状解读')).toBeVisible();
+ expect(view.container.querySelector('.bs-reference')?.nextElementSibling).toHaveClass('bt-stool-card');
+ expect(screen.getByText('外观与性状')).toBeVisible();
  view.rerender(<ReportContent record={row} showRegularity conclusionText={entrySampleConclusion}/>);
  expect(view.container.querySelectorAll('[data-stool-risk]')).toHaveLength(18);
 });
@@ -30,4 +30,14 @@ it('急需处理的指引优先且完整保留，最多三个行动点',()=>{
  const row=createEntrySample();row.report.actions=[{title:'优先处理',items:['立即就医，不要等待拍照。','带上已有报告。']}];
  const actions=importantActions(row);expect(actions).toHaveLength(3);expect(actions[0].action).toContain('立即就医');expect(actions[0].action).toContain('带上已有报告');
  expect(deepAnalysisSections(row)).toHaveLength(3);
+});
+
+it('旧长报告分组去重，保留发热与就医提示，缺少真实快照时图表明确示例',()=>{
+ const row=createEntrySample();delete row.report.deepAnalysis;delete row.regularitySnapshot;
+ row.report.detail='金黄色糊状便。宝宝4个月，混合喂养。档案记录有发热，应测量体温并联系医生。';
+ row.report.cause='档案记录有发热，应测量体温并联系医生。';
+ const groups=deepAnalysisSections(row);expect(groups.map(s=>s.title)).toEqual(['外观与性状','宝宝背景','重点关注']);
+ const focus=groups.find(s=>s.title==='重点关注')!.body;expect(focus.split('档案记录有发热')).toHaveLength(2);expect(focus).toContain('联系医生');
+ const view=render(<ReportContent record={row}/>);expect(view.container.querySelector('.br-chart-sample')).toHaveTextContent('示例');
+ expect(view.container.querySelector('.bs-reference')?.nextElementSibling).toHaveClass('bt-stool-card');
 });

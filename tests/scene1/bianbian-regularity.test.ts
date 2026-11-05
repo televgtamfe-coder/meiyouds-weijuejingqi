@@ -17,10 +17,10 @@ it('规律记录独立于最近20份完整报告，清空后也清除统计',()=
  rememberRegularity(Array.from({length:8},(_,i)=>row(i)),now);
  expect(regularityTrend([],now)).toBeDefined();clearBianbianData();expect(regularityTrend([],now)).toBeUndefined();
 });
-it('报告与分享仅展示当时保存的规律快照',()=>{
- const r=row(0);expect(reportSections(r).some(x=>x.title==='便便规律性解读')).toBe(false);
+it('真实快照优先，缺少快照时明确标记示例且不写入真实规律',()=>{
+ const r=row(0);expect(reportSections(r).find(x=>x.title==='便便规律性解读')?.body).toContain('示例');expect(r.regularitySnapshot).toBeUndefined();expect(regularityTrend([],now)).toBeUndefined();
  r.regularitySnapshot=regularityTrend(Array.from({length:8},(_,i)=>row(i)),now);
- expect(r.regularitySnapshot).toBeDefined();expect(reportSections(r).some(x=>x.title==='便便规律性解读')).toBe(true);
+ expect(r.regularitySnapshot).toBeDefined();expect(reportSections(r).find(x=>x.title==='便便规律性解读')?.body).not.toContain('示例');
 });
 it('三个新字段从接口到持久化和导出一致，旧异常不猜数量',()=>{
  const report=normalizeReport({status:'success',risk_level:'yellow',risk_observations:{blood:{status:'少量',evidence:'可见少量血丝'},milk_curds:{status:'大量',evidence:'可见大量奶瓣'},pale:{status:'未发现',evidence:'未发现灰白色区域'}}});
