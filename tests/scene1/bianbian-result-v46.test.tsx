@@ -8,10 +8,11 @@ import {importantActions} from '../../src/scenes/scene1/bianbian/importantAction
 import {saveRecord,loadRecords} from '../../src/scenes/scene1/bianbian/records';
 import {reportSections,reportText} from '../../src/scenes/scene1/bianbian/reportExport';
 beforeEach(()=>{localStorage.clear();sessionStorage.clear();});
-it('真实报告与分享无图表，示例仍有七天记录，深度分析无折叠',()=>{
+it('有记录快照的报告与分享均保留图表，深度分析保持展开',()=>{
  const row=createEntrySample();const view=render(<ReportContent record={row}/>);
- expect(view.container.querySelector('.bt-stool-card')).toBeNull();expect(view.container.querySelector('details')).toBeNull();
- expect(reportSections(row).map(s=>s.title)).not.toContain('便便规律性解读');
+ expect(view.container.querySelector('.bt-stool-card')).not.toBeNull();expect(view.container.querySelector('details')).toBeNull();
+ expect(reportSections(row).map(s=>s.title)).toContain('便便规律性解读');
+ expect(view.container.querySelector('.bs-important-indicators')?.nextElementSibling).toHaveClass('bt-stool-card');
  expect(screen.getByText('外观与性状解读')).toBeVisible();
  view.rerender(<ReportContent record={row} showRegularity conclusionText={entrySampleConclusion}/>);
  expect(view.container.querySelectorAll('[data-stool-risk]')).toHaveLength(18);

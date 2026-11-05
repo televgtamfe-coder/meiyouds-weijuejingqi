@@ -19,7 +19,7 @@ export function BianbianReport({record,onShare,onDoctor,onEdit,notice,jointLoadi
 
 }
 
-export function ReportContent({record,conclusionText,showRegularity=false,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;conclusionText?:string;showRegularity?:boolean;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
+export function ReportContent({record,conclusionText,showRegularity=true,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;conclusionText?:string;showRegularity?:boolean;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
  record=displayCopy(record);
  const r=record.report;
  const conclusion=conclusionText??overviewConclusion(record);
