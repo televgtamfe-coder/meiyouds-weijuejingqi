@@ -16,6 +16,8 @@ import { BianbianReport } from './BianbianReport';
 import { BianbianSettings,BianbianPanels,Panel } from './BianbianSettings';
 import {AnalysisWaiting} from './AnalysisWaiting';
 import { CameraCapture } from './CameraCapture';
+import {DemoFlowControl,DEMO_FLOW_ENABLED,DEMO_CONTROL_ID} from './DemoFlowControl';
+import {createDemoDraft,createDemoResult,demoPhoto} from './demoFlow';
 import {createMockTrends,mockDetailDefaults,TrendSet} from './trendData';
 import {analyzeTrends,JointAnalysis} from './trendAnalysis';
 import {TrendsPage} from './TrendsPage';
@@ -44,9 +46,11 @@ export function BianbianPage(){
  const [previousBowel,setPreviousBowel]=useState(()=>loadPreviousBowel(loadRecords()));
  const [repeatDetails,setRepeatDetails]=useState(false);
  function rememberBowel(next:AnalysisForm){const value=bowelSnapshot(next);if(value){setPreviousBowel(value);savePreviousBowel(value);}}
- function changeDetails(next:AnalysisForm){setForm(next);rememberBowel(next);}
+ function changeDetails(next:AnalysisForm){setForm(next);if(!demoActive)rememberBowel(next);}
  function resetBowel(){setPreviousBowel(null);savePreviousBowel(null);setRepeatDetails(false);}
  const [camera,setCamera]=useState(false),[saving,setSaving]=useState(false);
+ const [demoActive,setDemoActive]=useState(false),[demoLoading,setDemoLoading]=useState(false);
+ const demoBackup=useRef<{form:AnalysisForm;image:string;repeat:boolean}|null>(null);
  const jointController=useRef<AbortController|null>(null),jointCache=useRef<{key:string;value:JointAnalysis}|null>(null);
  const [jointState,setJointState]=useState({key:'',loading:false,error:''}),[joint,setJoint]=useState<JointAnalysis|null>(null);
  const jointKey=(p:BabyProfile,t:TrendSet)=>JSON.stringify([p,t]);
@@ -55,17 +59,22 @@ export function BianbianPage(){
  const [records,setRecords]=useState(loadRecords),[record,setRecord]=useState<SavedReport|null>(null),[reminder,setReminder]=useState(()=>readFlag(reminderKey));
  const contentRef=useRef<HTMLDivElement>(null),photoInput=useRef<HTMLInputElement>(null),cameraInput=useRef<HTMLInputElement>(null),controller=useRef<AbortController|null>(null),uploadVersion=useRef(0),alive=useRef(true);
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;controller.current?.abort();jointController.current?.abort();};},[]);
- useEffect(()=>{contentRef.current?.toggleAttribute('inert',!!panel||loading||camera);},[panel,loading,camera]);
+ useEffect(()=>{contentRef.current?.toggleAttribute('inert',!!panel||loading||demoLoading||camera);},[panel,loading,demoLoading,camera]);
+ useEffect(()=>{if(!demoLoading)return;const timer=window.setTimeout(finishDemo,3500);return()=>window.clearTimeout(timer);},[demoLoading]);
+ function beginDemo(){if(!demoActive)demoBackup.current={form,image,repeat:repeatDetails};setDemoActive(true);setCamera(false);setPreparing(false);setDemoLoading(false);setImage(demoPhoto);setForm(createDemoDraft());setRepeatDetails(false);setError('');setQuestion('');setNotice('');setView('details');}
+ function finishDemo(){setDemoLoading(false);setRecord(createDemoResult());setReportBack('home');setView('report');setNotice('');}
+ function endDemo(){setDemoLoading(false);setDemoActive(false);if(demoBackup.current){setForm(demoBackup.current.form);setImage(demoBackup.current.image);setRepeatDetails(demoBackup.current.repeat);}demoBackup.current=null;setError('');setQuestion('');setView('home');}
+ function nextDemo(){if(camera)beginDemo();else if(demoLoading)finishDemo();else if(view==='details')setDemoLoading(true);else endDemo();}
  useEffect(()=>{if((error||question)&&view==='details')document.querySelector('.br-feedback')?.scrollIntoView?.({block:'center',behavior:'smooth'});},[error,question,view]);
  function confirmProfile(next:BabyProfile){next=withMockFormula(next);const firstSetup=entryStage==='profile';jointController.current?.abort();jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});setProfile(next);saveBabyProfile(next);setConfirmed(true);setWizard(false);setForm(prev=>({...prev,...next}));saveEntryStage('ready');setEntryStage('ready');if(firstSetup){newAnalysis.current=true;setView('home');setCamera(true);}}
  function closeProfile(){if(entryStage==='ready'&&confirmed)setWizard(false);else navigate('/scene1-parenting');}
  function activateEntry(){saveEntryStage('profile');setEntryStage('profile');setPanel(null);setWizardStep(loadBabyProfile().needsBasicInfo?0:1);setWizardQuick(false);setWizardFormula(false);setWizard(true);}
  function openPhoto(){newAnalysis.current=view!=='details';setCamera(true);}
  async function upload(event:ChangeEvent<HTMLInputElement>){const file=event.target.files?.[0];event.target.value='';if(file)await receivePhoto(file);}
- async function receivePhoto(file:File){setCamera(false);const version=++uploadVersion.current;setPreparing(true);setError('');try{const prepared=await prepareImage(file);if(alive.current&&version===uploadVersion.current){setImage(prepared);setDraftRecordId('');if(newAnalysis.current){const next=reusePreviousBowel(freshForm(profile),previousBowel);setRepeatDetails(!!previousBowel);setForm(next);rememberBowel(next);}setView('details');setQuestion('');}}catch(e){if(alive.current&&version===uploadVersion.current)setError(e instanceof Error?e.message:'照片读取失败，请重试。');}finally{if(alive.current&&version===uploadVersion.current)setPreparing(false);}}
+ async function receivePhoto(file:File){setCamera(false);const version=++uploadVersion.current;setPreparing(true);setError('');try{const prepared=await prepareImage(file);if(alive.current&&version===uploadVersion.current){setImage(prepared);setDraftRecordId('');if(newAnalysis.current||demoActive){const next=reusePreviousBowel(freshForm(profile),previousBowel);setRepeatDetails(!!previousBowel);setForm(next);rememberBowel(next);}setDemoActive(false);setDemoLoading(false);demoBackup.current=null;setView('details');setQuestion('');}}catch(e){if(alive.current&&version===uploadVersion.current)setError(e instanceof Error?e.message:'照片读取失败，请重试。');}finally{if(alive.current&&version===uploadVersion.current)setPreparing(false);}}
  function showRecord(next:SavedReport,from:View){setRecord(next);setReportBack(from);setNotice('');setView('report');}
  function editReport(){if(image&&(record?.demo||record?.id===draftRecordId)){setView('details');setError('');setQuestion('');}else openPhoto();}
- async function submit(event?:FormEvent){event?.preventDefault();if(controller.current||preparing)return;if(!confirmed){setWizard(true);return;}if(!image)return setError('请先添加一张清晰的便便照片。');if(!form.bowelPattern)return setError('请选择最近的排便情况。');if(!form.consent)return setError('请先阅读并勾选照片与资料使用说明。');
+ async function submit(event?:FormEvent){event?.preventDefault();if(demoActive){setDemoLoading(true);return;}if(controller.current||preparing)return;if(!confirmed){setWizard(true);return;}if(!image)return setError('请先添加一张清晰的便便照片。');if(!form.bowelPattern)return setError('请选择最近的排便情况。');if(!form.consent)return setError('请先阅读并勾选照片与资料使用说明。');
   const request=new AbortController();controller.current=request;setLoading(true);setError('');setQuestion('');setNotice('');let timedOut=false;
   const timeout=window.setTimeout(()=>{timedOut=true;request.abort();},ANALYSIS_TIMEOUT_MS);
   try{const result=await analyze(image,form,request.signal);if(!alive.current||request.signal.aborted)return;
@@ -92,12 +101,13 @@ export function BianbianPage(){
   finally{window.clearTimeout(timer);if(jointController.current===request)jointController.current=null;}
  }
  async function saveReport(){if(!record||saving)return;setSaving(true);setNotice('');try{const blob=await reportImage(record);if(!alive.current)return;const name=(record.babyName||'宝宝').replace(/[\/:*?"<>|]/g,'');downloadBlob(blob,`${name}_${record.createdAt.slice(0,10)}_便便分析报告.png`);setNotice('报告长图已生成，请在浏览器下载记录中查看。');}catch(e){setNotice(e instanceof Error?e.message:'报告保存失败，请重试。');}finally{if(alive.current)setSaving(false);}}
- function back(){if(view==='trends')cancelJoint();setError('');if(view==='report')setView('home');else if(view==='home')navigate('/scene1-parenting');else setView('home');}
+ function back(){if(demoActive){endDemo();return;}if(view==='trends')cancelJoint();setError('');if(view==='report')setView('home');else if(view==='home')navigate('/scene1-parenting');else setView('home');}
  function clear(){resetBowel();setEntryStage('preview');jointController.current?.abort();jointController.current=null;jointCache.current=null;setJoint(null);setJointState({key:'',loading:false,error:''});clearBianbianData();setPanel(null);setRecords([]);setRecord(null);setReminder(false);setImage('');setDraftRecordId('');setForm(freshForm(initial.profile));const next=loadBabyProfile();setProfile(next.profile);setConfirmed(false);setWizardStep(0);setWizardQuick(false);setWizardFormula(false);setWizard(false);setView('home');}
  const displayedRecords=[...records,...demoRecords].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt));
  const title={home:'便便智能分析',details:'补充信息',report:'便便分析报告',history:'历史报告',settings:'我的',trends:'成长联合分析'}[view];
- return <div className={`bb-page br-app ${entryStage==='ready'?'be-ready':'be-onboarding'} ${view==='report'||entryStage==='preview'?'br-report-view':''}`} style={reportDesignVariables} data-testid="bianbian-page">
-  <div className="br-main" ref={contentRef} aria-hidden={panel||loading||camera?true:undefined}><StatusBar/>
+ const demoStep=DEMO_FLOW_ENABLED&&!panel&&!wizard&&entryStage==='ready'?(camera?'camera':demoActive?(demoLoading?'waiting':view==='details'?'details':view==='report'?'complete':null):null):null;
+ return <div className={`bb-page br-app ${demoActive?'br-demo-mode':''} ${demoStep?'br-demo-controls-active':''} ${entryStage==='ready'?'be-ready':'be-onboarding'} ${view==='report'||entryStage==='preview'?'br-report-view':''}`} style={reportDesignVariables} data-testid="bianbian-page">
+  <div className="br-main" ref={contentRef} aria-hidden={panel||loading||demoLoading||camera?true:undefined}><StatusBar/>
    {entryStage==='preview'?<EntryPreview onBack={()=>navigate('/scene1-parenting')} onActivate={()=>setPanel('member-first')}/>:wizard?<BabyProfileWizard initialStep={wizardStep} singleStep={wizardQuick} formulaOnly={wizardFormula} profile={profile} first={entryStage==='profile'||!confirmed} onConfirm={confirmProfile} onClose={closeProfile}/>:<>
     <PageHeader title={title} onBack={back} onAction={view==='report'&&record?()=>setPanel('share'):undefined} actionLabel="分享" onReset={view==='home'?resetEntry:undefined}/>
     {view!=='details'&&error&&<p className="br-error br-global-error" role="alert">{error}</p>}{preparing&&<p className="br-upload-status" role="status">正在处理照片…</p>}
@@ -112,8 +122,9 @@ export function BianbianPage(){
   </div>
   <input ref={photoInput} type="file" accept="image/jpeg,image/png,image/webp" onChange={upload} hidden aria-label="选择便便照片"/>
   <input ref={cameraInput} type="file" accept="image/*" capture="environment" onChange={upload} hidden aria-label="拍摄便便照片"/>
-  {camera&&<CameraCapture onClose={()=>setCamera(false)} onPhoto={file=>void receivePhoto(file)} onAlbum={()=>photoInput.current?.click()} onNative={()=>cameraInput.current?.click()}/>}
+  {camera&&<CameraCapture externalControlId={demoStep?DEMO_CONTROL_ID:undefined} onClose={()=>setCamera(false)} onPhoto={file=>void receivePhoto(file)} onAlbum={()=>photoInput.current?.click()} onNative={()=>cameraInput.current?.click()}/>}
   {panel&&panel!=='photo'&&<BianbianPanels key={panel} panel={panel} reminder={reminder} record={record} onClose={closePanel} onReminder={value=>{setReminder(value);writeFlag(reminderKey,value);setPanel(null);}} onClear={clear} onActivate={activateEntry}/>}
-  {loading&&<div className="br-loading-mask" tabIndex={-1} ref={el=>el?.focus()} role="dialog" aria-modal="true" aria-labelledby="br-loading-title" onKeyDown={e=>{if(e.key==='Tab')e.preventDefault();if(e.key==='Escape')controller.current?.abort();}}><div className="br-loading-card"><div className="br-loading-symbol"><KitIcon name="camera"/></div><h2 id="br-loading-title">正在分析宝宝的便便</h2><AnalysisWaiting kind="photo"/></div></div>}
+  {(loading||demoLoading)&&<div className="br-loading-mask" tabIndex={-1} ref={el=>el?.focus()} role="dialog" aria-modal="true" aria-labelledby="br-loading-title" aria-owns={demoLoading?DEMO_CONTROL_ID:undefined} onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();if(demoLoading)document.getElementById(DEMO_CONTROL_ID)?.querySelector('button')?.focus();}if(e.key==='Escape'){if(demoLoading)setDemoLoading(false);else controller.current?.abort();}}}><div className="br-loading-card"><div className="br-loading-symbol"><KitIcon name="camera"/></div><h2 id="br-loading-title">正在分析宝宝的便便</h2><AnalysisWaiting kind="photo"/></div></div>}
+  <DemoFlowControl step={demoStep} onNext={nextDemo}/>
  </div>;
 }

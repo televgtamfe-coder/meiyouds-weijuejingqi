@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {Icon} from './ui';
-export function CameraCapture({onClose,onPhoto,onAlbum,onNative}:{onClose:()=>void;onPhoto:(file:File)=>void;onAlbum:()=>void;onNative:()=>void}){
+export function CameraCapture({onClose,onPhoto,onAlbum,onNative,externalControlId}:{onClose:()=>void;onPhoto:(file:File)=>void;onAlbum:()=>void;onNative:()=>void;externalControlId?:string}){
  const video=useRef<HTMLVideoElement>(null),stream=useRef<MediaStream|null>(null),frame=useRef<HTMLDivElement>(null);
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const root=useRef<HTMLDivElement>(null),mounted=useRef(true);
@@ -10,7 +10,7 @@ export function CameraCapture({onClose,onPhoto,onAlbum,onNative}:{onClose:()=>vo
   void start();return()=>{active=false;mounted.current=false;stream.current?.getTracks().forEach(t=>t.stop());stream.current=null;window.setTimeout(()=>before?.isConnected&&before.focus(),0);};
  },[]);
  async function capture(){const v=video.current;if(!v||!ready||busy)return;setBusy(true);try{const c=document.createElement('canvas');const box=frame.current!.getBoundingClientRect(),viewport=v.getBoundingClientRect();const scale=Math.max(viewport.width/v.videoWidth,viewport.height/v.videoHeight);const sx=(box.left-viewport.left+(v.videoWidth*scale-viewport.width)/2)/scale,sy=(box.top-viewport.top+(v.videoHeight*scale-viewport.height)/2)/scale;const sw=box.width/scale,sh=box.height/scale;c.width=Math.round(sw);c.height=Math.round(sh);c.getContext('2d')!.drawImage(v,sx,sy,sw,sh,0,0,c.width,c.height);const blob=await new Promise<Blob|null>(resolve=>c.toBlob(resolve,'image/jpeg',.9));if(!blob)throw new Error('拍摄失败，请重试。');if(!mounted.current)return;onPhoto(new File([blob],'宝宝便便照片.jpg',{type:'image/jpeg'}));}catch{if(mounted.current){setError('拍摄失败，请重试或从相册选择。');setBusy(false);}}}
- return <div ref={root} className="bc-camera" role="dialog" aria-modal="true" aria-label="拍摄便便照片" onKeyDown={e=>{if(e.key==='Escape')onClose();if(e.key==='Tab'){const buttons=Array.from(root.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')||[]);const i=buttons.indexOf(document.activeElement as HTMLButtonElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length]?.focus();}}}>
+ return <div ref={root} className="bc-camera" role="dialog" aria-modal="true" aria-label="拍摄便便照片" aria-owns={externalControlId} onKeyDown={e=>{if(e.key==='Escape')onClose();if(e.key==='Tab'){const buttons=Array.from(root.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')||[]);const external=externalControlId?document.getElementById(externalControlId)?.querySelector<HTMLButtonElement>('button'):null;if(external)buttons.push(external);const i=buttons.indexOf(document.activeElement as HTMLButtonElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length]?.focus();}}}>
   <video ref={video} autoPlay playsInline muted/><div className="bc-shade"/>
   <header><button type="button" aria-label="关闭相机" onClick={onClose}><Icon name="close"/></button><span>请将尿布放入取景框内</span></header>
   <div ref={frame} className="bc-frame" aria-hidden="true"><i/><i/><i/><i/></div>
