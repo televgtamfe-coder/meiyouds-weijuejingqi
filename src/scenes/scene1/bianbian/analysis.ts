@@ -72,13 +72,23 @@ export function buildMetadata(form: AnalysisForm, now = new Date()) {
   };
 }
 
+// Two model calls may be needed when the first response lacks observation fields.
+// Server budget per call: 5s optional retrieval + 120s model; allow transport overhead.
+export const ANALYSIS_TIMEOUT_MS = 270_000;
+async function analysisError(response: Response) {
+  const body = await response.json().catch(() => null);
+  if (response.status === 429) return '当前使用人数较多，请稍后重试。';
+  if (response.status === 504 || body?.error === 'ANALYZE_TIMEOUT') return '本次分析等待超时，照片和填写内容已保留，请重新分析。';
+  if (response.status === 502 || response.status === 503) return '分析服务暂时繁忙，照片和填写内容已保留，请稍后重试。';
+  return '暂时没能完成分析，照片和填写内容已保留，请稍后重试。';
+}
 export async function analyze(image: string, form: AnalysisForm, signal: AbortSignal) {
   for(let attempt=0;attempt<2;attempt++){
     const response=await fetch('https://mybianbian.com/api/analyze',{
       method:'POST',headers:{'Content-Type':'application/json'},signal,
       body:JSON.stringify({image,metadata:{...buildMetadata(form),...(attempt?{risk_observation_retry:'上次风险观察缺项或冲突，请重新检查本次照片并完整返回三个观察项及依据；不得用默认阴性填充。'}:{})}}),
     });
-    if(!response.ok)throw new Error(response.status===429?'当前使用人数较多，请稍后重试。':'暂时没能完成分析，照片和填写内容已保留，请稍后重试。');
+    if(!response.ok)throw new Error(await analysisError(response));
     const result=normalizeReport(await response.json());
     if(result.kind!=='report'||!missingRiskLabels(result).length||['red','orange'].includes(result.risk))return result;
     if(attempt===1)throw new Error(missingRiskMessage(result));

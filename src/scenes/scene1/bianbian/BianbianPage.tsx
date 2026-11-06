@@ -7,7 +7,7 @@ import {loadMockHistory} from './mockHistory';
 import { ChangeEvent,FormEvent,useEffect,useRef,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StatusBar } from '../components/StatusBar';
-import { AnalysisForm,analyze,emptyForm,prepareImage } from './analysis';
+import { AnalysisForm,ANALYSIS_TIMEOUT_MS,analyze,emptyForm,prepareImage } from './analysis';
 import { BabyProfile,loadBabyProfile,saveBabyProfile,withMockFormula } from './babyProfile';
 import { BabyProfileWizard } from './BabyProfileWizard';
 import { BianbianHome,BianbianHistory } from './BianbianHome';
@@ -67,7 +67,7 @@ export function BianbianPage(){
  function editReport(){if(image&&(record?.demo||record?.id===draftRecordId)){setView('details');setError('');setQuestion('');}else openPhoto();}
  async function submit(event?:FormEvent){event?.preventDefault();if(controller.current||preparing)return;if(!confirmed){setWizard(true);return;}if(!image)return setError('请先添加一张清晰的便便照片。');if(!form.bowelPattern)return setError('请选择最近的排便情况。');if(!form.consent)return setError('请先阅读并勾选照片与资料使用说明。');
   const request=new AbortController();controller.current=request;setLoading(true);setError('');setQuestion('');setNotice('');let timedOut=false;
-  const timeout=window.setTimeout(()=>{timedOut=true;request.abort();},90000);
+  const timeout=window.setTimeout(()=>{timedOut=true;request.abort();},ANALYSIS_TIMEOUT_MS);
   try{const result=await analyze(image,form,request.signal);if(!alive.current||request.signal.aborted)return;
    if(result.kind==='unqualified')setError(result.question||'这张照片暂时无法识别，请在自然光下重新拍摄。');
    else if(result.kind==='followup')setQuestion(result.question);
