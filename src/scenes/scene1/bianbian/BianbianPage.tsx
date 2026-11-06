@@ -26,6 +26,7 @@ import { SavedReport,downloadBlob,clearBianbianData,createThumbnail,loadRecords,
 import './bianbian.css';
 import './reference.css';
 import './trends.css';
+import './interfaceDesign.css';
 import './reportDesign.css';
 type View='home'|'details'|'report'|'history'|'settings'|'trends';
 export function BianbianPage(){

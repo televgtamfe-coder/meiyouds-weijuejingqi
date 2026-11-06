@@ -1,0 +1,88 @@
+/* Shared Meiyou roles for the stool-analysis feature only. Values: reportDesign.ts. */
+.br-app{font-family:var(--mr-fontFamily);background:var(--mr-page);color:var(--mr-primary);letter-spacing:0;font-size:var(--mr-item);line-height:var(--mr-itemLine)}
+.br-app :is(button,input,select,textarea){font-family:inherit;letter-spacing:inherit}
+.br-app :is(h1,h2,h3,h4){font-weight:500}
+.br-app strong{font-weight:600}
+.br-app :is(time,input[type=number],.bc-waiting-progress,.bt-chart-heading){font-variant-numeric:tabular-nums}
+.br-app :is(button,a,input,select,textarea,summary):focus-visible{outline:2px solid var(--mr-action);outline-offset:3px}
+.br-app :is(button,a):active{filter:brightness(.96)}
+.br-app .br-nav{min-height:48px;background:var(--mr-surface)}
+.br-app .statusbar{background:var(--mr-surface)}
+.br-app :is(.br-nav h1,.bm-member-nav h2){font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500}
+.br-app .br-nav button,.br-app .bh-history-more{font-size:var(--mr-item);line-height:var(--mr-itemLine);font-weight:500;color:var(--mr-action);min-height:44px;min-width:44px}
+.br-app .br-nav .br-icon,.br-app .bm-member-nav .br-icon{width:20px;height:20px}
+.br-app :is(.br-primary,.br-secondary,.br-danger-button,.bm-open-button,.be-camera-button){font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500;min-height:var(--mr-buttonHeight);padding:10px 16px}
+.br-app .be-camera-button strong{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500}
+.br-app .be-entry-footer .bm-open-button{min-height:var(--mr-buttonHeight)}
+.br-app .br-secondary,.br-app .br-text-button{color:var(--mr-action)}
+.br-app .br-text-button{font-size:var(--mr-item);line-height:var(--mr-itemLine)}
+.br-app .br-support{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .br-wizard{background:var(--mr-page)}
+.br-app .br-wizard-heading{padding:24px 0 16px}
+.br-app .br-wizard-heading h1{font-size:var(--mr-risk);line-height:var(--mr-riskLine);font-weight:600}
+.br-app .br-wizard-heading p{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .br-wizard-card>header h2{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500;color:var(--mr-primary)}
+.br-app .br-choice strong{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500}
+.br-app .br-choice small,.br-app .br-form-row small{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .br-form-row input,.br-app .br-delivery-row button,.br-app .br-number-fields input{font-size:var(--mr-item);line-height:var(--mr-itemLine);color:var(--mr-primary)}
+.br-app .br-form-row{gap:12px}
+.br-app .br-formula input{flex:1;min-width:0}
+.br-app :is(.br-solids h3,.br-details-card legend,.br-notes>label,.br-more-details>summary){font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500;color:var(--mr-primary)}
+.br-app :is(.br-more-details>summary>span,.br-notes>label>span,.br-details-card fieldset>p,.br-notes>p,.br-count,.br-consent){font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary);font-weight:400}
+.br-app .br-consent{min-height:44px;align-items:center}
+.br-app .br-notes textarea{font-size:var(--mr-item);line-height:var(--mr-itemLine)}
+.br-app :is(.br-symptoms button,.br-patterns>button){font-size:var(--mr-item);line-height:var(--mr-itemLine)}
+.br-app .br-symptoms button[aria-pressed=true],.br-app .br-delivery-row button[aria-pressed=true]{color:var(--mr-action)}
+.br-app .br-number-fields label{font-size:var(--mr-support);line-height:var(--mr-supportLine)}
+.br-app .br-photo-preview button{font-size:var(--mr-item);line-height:var(--mr-itemLine)}
+.br-app .br-panel h2{font-size:var(--mr-title);line-height:var(--mr-titleLine);font-weight:500}
+.br-app .br-panel>p,.br-app .br-share-loading{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .br-loading-card h2{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500}
+.br-app .br-loading-card .bc-waiting-steps span,.br-app .br-loading-card .bc-waiting>p{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .br-loading-card .bc-waiting-steps span.active{color:var(--mr-action);font-weight:500}
+.br-app .bc-waiting-progress>div:first-child{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .bc-waiting-progress strong{font-size:var(--mr-item);line-height:var(--mr-itemLine);color:var(--mr-action)}
+.br-app .bm-v7-path,.br-app .bm-v7-path span{font-size:var(--mr-label);line-height:var(--mr-labelLine);color:var(--mr-action)}
+.br-app .bm-v7-benefits>h3{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500}
+.br-app .bm-v7-benefits>h3>span,.br-app .bm-v7-benefit small{font-size:var(--mr-label);line-height:var(--mr-labelLine);color:var(--mr-action)}
+.br-app .bm-v7-benefit h4{font-size:var(--mr-item);line-height:var(--mr-itemLine);font-weight:500}
+.br-app .bm-v7-benefit p{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .bm-v7-benefit small{display:block;margin-top:6px}
+.br-app .bm-discount{font-size:var(--mr-label);line-height:var(--mr-labelLine);font-weight:500;background:var(--mr-action)}
+.br-app .bm-v7-benefits{border-radius:var(--mr-radius)}
+.br-app .br-home{padding-top:16px}
+.br-app .bh-camera-entry{border-radius:var(--mr-radius);background:var(--mr-brandSoft);box-shadow:none}
+.br-app .bh-camera-copy strong{font-size:var(--mr-title);line-height:var(--mr-titleLine);font-weight:500}
+.br-app .bh-camera-copy>span{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-action)}
+.br-app .bh-history-preview .br-section-title h2{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500}
+.br-app .bh-history-preview h2>span{font-size:var(--mr-label);line-height:var(--mr-labelLine);color:var(--mr-secondary)}
+.br-app .bh-history-preview .bh-history-more{width:auto;min-width:60px;white-space:nowrap;flex-shrink:0}
+.br-app .bh-history-heading time{font-size:var(--mr-item);line-height:var(--mr-itemLine);font-weight:500;font-variant-numeric:tabular-nums}
+.br-app .bh-history-heading strong{font-size:var(--mr-label);line-height:var(--mr-labelLine);font-weight:500;padding:3px 7px}
+.br-app .bh-history-facts{font-size:var(--mr-label);line-height:var(--mr-labelLine);color:var(--mr-secondary)}
+.br-app .bh-history-excerpt{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .br-error,.br-app .br-followup{font-size:var(--mr-support);line-height:var(--mr-supportLine)}
+.br-app .bc-camera footer>p{font-size:var(--mr-support);line-height:var(--mr-supportLine)}
+.br-app .bc-camera .bc-album{font-size:var(--mr-item);line-height:var(--mr-itemLine)}
+/* Chart labels are HTML: unlike the plot, they never shrink with viewBox. */
+.br-app .bt-stool-card{padding:var(--mr-padding);border-radius:var(--mr-radius);background:var(--mr-surface)}
+.br-app .bt-chart-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;align-items:start}
+.br-app .bt-chart-heading h2{font-size:var(--mr-title);line-height:var(--mr-titleLine);font-weight:500;margin:0;display:block}
+.br-app .bt-chart-heading>strong{font-size:var(--mr-number);line-height:var(--mr-numberLine);font-weight:600;color:var(--mr-action);white-space:nowrap}
+.br-app .bt-chart-heading>strong small{font-size:var(--mr-support);line-height:var(--mr-supportLine);font-weight:400;color:var(--mr-secondary);margin-left:4px}
+.br-app .bt-chart-heading>p{grid-column:1/-1;margin:0;font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .bt-chart-heading .br-chart-sample{font-size:var(--mr-label);line-height:var(--mr-labelLine);font-weight:400;color:var(--mr-secondary)}
+.bt-plot{position:relative;margin-top:16px;padding-left:36px}
+.bt-y-axis{position:absolute;inset:0 auto 0 0;width:34px;display:flex;flex-direction:column;justify-content:space-between;font-size:var(--mr-axis);line-height:var(--mr-axisLine);color:var(--mr-secondary);font-variant-numeric:tabular-nums}
+.br-app .bt-stool-chart{width:100%;height:160px;margin:0;overflow:visible}
+.bt-day-labels{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin:8px 0 0 36px;text-align:center;font-variant-numeric:tabular-nums}
+.bt-day-labels>div{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.bt-day-labels time{font-size:var(--mr-axis);line-height:var(--mr-axisLine);color:var(--mr-secondary);white-space:nowrap}
+.bt-day-labels span{font-size:var(--mr-label);line-height:var(--mr-labelLine);white-space:nowrap}
+.bt-day-labels i{width:6px;height:6px;border-radius:50%}
+.br-app .bt-risk-legend{font-size:var(--mr-label);line-height:var(--mr-labelLine);color:var(--mr-secondary);gap:8px 12px;margin-top:12px}
+.br-app .bt-selected-day{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-items:center;border-top:1px solid var(--mr-line);margin-top:12px;padding-top:4px}
+.br-app .bt-selected-day select{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-primary);max-width:none;width:100%;min-width:0;min-height:44px;font-variant-numeric:tabular-nums}
+.br-app .bt-selected-day>strong{font-size:var(--mr-label);line-height:var(--mr-labelLine);font-weight:500}
+.br-app .bt-selected-day p{grid-column:1/-1;margin:0;font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary);overflow-wrap:anywhere}
+@media(max-width:359px){.br-app .bt-stool-card{padding:12px}.br-app .bh-camera-copy>span{font-size:var(--mr-support)}.br-app .br-choice strong{font-size:var(--mr-nav)}}

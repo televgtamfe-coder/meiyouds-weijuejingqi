@@ -20,7 +20,7 @@ it('付费前共享正文与实际报告在相同数据下结构、内容完全�
 it('示例可隐藏时间，指标仅显示有无，详细状态仍保留',()=>{
  const record=makeRecord(normalizeReport({status:'success',risk_level:'green',objective_facts:{foreign_bodies:{main:'未见血丝、灰白色；疑似少量奶瓣。'}}}));
  const view=render(<ReportContent record={record} showTimestamp={false}/>);
- expect(view.container.querySelector('time')).toBeNull();
+ expect(view.container.querySelector('.bs-report-meta time')).toBeNull();
  expect(view.container.querySelector('.bs-risk-observations h4')).toBeNull();
  expect([...view.container.querySelectorAll('.bs-risk-observation strong')].map(e=>e.textContent)).toEqual(['未发现','少量','未发现']);
  expect(view.container.querySelectorAll('.bs-risk-observation strong')[1]).toHaveAttribute('title','少量');

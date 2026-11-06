@@ -1,3 +1,4 @@
+import {reportDateLabel,formatReportText} from './reportDesign';
 import {regularityTrend} from './regularity';
 import {useEffect,useRef} from 'react';
 import {KitIcon} from './KitIcon';
@@ -32,7 +33,7 @@ export function BianbianHistory({records,onRecord,onPhoto}:{records:SavedReport[
 }
 
 function HistoryCard({record:r,onClick}:{record:SavedReport;onClick:()=>void}){
- const tags=r.report.facts.filter(f=>['颜色','性状'].includes(f.label)&&f.value&&f.value!=='未提供').slice(0,2),date=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'long',day:'numeric'}).format(new Date(r.createdAt));
+ const tags=r.report.facts.filter(f=>['颜色','性状'].includes(f.label)&&f.value&&f.value!=='未提供').slice(0,2),date=reportDateLabel(r.createdAt);
  const risk=riskPresentation[r.report.risk];
- return <button type="button" className="bh-history-row" onClick={onClick} aria-label={`${date}，${risk.label}，查看报告`}><span className="bh-history-heading"><time dateTime={r.createdAt}>{date}</time><strong style={{color:risk.color,background:risk.background}}>{risk.label}</strong></span><span className="bh-history-facts">{tags.length?tags.map(t=><span key={t.label}>{t.value}</span>):<span>便便分析报告</span>}</span><span className="bh-history-excerpt">{overviewConclusion(displayCopy(r))}</span><Icon name="next"/></button>;
+ return <button type="button" className="bh-history-row" onClick={onClick} aria-label={`${date}，${risk.label}，查看报告`}><span className="bh-history-heading"><time dateTime={r.createdAt}>{date}</time><strong style={{color:risk.color,background:risk.background}}>{risk.label}</strong></span><span className="bh-history-facts">{tags.length?tags.map(t=><span key={t.label}>{t.value}</span>):<span>便便分析报告</span>}</span><span className="bh-history-excerpt">{formatReportText(overviewConclusion(displayCopy(r)))}</span><Icon name="next"/></button>;
 }
