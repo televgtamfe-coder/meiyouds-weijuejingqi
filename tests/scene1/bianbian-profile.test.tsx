@@ -42,7 +42,7 @@ describe('三步资料与参考版导航', () => {
   const user=userEvent.setup();renderPage();await complete(user);
   expect(screen.queryByRole('button',{name:'修改宝宝资料'})).not.toBeInTheDocument();
   expect(screen.queryByText('4个月')).not.toBeInTheDocument();
-  await user.click(screen.getByRole('button',{name:'拍照分析',exact:true}));
+  await user.click(screen.getByRole('button',{name:'开始拍照',exact:true}));
   expect(screen.getByRole('dialog',{name:'拍摄便便照片'})).toBeVisible();
   expect(screen.getByRole('button',{name:'拍摄照片',exact:true})).toBeVisible();
   expect(screen.getByRole('button',{name:'相册'})).toBeVisible();

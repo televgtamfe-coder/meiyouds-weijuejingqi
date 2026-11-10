@@ -175,16 +175,17 @@
 .bs-reference .br-summary-details>summary,.bs-reference .br-summary-details p{font-size:13px;line-height:23px}
 
 /* V41: primary camera entry and three recent reports in a vertical feed. */
-.bh-camera-entry{display:flex;align-items:center;gap:14px;width:100%;min-height:96px;padding:18px 16px;margin:0 0 12px;border:1px solid #ffd9e7;border-radius:16px;background:linear-gradient(110deg,#fff0f6,#fff7f9);text-align:left;cursor:pointer;color:#323232}
-.bh-camera-art{display:grid;place-items:center;flex:none;width:56px;height:56px;border-radius:16px;background:#ff4d88;color:white;box-shadow:0 5px 12px #ff4d8824}
+.bh-camera-entry{display:flex;flex-direction:column;gap:14px;width:100%;padding:16px;margin:0 0 12px;border:0;border-radius:12px;background:#fff;text-align:left;color:#323232}
+.bh-camera-intro{display:flex;align-items:center;gap:12px;min-width:0}
+.bh-camera-art{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;background:#ff4d88;color:white;box-shadow:none}
 .bh-camera-art .bb-kit-icon,.bh-camera-art .bb-kit-icon svg{width:32px;height:32px;color:white}
 .bh-camera-copy{display:grid;gap:5px;flex:1;min-width:0}
 .br-app .bh-camera-copy strong{color:#323232}
 .bh-camera-copy>span{font-size:12px;line-height:20px;color:#8e5269}
-.bh-camera-go{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:white;color:#ec407c;flex:none}
-.bh-camera-go .br-icon{width:18px;height:18px}
-.bh-camera-entry:active{background:#ffe4ee;transform:scale(.99)}
-.bh-camera-entry:focus-visible,.bh-history-row:focus-visible,.bh-history-more:focus-visible{outline:2px solid #bc3564;outline-offset:3px}
+.bh-camera-start{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;padding:10px 16px;border:0;border-radius:999px;background:#ff4d88;color:#fff;cursor:pointer;font:inherit}
+.bh-camera-start .br-icon{width:18px;height:18px}
+.bh-camera-start:active{background:#e9437c;transform:scale(.99)}
+.bh-camera-start:focus-visible,.bh-history-row:focus-visible,.bh-history-more:focus-visible{outline:2px solid #bc3564;outline-offset:3px}
 .br-home .bh-history-preview{margin:14px 0 18px}
 .bh-history-preview .br-section-title{min-height:44px}
 .bh-history-preview .br-section-title h2{display:flex;align-items:baseline;gap:8px;font-size:17px;line-height:26px;font-weight:600;margin:0}
@@ -200,8 +201,8 @@
 .bh-history-facts{display:flex;flex-wrap:wrap;gap:4px 8px}
 .bh-history-facts>span+span{border-left:1px solid #e5dfe3;padding-left:8px}
 .bh-history-row>.br-icon{position:absolute;right:0;top:calc(50% - 8px);width:16px;height:16px;color:#b8a9b1}
-@media(max-width:359px){.bh-camera-entry{padding:16px 12px;gap:10px;min-height:88px}.bh-camera-art{width:48px;height:48px;border-radius:14px}.br-app .bh-camera-copy strong{font-size:18px}.bh-camera-go{width:26px;height:26px}.bh-camera-copy>span{font-size:11px}.bh-history-heading time{font-size:13px}.bh-history-heading{gap:5px}}
-@media(prefers-reduced-motion:reduce){.bh-camera-entry:active{transform:none}}
+@media(max-width:359px){.bh-camera-entry{padding:14px 12px}.bh-camera-intro{gap:10px}.bh-history-heading time{font-size:13px}.bh-history-heading{gap:5px}}
+@media(prefers-reduced-motion:reduce){.bh-camera-start:active{transform:none}}
 
 /* Natural-height report feed: shared between home and all history. */
 .br-home .bh-first-screen{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}

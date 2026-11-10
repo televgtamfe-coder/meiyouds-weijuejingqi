@@ -9,7 +9,7 @@ import {recordsKey} from '../../src/scenes/scene1/bianbian/records';
 const next=()=>fireEvent.click(within(screen.getByRole('complementary',{name:'演示流程控制'})).getByRole('button',{name:'下一步'}));
 beforeEach(()=>{localStorage.clear();sessionStorage.clear();saveBabyProfile(mockBabyProfile);saveEntryStage('ready');Object.defineProperty(navigator,'mediaDevices',{value:{getUserMedia:()=>new Promise(()=>{})},configurable:true});vi.stubGlobal('fetch',vi.fn());});
 afterEach(()=>{vi.useRealTimers();vi.unstubAllGlobals();});
-function open(){const view=render(<MemoryRouter><BianbianPage/></MemoryRouter>);fireEvent.click(screen.getByRole('button',{name:'拍照分析'}));return view;}
+function open(){const view=render(<MemoryRouter><BianbianPage/></MemoryRouter>);fireEvent.click(screen.getByRole('button',{name:'开始拍照'}));return view;}
 it('相机授权未完成也可由独立按钮走完整演示，不调用接口、不写真实记录',()=>{
  open();expect(screen.getByRole('dialog',{name:'拍摄便便照片'})).toBeVisible();
  const original=localStorage.getItem('meiyou.bianbian.previous-bowel.v1');next();

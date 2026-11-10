@@ -51,9 +51,10 @@
 .br-app .bm-discount{font-size:var(--mr-label);line-height:var(--mr-labelLine);font-weight:500;background:var(--mr-action)}
 .br-app .bm-v7-benefits{border-radius:var(--mr-radius)}
 .br-app .br-home{padding-top:16px}
-.br-app .bh-camera-entry{border-radius:var(--mr-radius);background:var(--mr-brandSoft);box-shadow:none}
-.br-app .bh-camera-copy strong{font-size:var(--mr-title);line-height:var(--mr-titleLine);font-weight:500}
-.br-app .bh-camera-copy>span{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-action)}
+.br-app .bh-camera-entry{border-radius:var(--mr-radius);background:var(--mr-surface);box-shadow:none}
+.br-app .bh-camera-copy strong{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:600}
+.br-app .bh-camera-copy>span{font-size:var(--mr-support);line-height:var(--mr-supportLine);color:var(--mr-secondary)}
+.br-app .bh-camera-start{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500;min-height:var(--mr-buttonHeight);background:var(--mr-brand);color:#fff}
 .br-app .bh-history-preview .br-section-title h2{font-size:var(--mr-nav);line-height:var(--mr-navLine);font-weight:500}
 .br-app .bh-history-preview h2>span{font-size:var(--mr-label);line-height:var(--mr-labelLine);color:var(--mr-secondary)}
 .br-app .bh-history-preview .bh-history-more{width:auto;min-width:60px;white-space:nowrap;flex-shrink:0}
