@@ -44,4 +44,5 @@
 @media(max-width:359px){.br-report-view .br-report-scroll,.br-report-view .be-entry-scroll{padding-left:12px;padding-right:12px}.br-app .br-report-paper .br-report-section,.br-app .br-report-paper>.bt-stool-card,.br-app .br-report-paper .br-summary{padding:12px!important}}
 
 /* Sample marker owns its whitespace instead of floating over report text. */
-.br-report-view .be-sample-flow-label{position:relative;z-index:2;margin:12px 0 0;padding:0;text-align:center;font-family:inherit;font-size:20px;line-height:28px;font-weight:400;letter-spacing:0;color:var(--text-light,#b2b2b2)}
+.br-report-view .be-sample-flow-label{position:relative;z-index:3;margin:6px 0 0;padding:0;text-align:center;font-family:inherit;font-size:20px;line-height:28px;font-weight:600;letter-spacing:0;color:var(--mr-secondary,#666)}
+.br-app .br-report-paper .be-sample-flow-label+.bs-important-indicators{margin-top:6px}
