@@ -20,7 +20,7 @@ export function BianbianHome({records,onPhoto,onHistory,onRecord,trends,onCamera
  const regularity=regularityTrend(records);
  const recent=[...records].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt)).slice(0,3);
  return <div className="br-scroll br-home" ref={scroll}>
-  <div className="bh-first-screen"><section className="bh-camera-entry" aria-labelledby="bh-camera-title"><div className="bh-camera-intro"><span className="bh-camera-art" aria-hidden="true"><KitIcon name="camera"/></span><span className="bh-camera-copy"><strong id="bh-camera-title">拍照分析</strong><span>拍摄宝宝便便，查看分析结果</span></span></div><button ref={entry} type="button" className="bh-camera-start" onClick={onPhoto}><span>开始拍照</span><Icon name="next"/></button></section>
+  <div className="bh-first-screen"><section className="bh-camera-entry" aria-labelledby="bh-camera-title"><div className="bh-camera-intro"><span className="bh-camera-art" aria-hidden="true"><KitIcon name="camera"/></span><span className="bh-camera-copy"><strong id="bh-camera-title">拍照分析</strong><span>拍摄宝宝便便，查看分析结果</span></span></div><button ref={entry} type="button" className="bh-camera-start" onClick={onPhoto}><span>开始拍照</span></button></section>
   <section className="br-history-preview bh-history-preview"><div className="br-section-title"><h2>历史报告 <span>最近三次</span></h2><button className="bh-history-more" type="button" aria-label="查看全部历史报告" onClick={onHistory}>更多<Icon name="next"/></button></div>
    <div className="bh-history-feed">{recent.length?recent.map(r=><HistoryCard key={r.id} record={r} onClick={()=>onRecord(r)}/>):<p className="br-support">还没有分析记录，拍一张照片开始记录。</p>}</div>
   </section>
