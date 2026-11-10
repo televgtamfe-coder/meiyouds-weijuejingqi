@@ -21,7 +21,7 @@ export function BianbianReport({record,onShare,onDoctor,onEdit,notice,jointLoadi
 
 }
 
-export function ReportContent({record,conclusionText,showRegularity=true,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;conclusionText?:string;showRegularity?:boolean;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
+export function ReportContent({record,conclusionText,showSampleLabel=false,showRegularity=true,showTimestamp=true,jointLoading=false,jointError='',onJoint=()=>{},onCancelJoint=()=>{},onEdit=()=>{}}:{record:SavedReport;conclusionText?:string;showSampleLabel?:boolean;showRegularity?:boolean;showTimestamp?:boolean;jointLoading?:boolean;jointError?:string;onJoint?:()=>void;onCancelJoint?:()=>void;onEdit?:()=>void}){
  record=displayCopy(record);
  const r=record.report;
  const conclusion=conclusionText??overviewConclusion(record);
@@ -31,7 +31,7 @@ export function ReportContent({record,conclusionText,showRegularity=true,showTim
 
    <section className={`br-summary bs-observation-summary bs-observation-v19 br-risk-${r.risk}`} aria-label="本次分析结论" style={{'--observation-color':riskPresentation[r.risk].color,'--observation-background':riskPresentation[r.risk].background} as import('react').CSSProperties}>
     <div className="bs-observation-result"><h3 className="bs-risk-heading">{riskLabels[r.risk]}</h3><p>{conclusionSegments(formatReportText(conclusion)).map((part,i)=>part.strong?<strong key={i}>{part.text}</strong>:<span key={i}>{part.text}</span>)}</p></div>
-    </section><section className="br-report-section bs-important-indicators bs-observation-v19"><h3>重要指标解读</h3><div className="bs-observation-facts">{indicatorDetails(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{formatReportText(f.value)}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description">{formatReportText(f.description)}</p>}</div>)}</div>
+    </section>{showSampleLabel&&<div className="be-sample-flow-label" aria-hidden="true">示例数据</div>}<section className="br-report-section bs-important-indicators bs-observation-v19"><h3>重要指标解读</h3><div className="bs-observation-facts">{indicatorDetails(record).map(f=><div key={f.label}><p className="bs-observation-fact"><span>{f.label}</span><strong>{formatReportText(f.value)}</strong></p>{f.description&&f.description!==f.value&&<p className="bs-observation-description">{formatReportText(f.description)}</p>}</div>)}</div>
      <div className="bs-risk-observations" aria-label="风险观察"><div>{riskObservations(record).filter(item=>riskQuantity(item.value)).map(item=><span className={`bs-risk-observation bs-risk-observation-${item.state}`} key={item.label}><span>{item.label}</span><strong title={item.value}>{riskQuantity(item.value)}</strong></span>)}</div>{missingRiskMessage(r)&&<p className="br-support">{missingRiskMessage(r)}</p>}</div>
    </section>
    {r.question&&<section className="br-report-section"><h3>可补充的信息</h3><p>{r.question}</p><button className="br-text-button" type="button" onClick={onEdit}>补充信息<Icon name="next"/></button></section>}
